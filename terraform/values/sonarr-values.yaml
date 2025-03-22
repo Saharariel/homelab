@@ -17,16 +17,11 @@ persistence:
     mountPath: /config
     size: 5Gi
     accessMode: ReadWriteOnce
-  downloads:
+
+  data:
     enabled: true
-    mountPath: /data/downloads
-    size: 50Gi
-    accessMode: ReadWriteOnce 
-  tv:
-    enabled: true
-    mountPath: /data/media/tv
-    size: 200Gi
-    accessMode: ReadWriteOnce
+    existingClaim: starr-pvc
+    mountPath: /data
 
 ingress:
   main:

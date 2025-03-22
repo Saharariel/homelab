@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: usenet-pvc
+  namespace: media
+spec:
+  storageClassName: ""  # explicitly set empty
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Gi
+  volumeName: usenet-pv

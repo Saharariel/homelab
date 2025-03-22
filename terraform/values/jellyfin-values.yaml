@@ -18,11 +18,11 @@ persistence:
     mountPath: /config
     size: 10Gi
     accessMode: ReadWriteOnce
+
   media:
     enabled: true
-    mountPath: /data
-    size: 100Gi
-    accessMode: ReadWriteOnce
+    existingClaim: media-pvc
+    mountPath: /data/media
 
 ingress:
   main:
