@@ -1,0 +1,41 @@
+replicaCount: 1
+
+image:
+  repository: linuxserver/sonarr
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  main:
+    enabled: true
+    type: ClusterIP
+    port: 8989
+
+persistence:
+  config:
+    enabled: true
+    mountPath: /config
+    size: 5Gi
+    accessMode: ReadWriteOnce
+  downloads:
+    enabled: true
+    mountPath: /data/downloads
+    size: 50Gi
+    accessMode: ReadWriteOnce 
+  tv:
+    enabled: true
+    mountPath: /data/media/tv
+    size: 200Gi
+    accessMode: ReadWriteOnce
+
+ingress:
+  main:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web
+    hosts:
+      - host: sonarr.homelab
+        paths:
+          - path: /
+            pathType: Prefix

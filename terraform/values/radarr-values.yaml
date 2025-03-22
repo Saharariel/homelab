@@ -1,0 +1,41 @@
+replicaCount: 1
+
+image:
+  repository: linuxserver/radarr
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  main:
+    enabled: true
+    type: ClusterIP
+    port: 7878
+
+persistence:
+  config:
+    enabled: true
+    mountPath: /config
+    size: 5Gi
+    accessMode: ReadWriteOnce
+  downloads:
+    enabled: true
+    mountPath: /data/downloads
+    size: 50Gi
+    accessMode: ReadWriteOnce
+  movies:
+    enabled: true
+    mountPath: /data/media/movies
+    size: 200Gi
+    accessMode: ReadWriteOnce
+
+ingress:
+  main:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web
+    hosts:
+      - host: radarr.homelab
+        paths:
+          - path: /
+            pathType: Prefix

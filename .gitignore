@@ -1,0 +1,2 @@
+# Ignore docker-compose etc-pihole data folder
+docker-compose/etc-pihole/

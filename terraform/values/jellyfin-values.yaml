@@ -1,0 +1,37 @@
+replicaCount: 1
+
+image:
+  repository: jellyfin/jellyfin
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  main:
+    enabled: true
+    type: ClusterIP
+    port: 8096
+
+
+persistence:
+  config:
+    enabled: true
+    mountPath: /config
+    size: 10Gi
+    accessMode: ReadWriteOnce
+  media:
+    enabled: true
+    mountPath: /data
+    size: 100Gi
+    accessMode: ReadWriteOnce
+
+ingress:
+  main:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web
+    hosts:
+      - host: jellyfin.homelab
+        paths:
+          - path: /
+            pathType: Prefix
