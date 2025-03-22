@@ -20,7 +20,7 @@ persistence:
 
   data:
     enabled: true
-    existingClaim: starr-pvc
+    existingClaim: nfs-pvc
     mountPath: /data
 
 ingress:

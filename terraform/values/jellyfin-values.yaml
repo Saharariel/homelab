@@ -21,8 +21,9 @@ persistence:
 
   media:
     enabled: true
-    existingClaim: media-pvc
+    existingClaim: nfs-pvc
     mountPath: /data/media
+    subPath: media
 
 ingress:
   main:
