@@ -5,6 +5,9 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+nodeSelector:
+    role: jellyfin
+
 service:
   main:
     enabled: true

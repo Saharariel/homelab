@@ -5,6 +5,9 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+nodeSelector:
+    role: arrstack
+
 service:
   main:
     enabled: true
