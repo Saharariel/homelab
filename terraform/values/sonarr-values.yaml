@@ -20,7 +20,8 @@ persistence:
 
   data:
     enabled: true
-    existingClaim: nfs-pvc
+    type: hostPath
+    hostPath: /mnt/data
     mountPath: /data
 
 ingress:

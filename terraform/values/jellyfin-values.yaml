@@ -11,7 +11,6 @@ service:
     type: ClusterIP
     port: 8096
 
-
 persistence:
   config:
     enabled: true
@@ -21,9 +20,9 @@ persistence:
 
   media:
     enabled: true
-    existingClaim: nfs-pvc
+    type: hostPath
+    hostPath: /mnt/data/media
     mountPath: /data/media
-    subPath: media
 
 ingress:
   main:
