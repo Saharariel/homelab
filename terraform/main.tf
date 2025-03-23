@@ -53,3 +53,14 @@ resource "helm_release" "sonarr" {
     file("values/sonarr-values.yaml")
   ]
 }
+
+resource "helm_release" "wikijs" {
+  name       = "wikijs"
+  chart      = "wikijs"
+  repository = "https://k8s-at-home.com/charts/"
+  namespace  = "media"
+
+  values = [
+    file("values/wikijs-values.yaml")
+  ]
+}

@@ -1,2 +1,4 @@
-# Ignore docker-compose etc-pihole data folder
-docker-compose/etc-pihole/
+
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/.terraform
