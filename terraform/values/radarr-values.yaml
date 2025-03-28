@@ -13,6 +13,7 @@ service:
     enabled: true
     type: ClusterIP
     port: 7878
+    
 
 persistence:
   config:
