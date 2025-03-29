@@ -13,4 +13,12 @@ spec:
     - kind: Kustomization
       name: '*'
     - kind: Terraform
-      name: "*"
+      name: '*'
+    - kind: HelmRelease
+      name: '*'
+    - kind: ImageRepository
+      name: '*'
+    - kind: ImagePolicy
+      name: '*'
+    - kind: ImageUpdateAutomation
+      name: '*'      
