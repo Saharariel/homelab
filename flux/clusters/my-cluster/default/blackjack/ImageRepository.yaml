@@ -1,0 +1,9 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: blackjack-web
+  namespace: flux-system
+spec:
+  image: ghcr.io/saharariel/blackjack-web
+  interval: 1m
