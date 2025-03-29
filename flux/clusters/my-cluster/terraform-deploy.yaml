@@ -13,6 +13,3 @@ spec:
     name: flux-system       # name of your GitRepository resource
   backendConfig:
     disable: true           # disable remote state backend for now
-  runnerPodTemplate:
-    spec:
-      serviceAccountName: default  # optional, or customize if needed
