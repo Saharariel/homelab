@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 30m0s
-  path: ./flux/clusters/my-cluster
+  path: ./flux/clusters/my-cluster/flux-system
   prune: true
   retryInterval: 2m0s
   sourceRef:
