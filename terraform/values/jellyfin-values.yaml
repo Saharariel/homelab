@@ -2,8 +2,8 @@ replicaCount: 1
 
 image:
   repository: jellyfin/jellyfin
-  tag: 10.10.5
-  pullPolicy: Always
+  tag: 10.10.6
+  pullPolicy: IfNotPresent
 
 nodeSelector:
     role: jellyfin

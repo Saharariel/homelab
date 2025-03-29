@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: linuxserver/radarr
-  tag: latest
+  tag: 5.21.1.9799-ls266
   pullPolicy: IfNotPresent
 
 nodeSelector:

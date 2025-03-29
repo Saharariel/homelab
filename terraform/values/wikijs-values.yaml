@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/linuxserver/wikijs
-  tag: latest
+  tag: 2.5.307
   pullPolicy: IfNotPresent
 
 nodeSelector:

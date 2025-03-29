@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: linuxserver/sonarr
-  tag: latest
+  tag: 4.0.14.2939-ls276
   pullPolicy: IfNotPresent
 
 nodeSelector:
