@@ -4,3 +4,4 @@ namespace: default
 resources:
 - jellyfin.yaml
 - radarr.yaml
+- sonarr.yaml
