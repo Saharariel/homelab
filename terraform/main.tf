@@ -12,16 +12,12 @@ terraform {
 }
 
 provider "kubernetes" {
-  host                   = "https://kubernetes.default.svc"
-  cluster_ca_certificate = file("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
-  token                  = file("/var/run/secrets/kubernetes.io/serviceaccount/token")
+  config_path = "~/.kube/config"
 }
 
 provider "helm" {
   kubernetes {
-    host                   = "https://kubernetes.default.svc"
-    cluster_ca_certificate = file("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
-    token                  = file("/var/run/secrets/kubernetes.io/serviceaccount/token")
+    config_path = "~/.kube/config"
   }
 }
 resource "helm_release" "jellyfin" {
