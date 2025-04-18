@@ -17,7 +17,7 @@ spec:
       - name: sonarr
         image: lscr.io/linuxserver/sonarr:4.0.14.2939
         ports:
-        - containerPort: 7878
+        - containerPort: 8989
         volumeMounts:
         - name: media
           mountPath: /data
@@ -47,6 +47,6 @@ spec:
   selector:
     app: sonarr
   ports:
-  - port: 7878
-    targetPort: 7878
+  - port: 8989
+    targetPort: 8989
   type: NodePort
