@@ -1,5 +1,2 @@
 resources:
-  - jellyfin.yaml
-  # - radarr.yaml
-  # - prowlarr.yaml
-
+- apps/media
