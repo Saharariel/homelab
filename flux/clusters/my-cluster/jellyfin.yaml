@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m0s
-  path: ./apps/media/jellyfin
+  path: ./flux/clusters/my-cluster/apps/media/jellyfin
   prune: true
   sourceRef:
     kind: GitRepository
