@@ -9,8 +9,7 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: homelab
+    name: flux-system
     namespace: flux-system
   targetNamespace: media
   timeout: 2m
-
