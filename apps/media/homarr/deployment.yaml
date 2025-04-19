@@ -24,8 +24,8 @@ spec:
       volumeMounts:
       - name: appdata
         mountPath: /appdata
-      volumes:
-      - name: appdata
-        hostPath:
-          path: /mnt/data/configs/homarr/appdata
-          type: Directory
+    volumes:
+    - name: appdata
+      hostPath:
+        path: /mnt/data/configs/homarr/appdata
+        type: Directory
