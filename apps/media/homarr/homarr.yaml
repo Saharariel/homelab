@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: homarr
-        image: ghcr.io/homarr-labs/homarr:0.15.10
+        image: ghcr.io/homarr-labs/homarr:v0.15.10
         ports:
         - containerPort: 7575
       volumeMounts:
