@@ -20,7 +20,7 @@ spec:
         - containerPort: 7575
         envFrom:
         - secretRef:
-          name: homarr-secret
+            name: homarr-secret
       volumeMounts:
       - name: config
         mountPath: /config
