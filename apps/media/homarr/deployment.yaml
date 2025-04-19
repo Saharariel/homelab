@@ -21,11 +21,11 @@ spec:
         envFrom:
         - secretRef:
             name: homarr-secret
-      volumeMounts:
+        volumeMounts:
+        - name: appdata
+          mountPath: /appdata
+      volumes:
       - name: appdata
-        mountPath: /appdata
-    volumes:
-    - name: appdata
-      hostPath:
-        path: /mnt/data/configs/homarr/appdata
-        type: Directory
+        hostPath:
+          path: /mnt/data/configs/homarr/appdata
+          type: Directory
