@@ -17,4 +17,4 @@ spec:
           service:
             name: homarr
             port:
-              number: 8080
+              number: 7575
