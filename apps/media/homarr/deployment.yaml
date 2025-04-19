@@ -23,7 +23,7 @@ spec:
             name: homarr-secret
       volumeMounts:
       - name: config
-        mountPath: /config
+        mountPath: /appdata
       volumes:
       - name: config
         hostPath:
