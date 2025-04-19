@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prowlarr
+  template:
+    metadata:
+      labels:
+        app: prowlarr
+    spec:
+      containers:
+      - name: prowlarr
+        image: lscr.io/linuxserver/prowlarr:1.33.3.5008-ls114
+        ports:
+        - containerPort: 9696
+        volumeMounts:
+        - name: media
+          mountPath: /data
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: media
+        hostPath:
+          path: /mnt/data
+          type: Directory
+      - name: config
+        hostPath:
+          path: /mnt/data/configs/prowlarr
+          type: Directory
