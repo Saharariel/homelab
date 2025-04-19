@@ -18,6 +18,9 @@ spec:
         image: ghcr.io/homarr-labs/homarr:v1.17.0
         ports:
         - containerPort: 7575
+        envFrom:
+        - secretRef:
+          name: homarr-secret
       volumeMounts:
       - name: config
         mountPath: /config
