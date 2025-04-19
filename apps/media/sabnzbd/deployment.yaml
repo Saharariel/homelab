@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sabnzbd
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sabnzbd
+  template:
+    metadata:
+      labels:
+        app: sabnzbd
+    spec:
+      containers:
+      - name: sabnzbd
+        image: lscr.io/linuxserver/sabnzbd:4.5.1-ls213
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: downloads
+          mountPath: /data/usenet
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: downloads
+        hostPath:
+          path: /mnt/data/usenet
+          type: Directory
+      - name: config
+        hostPath:
+          path: /mnt/data/configs/sabnzbd
+          type: Directory
