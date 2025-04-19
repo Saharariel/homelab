@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarr
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      containers:
+      - name: sonarr
+        image: lscr.io/linuxserver/sonarr:4.0.14.2939-ls278
+        ports:
+        - containerPort: 8989
+        volumeMounts:
+        - name: media
+          mountPath: /data
+        - name: config
+          mountPath: /config
+        - name: dri
+          mountPath: /dev/dri
+      volumes:
+      - name: media
+        hostPath:
+          path: /mnt/data
+          type: Directory
+      - name: dri
+        hostPath:
+          path: /dev/dri
+          type: Directory
+      - name: config
+        hostPath:
+          path: /mnt/data/configs/sonarr
+          type: Directory
