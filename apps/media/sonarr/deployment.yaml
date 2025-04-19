@@ -23,16 +23,10 @@ spec:
           mountPath: /data
         - name: config
           mountPath: /config
-        - name: dri
-          mountPath: /dev/dri
       volumes:
       - name: media
         hostPath:
           path: /mnt/data
-          type: Directory
-      - name: dri
-        hostPath:
-          path: /dev/dri
           type: Directory
       - name: config
         hostPath:
