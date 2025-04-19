@@ -1,8 +1,3 @@
-My HomeLab setup!
+# 🏠 Homelab Infrastructure
 
-install k3s, terreform, helm and use helm repo https://k8s-at-home.com/charts
-
-
-command for creating a folder structure according to trash guides:
-
-mkdir -p /data/{torrents/{books,movies,music,tv},usenet/{incomplete,complete/{books,movies,music,tv}},media/{books,movies,music,tv}}
+This repository contains the GitOps-managed configuration for my home Kubernetes cluster using FluxCD, K3s, and various self-hosted services.
