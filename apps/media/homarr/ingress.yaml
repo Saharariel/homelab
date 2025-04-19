@@ -1,20 +1,20 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: sabnzbd
+  name: homarr
   namespace: default
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
   ingressClassName: traefik
   rules:
-  - host: sabnzbd.homelab
+  - host: dashboard.homelab
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: sabnzbd
+            name: homarr
             port:
               number: 8080
