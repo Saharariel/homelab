@@ -18,8 +18,9 @@ spec:
         image: ghcr.io/homarr-labs/homarr:0.15.10
         ports:
         - containerPort: 7575
-        - name: config
-          mountPath: /config
+      volumeMounts:
+      - name: config
+        mountPath: /config
       volumes:
       - name: config
         hostPath:
