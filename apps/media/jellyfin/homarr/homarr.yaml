@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homarr
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homarr
+  template:
+    metadata:
+      labels:
+        app: homarr
+    spec:
+      containers:
+      - name: homarr
+        image: ghcr.io/homarr-labs/homarr:0.15.10
+        ports:
+        - containerPort: 7575
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: config
+        hostPath:
+          path: /mnt/data/configs/homarr
+          type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homarr
+spec:
+  selector:
+    app: homarr
+  ports:
+  - port: 7575
+    targetPort: 7575
+  type: NodePort
