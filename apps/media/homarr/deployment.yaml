@@ -22,10 +22,10 @@ spec:
         - secretRef:
             name: homarr-secret
       volumeMounts:
-      - name: config
+      - name: appdata
         mountPath: /appdata
       volumes:
-      - name: config
+      - name: appdata
         hostPath:
           path: /mnt/data/configs/homarr
-          type: DirectoryOrCreate
+          type: Directory
