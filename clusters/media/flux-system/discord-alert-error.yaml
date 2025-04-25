@@ -4,7 +4,7 @@ metadata:
   name: on-call-webapp
   namespace: flux-system
 spec:
-  eventSeverity: info
+  eventSeverity: error
   providerRef:
     name: discord
   eventSources:
