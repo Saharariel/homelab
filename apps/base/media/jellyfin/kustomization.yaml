@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: media
 resources:
 - deployment.yaml
-- service.yaml
 - ingress.yaml
+- service.yaml
+
