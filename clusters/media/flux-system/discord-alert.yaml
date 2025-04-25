@@ -5,6 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   eventSeverity: info
+  eventSeverityMatch: greaterEqual
   providerRef:
     name: discord
   eventSources:
