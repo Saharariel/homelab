@@ -3,3 +3,9 @@ kind: Kustomization
 namespace: monitoring
 resources:
 - helmrelease.yaml
+configMapGenerator:
+- name: podinfo-values
+  files:
+  - values.yaml=values.yaml
+configurations:
+- kustomizeconfig.yaml

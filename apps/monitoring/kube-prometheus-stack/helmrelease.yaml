@@ -13,5 +13,6 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
-  valuesFiles:
-  - values.yaml
+  valuesFrom:
+  - kind: ConfigMap
+    name: kube-prometheus-stack-values
