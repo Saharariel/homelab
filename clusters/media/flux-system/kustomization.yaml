@@ -6,4 +6,3 @@ resources:
 - discord-provider.yaml
 - discord-alert.yaml
 - discord-alert-error.yaml
-- special-kustomization.yaml
