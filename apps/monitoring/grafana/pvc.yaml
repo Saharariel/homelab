@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: grafana-pvc
-  namespace: utils
+  namespace: monitoring
 spec:
   volumeName: grafana-pv
   accessModes:
