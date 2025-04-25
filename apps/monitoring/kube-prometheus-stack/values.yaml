@@ -42,6 +42,15 @@ grafana:
   forceDeployDashboards: false
   defaultDashboardsEnabled: true
   defaultDashboardsTimezone: utc
+  ingress:
+    enabled: true
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web
+    hosts:
+    - host: grafana.homelab
+      paths:
+      - path: /
+        pathType: Prefix
   serviceMonitor:
     enabled: true
   admin:
