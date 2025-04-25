@@ -1,7 +1,7 @@
 apiVersion: notification.toolkit.fluxcd.io/v1beta3
 kind: Alert
 metadata:
-  name: on-call-webapp
+  name: on-call-webapp-warning
   namespace: flux-system
 spec:
   eventSeverity: warning
