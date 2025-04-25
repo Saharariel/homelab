@@ -5,3 +5,4 @@ resources:
 - gotk-sync.yaml
 - discord-provider.yaml
 - discord-alert.yaml
+- special-kustomization.yaml
