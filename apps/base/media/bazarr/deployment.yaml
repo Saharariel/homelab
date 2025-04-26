@@ -22,7 +22,7 @@ spec:
       containers:
       - name: bazarr
         #image: lscr.io/linuxserver/bazarr:v1.5.1-ls300
-        image: hotio/bazarr:0.8.3.4
+        image: ghcr.io/hotio/bazarr:release-1.5.1
         ports:
         - containerPort: 6767
 
