@@ -15,6 +15,16 @@ spec:
       containers:
       - name: homarr
         image: ghcr.io/homarr-labs/homarr:v1.17.0
+
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          
         ports:
         - containerPort: 7575
         envFrom:
