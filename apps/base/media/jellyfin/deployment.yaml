@@ -18,13 +18,13 @@ spec:
         ports:
         - containerPort: 8096
         env:
-        - name: JELLYFIN_PublishedServerName
+        - name: JELLYFIN_ServerName
           value: "saharserver"
         - name: PUID
           value: "1000"
         - name: PGID
           value: "1000
-          
+
         securityContext:
           #privileged: true
           allowPrivilegeEscalation: false
