@@ -12,10 +12,12 @@ spec:
       labels:
         app: jellyfin
     spec:
-      securityContext:
-        fsGroup: 1000
-        runAsUser: 1000
-        runAsGroup: 1000
+      
+      #securityContext:
+        #fsGroup: 1000
+        #runAsUser: 1000
+        #runAsGroup: 1000
+
       containers:
       - name: jellyfin
         image: lscr.io/linuxserver/jellyfin:10.10.7
@@ -24,9 +26,11 @@ spec:
         env:
         - name: JELLYFIN_PublishedServerName
           value: "saharserver"
+          
         securityContext:
-          #privileged: true
-          allowPrivilegeEscalation: false
+          privileged: true
+          #allowPrivilegeEscalation: false
+
         volumeMounts:
         - name: media
           mountPath: /data/media
