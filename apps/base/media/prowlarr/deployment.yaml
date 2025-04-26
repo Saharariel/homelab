@@ -15,6 +15,16 @@ spec:
       containers:
       - name: prowlarr
         image: lscr.io/linuxserver/prowlarr:1.33.3.5008-ls114
+        
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          
         ports:
         - containerPort: 9696
         volumeMounts:

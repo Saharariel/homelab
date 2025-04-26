@@ -15,6 +15,16 @@ spec:
       containers:
       - name: sabnzbd
         image: lscr.io/linuxserver/sabnzbd:4.5.1-ls213
+        
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          
         ports:
         - containerPort: 8080
         volumeMounts:
