@@ -11,7 +11,7 @@ spec:
     metadata:
       labels:
         app: bazarr
-        
+
     spec:
       securityContext:
         runAsUser: 1000
@@ -21,7 +21,8 @@ spec:
 
       containers:
       - name: bazarr
-        image: lscr.io/linuxserver/bazarr:v1.5.1-ls300
+        #image: lscr.io/linuxserver/bazarr:v1.5.1-ls300
+        image: hotio/bazarr:0.8.3.4
         ports:
         - containerPort: 6767
 
