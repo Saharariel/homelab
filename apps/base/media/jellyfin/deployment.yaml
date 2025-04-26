@@ -28,9 +28,6 @@ spec:
         securityContext:
           #privileged: true
           allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - ALL
 
         volumeMounts:
         - name: media
