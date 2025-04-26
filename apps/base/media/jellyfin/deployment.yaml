@@ -12,6 +12,13 @@ spec:
       labels:
         app: jellyfin
     spec:
+      securityContext:
+        runAsUser: 1000           # Force the whole pod to start as user 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        runAsNonRoot: true         # Kubernetes will block starting if not non-root
+        supplementalGroups:
+          - 44                    # Video group (for GPU access)
       containers:
       - name: jellyfin
         image: lscr.io/linuxserver/jellyfin:10.10.7
@@ -28,6 +35,9 @@ spec:
         securityContext:
           #privileged: true
           allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
 
         volumeMounts:
         - name: media
