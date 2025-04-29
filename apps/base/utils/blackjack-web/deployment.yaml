@@ -16,4 +16,4 @@ spec:
       - name: blackjack-web
         image: ghcr.io/saharariel/blackjack-web:1.0.3
         ports:
-        - containerPort: 8080
+        - containerPort: 80
