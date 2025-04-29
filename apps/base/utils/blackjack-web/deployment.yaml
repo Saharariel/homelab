@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: blackjack-web
-        image: ghcr.io/saharariel/blackjack-web:1.0.3 # {"$imagepolicy": "flux-system:blackjack-web-image-policy"}
+        image: ghcr.io/saharariel/blackjack-web:1.0.4 # {"$imagepolicy": "flux-system:blackjack-web-image-policy"}
         ports:
         - containerPort: 80
