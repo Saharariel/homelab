@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   imageRepositoryRef:
-    name: blackjack-web
+    name: blackjack-web-image-repo
 
   policy:
     semver:
