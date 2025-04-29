@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: blackjack-web
+  labels:
+    app: blackjack-web
 spec:
   replicas: 1
   selector:
@@ -14,6 +16,6 @@ spec:
     spec:
       containers:
       - name: blackjack-web
-        image: ghcr.io/saharariel/blackjack-web:1.0.3
+        image: ghcr.io/saharariel/blackjack-web:1.0.3 # {"$imagepolicy": "flux-system:blackjack-web-image-policy"}
         ports:
         - containerPort: 80
