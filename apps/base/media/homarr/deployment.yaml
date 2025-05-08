@@ -12,6 +12,10 @@ spec:
       labels:
         app: homarr
     spec:
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 10.0.0.20
       containers:
       - name: homarr
         image: ghcr.io/homarr-labs/homarr:v1.17.0
