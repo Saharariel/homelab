@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyseer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyseer
+  template:
+    metadata:
+      labels:
+        app: jellyseer
+
+      containers:
+      - name: jellyseer
+        image: fallenbagel/jellyseerr:2.5.2
+        ports:
+        - containerPort: 5055
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+
+        securityContext:
+          allowPrivilegeEscalation: false
+
+        volumeMounts:
+        - name: media
+          mountPath: /data/media
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: media
+        hostPath:
+          path: /mnt/data/media
+          type: Directory
+      - name: config
+        hostPath:
+          path: /mnt/data/configs/jellyseer
+          type: DirectoryOrCreate
