@@ -16,8 +16,8 @@ spec:
       containers:
       - name: jellyseer
         image: fallenbagel/jellyseerr:2.5.2
-        ports:
-        - containerPort: 5055
+
+        env:
         - name: PUID
           value: "1000"
         - name: PGID
@@ -26,6 +26,9 @@ spec:
         securityContext:
           allowPrivilegeEscalation: false
 
+        ports:
+        - containerPort: 9696
+        
         volumeMounts:
         - name: media
           mountPath: /data/media
