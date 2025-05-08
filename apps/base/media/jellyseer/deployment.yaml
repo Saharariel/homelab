@@ -11,7 +11,8 @@ spec:
     metadata:
       labels:
         app: jellyseer
-
+        
+  spec:
       containers:
       - name: jellyseer
         image: fallenbagel/jellyseerr:2.5.2
