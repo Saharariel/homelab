@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifiarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notifiarr
+  template:
+    metadata:
+      labels:
+        app: notifiarr
+    spec:
+      containers:
+      - name: notifiarr
+        image: golift/notifiarr:0.8.3
+        
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          
+        ports:
+        - containerPort: 5454
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: config
+        hostPath:
+          path: /mnt/data/configs/notifiarr
+          type: Directory
