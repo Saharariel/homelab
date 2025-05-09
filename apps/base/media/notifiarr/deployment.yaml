@@ -40,4 +40,4 @@ spec:
       - name: machine-id
         hostPath:
           path: /etc/machine-id
-          type: Directory
+          type: File
