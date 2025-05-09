@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jfa-go
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jfa-go
+  template:
+    metadata:
+      labels:
+        app: jfa-go
+    spec:
+      containers:
+      - name: jfa-go
+        image: hrfee/jfa-go:latest
+        
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          
+        ports:
+        - containerPort: 8056
+        volumeMounts:
+        - name: config-jellyfin
+          mountPath: /data
+        - name: config
+          mountPath: /data
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: config-jellyfin
+        hostPath:
+          path: /mnt/data/configs/jellyfin
+          type: Directory
+      - name: config
+        hostPath:
+          path: /mnt/data/configs/jfa-go
+          type: Directory
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+
