@@ -30,8 +30,14 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
+        - name: machine-id
+          mountPath: /etc/machine-id
       volumes:
       - name: config
         hostPath:
           path: /mnt/data/configs/notifiarr
+          type: Directory
+      - name: machine-id
+        hostPath:
+          path: /etc/machine-id
           type: Directory
