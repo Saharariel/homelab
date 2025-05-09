@@ -33,7 +33,7 @@ spec:
         - name: media
           mountPath: /data/media
         - name: config
-          mountPath: /config
+          mountPath: /app/config
       volumes:
       - name: media
         hostPath:
