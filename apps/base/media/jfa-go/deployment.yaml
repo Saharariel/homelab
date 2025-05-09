@@ -29,7 +29,7 @@ spec:
         - containerPort: 8056
         volumeMounts:
         - name: config-jellyfin
-          mountPath: /data
+          mountPath: /jf
         - name: config
           mountPath: /data
         - name: localtime
