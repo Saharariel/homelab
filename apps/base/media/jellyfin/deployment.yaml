@@ -37,8 +37,8 @@ spec:
           value: "1000"
 
         securityContext:
-          #privileged: true
-          allowPrivilegeEscalation: false
+          privileged: true
+          #allowPrivilegeEscalation: false
 
         volumeMounts:
         - name: media
