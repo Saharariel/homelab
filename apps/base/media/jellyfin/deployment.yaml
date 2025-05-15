@@ -19,6 +19,7 @@ spec:
         fsGroup: 993
         supplementalGroups:
         - 993
+        - 44
         runAsNonRoot: true
 
       containers:
