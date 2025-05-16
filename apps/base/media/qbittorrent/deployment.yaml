@@ -55,7 +55,7 @@ spec:
           
         volumeMounts:
           - name: gluetun-config
-            mountPath: /config
+            mountPath: /gluetun
           - name: dev-net-tun
             mountPath: /dev/net/tun
 
