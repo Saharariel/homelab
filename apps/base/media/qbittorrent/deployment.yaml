@@ -79,8 +79,8 @@ spec:
       volumes:
         - name: gluetun-config
           hostPath:
-            path: /mnt/data/configs/glueten
-            type: Directory
+          path: /mnt/data/configs/glueten
+          type: Directory
 
         - name: dev-net-tun
           hostPath:
@@ -94,5 +94,5 @@ spec:
 
         - name: downloads
           hostPath:
-            path: /mnt/data/torrent/
-            type: Directory
+          path: /mnt/data/torrent/
+          type: Directory
