@@ -70,13 +70,23 @@ spec:
         env:
         - name: WEBUI_PORT
           value: "8081"
+        - name: TORRENTING_PORT
+          value: "6881"
+
         - name: PUID
           value: "1000"
         - name: PGID
           value: "1000"
 
         ports:
-        - containerPort: 8081
+        - containerPort: 8080
+          name: webui
+        - containerPort: 6881
+          name: torrent-tcp
+          protocol: TCP
+        - containerPort: 6881
+          name: torrent-udp
+          protocol: UDP
 
         volumeMounts:
         - name: downloads
