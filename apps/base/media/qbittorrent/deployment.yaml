@@ -80,22 +80,19 @@ spec:
           - name: qbittorrent-config
             mountPath: /config
 
-    volumes:
+      volumes:
       - name: gluetun-config
         hostPath:
           path: /mnt/data/configs/glueten
           type: Directory
-
       - name: dev-net-tun
         hostPath:
           path: /dev/net/tun
           type: CharDevice
-
       - name: qbittorrent-config
         hostPath:
           path: /mnt/data/configs/qbittorrent/appdata
           type: Directory
-
       - name: downloads
         hostPath:
           path: /mnt/data/torrent/
