@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: qbittorrent
+
     spec:
       containers:
 
@@ -22,7 +23,7 @@ spec:
         securityContext:
           capabilities:
             add: [ "NET_ADMIN" ]
-          privileged: true
+          #privileged: true
 
         env:
         - name: VPN_SERVICE_PROVIDER
@@ -65,6 +66,7 @@ spec:
 
       - name: qbittorrent
         image: lscr.io/linuxserver/qbittorrent:4.6.0
+
         env:
         - name: WEBUI_PORT
           value: "8081"
@@ -72,8 +74,10 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+
         ports:
         - containerPort: 8081
+
         volumeMounts:
         - name: downloads
           mountPath: /data/torrent/
@@ -81,16 +85,14 @@ spec:
           mountPath: /config
 
       volumes:
-
       - name: gluetun-config
         hostPath:
         path: /mnt/data/configs/glueten
         type: Directory
-
-      - name: dev-net-tun
-        hostPath:
-          path: /dev/net/tun
-          type: CharDevice
+        # - name: dev-net-tun
+        #  hostPath:
+        # path: /dev/net/tun
+        #type: CharDevice
 
       - name: qbittorrent-config
         hostPath:
