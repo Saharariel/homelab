@@ -89,7 +89,7 @@ spec:
 
         - name: qbittorrent-config
           hostPath:
-          path: /mnt/data/configs/qbittorrent/appdata
+          path: /mnt/data/configs/qbittorrent
           type: Directory
 
         - name: downloads
