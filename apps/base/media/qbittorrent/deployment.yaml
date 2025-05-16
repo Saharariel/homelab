@@ -55,7 +55,7 @@ spec:
           
         volumeMounts:
           - name: gluetun-config
-            mountPath: /gluetun
+            mountPath: /config
           - name: dev-net-tun
             mountPath: /dev/net/tun
 
@@ -79,7 +79,7 @@ spec:
       volumes:
         - name: gluetun-config
           hostPath:
-          path: /mnt/data/configs/glueten
+          path: /mnt/data/configs/gluten
           type: Directory
 
         - name: dev-net-tun
