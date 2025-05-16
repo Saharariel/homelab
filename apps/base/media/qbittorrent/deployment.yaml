@@ -17,9 +17,12 @@ spec:
       containers:
       - name: gluetun
         image: qmcgaw/gluetun:v3
+        
         securityContext:
           capabilities:
             add: ["NET_ADMIN"]
+          privileged: true
+
         env:
           - name: VPN_SERVICE_PROVIDER
             value: "nordvpn"  # or your VPN provider
@@ -56,6 +59,7 @@ spec:
         volumeMounts:
           - name: gluetun-config
             mountPath: /config
+            
           - name: dev-net-tun
             mountPath: /dev/net/tun
 
