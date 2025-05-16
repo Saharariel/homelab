@@ -15,9 +15,10 @@ spec:
         app: qbittorrent
     spec:
       containers:
+
       - name: gluetun
         image: qmcgaw/gluetun:v3
-        
+
         securityContext:
           capabilities:
             add: ["NET_ADMIN"]
@@ -58,8 +59,7 @@ spec:
           
         volumeMounts:
           - name: gluetun-config
-            mountPath: /config
-            
+            mountPath: /config  
           - name: dev-net-tun
             mountPath: /dev/net/tun
 
@@ -80,23 +80,23 @@ spec:
           - name: qbittorrent-config
             mountPath: /config
 
-      volumes:
-        - name: gluetun-config
-          hostPath:
-          path: /mnt/data/configs/gluten
+    volumes:
+      - name: gluetun-config
+        hostPath:
+          path: /mnt/data/configs/glueten
           type: Directory
 
-        - name: dev-net-tun
-          hostPath:
-            path: /dev/net/tun
-            type: CharDevice
+      - name: dev-net-tun
+        hostPath:
+          path: /dev/net/tun
+          type: CharDevice
 
-        - name: qbittorrent-config
-          hostPath:
-          path: /mnt/data/configs/qbittorrent
+      - name: qbittorrent-config
+        hostPath:
+          path: /mnt/data/configs/qbittorrent/appdata
           type: Directory
 
-        - name: downloads
-          hostPath:
+      - name: downloads
+        hostPath:
           path: /mnt/data/torrent/
           type: Directory
