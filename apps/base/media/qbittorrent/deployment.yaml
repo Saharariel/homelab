@@ -107,8 +107,8 @@ spec:
 
       - name: qbittorrent-config
         hostPath:
-        path: /mnt/data/configs/qbittorrent/appdata
-        type: Directory
+        path: /mnt/data/configs/qbittorrent
+        type: DirectoryOrCreate
 
       - name: downloads
         hostPath:
