@@ -98,8 +98,8 @@ spec:
       volumes:
       - name: gluetun-config
         hostPath:
-          path: /mnt/data/configs/gluetun
-          type: Directory
+        path: /mnt/data/configs/gluetun
+        type: Directory
           #- name: dev-net-tun
           # hostPath:
           #  path: /dev/net/tun
@@ -107,10 +107,10 @@ spec:
 
       - name: qbittorrent-config
         hostPath:
-          path: /mnt/data/configs/qbittorrent/appdata
-          type: Directory
+        path: /mnt/data/configs/qbittorrent/appdata
+        type: Directory
 
       - name: downloads
         hostPath:
-          path: /mnt/data/torrent
-          type: Directory
+        path: /mnt/data/torrent
+        type: Directory
