@@ -92,12 +92,10 @@ spec:
         hostPath:
           path: /mnt/data/configs/gluetun
           type: Directory
-
       - name: qbittorrent
         hostPath:
           path: /mnt/data/configs/qbittorrent
           type: DirectoryOrCreate
-
       - name: downloads
         hostPath:
           path: /mnt/data/torrents
