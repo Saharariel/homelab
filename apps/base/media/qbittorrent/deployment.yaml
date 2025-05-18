@@ -90,13 +90,13 @@ spec:
       volumes:
       - name: gluetun
         hostPath:
-        path: /mnt/data/configs/gluetun
-        type: Directory
+          path: /mnt/data/configs/gluetun
+          type: Directory
       - name: qbittorrent
         hostPath:
-        path: /mnt/data/configs/qbittorrent
-        type: DirectoryOrCreate
+          path: /mnt/data/configs/qbittorrent
+          type: DirectoryOrCreate
       - name: downloads
         hostPath:
-        path: /mnt/data/torrents
-        type: Directory
+          path: /mnt/data/torrents
+          type: Directory
