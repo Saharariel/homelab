@@ -60,7 +60,7 @@ spec:
           mountPath: /gluetun
 
       - name: qbittorrent
-        image: lscr.io/linuxserver/qbittorrent:5.1.0
+        image: lscr.io/linuxserver/qbittorrent:20.04.1
         env:
         - name: WEBUI_PORT
           value: '8081'
