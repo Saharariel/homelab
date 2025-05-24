@@ -4,3 +4,4 @@ resources:
 - media-ns.yaml
 - monitoring-ns.yaml
 - utils-ns.yaml
+- renovate-ns.yaml
