@@ -51,7 +51,7 @@ spec:
           path: /mnt/data/configs/wizard/wizard
           type: DirectoryOrCreate
 
-      - name: datebase
+      - name: database
         hostPath:
           path: /mnt/data/configs/wizard/database
           type: DirectoryOrCreate
