@@ -7,4 +7,4 @@ data:
   RENOVATE_AUTODISCOVER: "false"
   RENOVATE_GIT_AUTHOR: "Renovate Bot <bot@renovateapp.com>"
   RENOVATE_PLATFORM: "github"
-  RENOVATE_PR_HOURLY_LIMIT: 0
+  RENOVATE_PR_HOURLY_LIMIT: "0"
