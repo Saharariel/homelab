@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wizarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wizarr
+  template:
+    metadata:
+      labels:
+        app: wizarr
+    spec:
+      containers:
+      - name: wizarr
+        image: ghcr.io/wizarrrr/wizarr:latest
+
+        env:
+        - name: PUID
+          value: "1000"
+
+        - name: PGID
+          value: "1000"
+
+        - name: APP_URL
+          value: "https://wizarr.saharserver.com"
+
+        - name: DISABLE_BUILTIN_AUTH
+          value: "false"
+
+        - name: "TZ"
+          value: "Asia/Jerusalem"
+
+        securityContext:
+          allowPrivilegeEscalation: false
+
+        ports:
+        - containerPort: 5690
+        volumeMounts:
+
+        - name: config
+          mountPath: /data/datebase
+
+        - name: database
+          mountPath: /data/wizard_steps
+
+      volumes:
+      - name: config
+        hostPath:
+          path: /mnt/data/configs/wizard/wizard
+          type: DirectoryOrCreate
+
+      - name: datebase
+        hostPath:
+          path: /mnt/data/configs/wizard/database
+          type: DirectoryOrCreate
