@@ -83,7 +83,7 @@ spec:
 
         volumeMounts:
         - name: downloads
-          mountPath: /data/torrent
+          mountPath: /data/torrents
         - name: qbittorrent
           mountPath: /config/qBittorrent
 
