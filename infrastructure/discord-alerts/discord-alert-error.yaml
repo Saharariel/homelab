@@ -26,5 +26,3 @@ spec:
     name: '*'
   - kind: OCIRepository
     name: '*'
-  - kind: CronJob
-    name: '*'
