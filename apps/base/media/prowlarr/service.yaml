@@ -6,6 +6,10 @@ spec:
   selector:
     app: prowlarr
   ports:
-  - port: 9696
+  - name: sonarr
+    port: 9696
     targetPort: 9696
+  - name: flaresolverr
+    port: 8191
+    targetPort: 8191
   type: NodePort
