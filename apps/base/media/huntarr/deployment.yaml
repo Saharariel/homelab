@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: huntarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: huntarr
+  template:
+    metadata:
+      labels:
+        app: huntarr
+    spec:
+      containers:
+      - name: huntarr
+        image: ghcr.io/plexguide/huntarr:7.4.2
+
+        ports:
+        - containerPort: 9705
+
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: "Asia/Jerusalem"
+
+        securityContext:
+          allowPrivilegeEscalation: false
+
+        volumeMounts:
+        - name: config
+          mountPath: /config
+
+      volumes:
+      - name: config
+        hostPath:
+          path: /mnt/data/configs/huntarr
+          type: DirectoryOrCreate
