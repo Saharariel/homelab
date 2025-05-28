@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cleanuperr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cleanuperr
+  template:
+    metadata:
+      labels:
+        app: cleanuperr
+    spec:
+      containers:
+      - name: cleanuperr
+        image: ghcr.io/flmorg/cleanuperr:1.6.8
+
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+
+        securityContext:
+          allowPrivilegeEscalation: false
+
+        envFrom:
+          configMapRef:
+            name: cleanuperr-config
+
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: torrents
+          mountPath: /downloads
+
+      volumes:
+      - name: config
+        hostPath:
+          path: /mnt/data/configs/cleanuperr
+          type: DirectoryOrCreate
+      - name: torrents
+        hostPath:
+          path: /mnt/data/torrents
+          type: DirectoryOrCreate
