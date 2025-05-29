@@ -96,4 +96,4 @@ spec:
       - name: gluetun-config
         hostPath:
           path: /mnt/data/configs/prowlarr-gluetun
-          type: Directory
+          type: DirectoryOrCreate
