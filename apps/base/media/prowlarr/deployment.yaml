@@ -39,6 +39,8 @@ spec:
           value: '10.0.0.0/8'
         - name: DNS
           value: '1.1.1.1,8.8.8.8'
+        - name: IPV6
+          value: "off"
         - name: PROWLARR_WEBUI_PORT
           value: '9696'
 
@@ -63,6 +65,8 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        - name: DOTNET_SYSTEM_NET_SOCKETS_IPV6SUPPORT
+          value: "0"
 
         securityContext:
           allowPrivilegeEscalation: false
