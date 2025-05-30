@@ -20,8 +20,6 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
-        - name: DOTNET_SYSTEM_NET_SOCKETS_IPV6SUPPORT
-          value: "0"
 
         securityContext:
           allowPrivilegeEscalation: false
