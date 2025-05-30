@@ -13,48 +13,6 @@ spec:
         app: prowlarr
     spec:
       containers:
-      - name: gluetun
-        image: qmcgaw/gluetun:v3.40.0
-        securityContext:
-          capabilities:
-            add: [ "NET_ADMIN" ]
-        env:
-        - name: VPN_SERVICE_PROVIDER
-          value: nordvpn
-
-        - name: OPENVPN_USER
-          valueFrom:
-            secretKeyRef:
-              name: vpn-creds
-              key: username
-
-        - name: OPENVPN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: vpn-creds
-              key: password
-
-        - name: SERVER_COUNTRIES
-          value: Israel
-        - name: FIREWALL
-          value: 'on'
-        - name: QBITTORRENT_ENABLED
-          value: 'on'
-        - name: QBITTORRENT_WEBUI_PORT
-          value: '8081'
-
-        ports:
-        - containerPort: 8888
-        - containerPort: 8388
-          protocol: TCP
-        - containerPort: 8388
-          protocol: UDP
-        - containerPort: 9696
-
-        volumeMounts:
-        - name: gluetun-config
-          mountPath: /gluetun
-
       - name: prowlarr
         image: lscr.io/linuxserver/prowlarr:1.33.3.5008-ls114
 
@@ -92,8 +50,3 @@ spec:
         hostPath:
           path: /mnt/data/configs/prowlarr
           type: Directory
-
-      - name: gluetun-config
-        hostPath:
-          path: /mnt/data/configs/prowlarr-gluetun
-          type: DirectoryOrCreate
