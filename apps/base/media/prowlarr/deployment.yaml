@@ -41,6 +41,8 @@ spec:
           value: '1.1.1.1,8.8.8.8'
         - name: IPV6
           value: "off"
+        - name: SHADOWSOCKS
+          value: "on"
         - name: PROWLARR_WEBUI_PORT
           value: '9696'
 
