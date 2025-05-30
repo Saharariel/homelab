@@ -12,6 +12,7 @@ spec:
       labels:
         app: prowlarr
     spec:
+      containers:
       - name: prowlarr
         image: lscr.io/linuxserver/prowlarr:1.33.3.5008-ls114
 
@@ -20,6 +21,8 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        - name: DOTNET_SYSTEM_NET_SOCKETS_IPV6SUPPORT
+          value: "0"
 
         securityContext:
           allowPrivilegeEscalation: false
@@ -49,4 +52,3 @@ spec:
         hostPath:
           path: /mnt/data/configs/prowlarr
           type: Directory
-
