@@ -33,6 +33,8 @@ spec:
             secretKeyRef:
               name: curseforge-secret
               key: CF_API_KEY
+        - name: MEMORY
+          value: "6G"
         - name: USE_MODPACK_START_SCRIPT
           value: "false"
         ports:
@@ -41,6 +43,11 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /data
+        resources:
+          requests:
+            memory: "6Gi"
+          limits:
+            memory: "8Gi"
       volumes:
       - name: data
         hostPath:
