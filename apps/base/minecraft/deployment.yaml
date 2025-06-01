@@ -45,9 +45,9 @@ spec:
           mountPath: /data
         resources:
           requests:
-            memory: "6Gi"
-          limits:
             memory: "8Gi"
+          limits:
+            memory: "12Gi"
       volumes:
       - name: data
         hostPath:
