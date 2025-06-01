@@ -20,8 +20,24 @@ spec:
         tty: true
         stdin: true
         env:
-        - name: EULA
-          value: "TRUE"
+      - name: EULA
+        value: "TRUE"
+      - name: VERSION
+        value: "1.20.1"
+      - name: TYPE
+        value: "AUTO_CURSEFORGE"
+      - name: CF_SLUG
+        value: "better-mc-forge-bmc4"
+      - name: CF_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: curseforge-secret
+            key: CF_API_KEY
+      - name: MEMORY
+        value: "6G"
+      - name: USE_MODPACK_START_SCRIPT
+        value: "false" # Optional: skip buggy scripts       
+
         ports:
         - containerPort: 25565
           name: minecraft
