@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-server
+  labels:
+    app: minecraft-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft-server
+  template:
+    metadata:
+      labels:
+        app: minecraft-server
+    spec:
+      containers:
+      - name: minecraft
+        image: itzg/minecraft-server
+        tty: true
+        stdin: true
+        env:
+        - name: EULA
+          value: "TRUE"
+        ports:
+        - containerPort: 25565
+          name: minecraft
+        volumeMounts:
+        - name: data
+          mountPath: /data
+
+      volumes:
+      - name: data
+        hostPath:
+          path: /mnt/data/minecraft
+          type: Directory
