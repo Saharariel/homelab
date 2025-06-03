@@ -17,6 +17,36 @@ spec:
 
     spec:
       containers:
+      - name: qbittorrent
+        image: lscr.io/linuxserver/qbittorrent:5.1.0
+
+        env:
+        - name: WEBUI_PORT
+          value: '8081'
+        - name: TORRENTING_PORT
+          value: '6881'
+
+        - name: PUID
+          value: '1000'
+        - name: PGID
+          value: '1000'
+
+        ports:
+        - containerPort: 8081
+          name: webui
+        - containerPort: 6881
+          name: torrent-tcp
+          protocol: TCP
+        - containerPort: 6881
+          name: torrent-udp
+          protocol: UDP
+
+        volumeMounts:
+        - name: downloads
+          mountPath: /data/torrents
+        - name: qbittorrent
+          mountPath: /config/qBittorrent
+
       - name: gluetun
         image: qmcgaw/gluetun:v3.40.0
         securityContext:
@@ -64,36 +94,6 @@ spec:
         volumeMounts:
         - name: gluetun
           mountPath: /gluetun
-
-      - name: qbittorrent
-        image: lscr.io/linuxserver/qbittorrent:5.1.0
-
-        env:
-        - name: WEBUI_PORT
-          value: '8081'
-        - name: TORRENTING_PORT
-          value: '6881'
-
-        - name: PUID
-          value: '1000'
-        - name: PGID
-          value: '1000'
-
-        ports:
-        - containerPort: 8081
-          name: webui
-        - containerPort: 6881
-          name: torrent-tcp
-          protocol: TCP
-        - containerPort: 6881
-          name: torrent-udp
-          protocol: UDP
-
-        volumeMounts:
-        - name: downloads
-          mountPath: /data/torrents
-        - name: qbittorrent
-          mountPath: /config/qBittorrent
 
       volumes:
       - name: gluetun
