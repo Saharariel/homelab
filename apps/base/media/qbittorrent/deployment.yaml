@@ -46,6 +46,8 @@ spec:
           value: 'on'
         - name: QBITTORRENT_WEBUI_PORT
           value: '8081'
+        - name: FIREWALL_OUTBOUND_SUBNETS
+          value: "10.0.0.0/8,192.168.0.0/16"
 
         ports:
         - containerPort: 8888
@@ -53,7 +55,9 @@ spec:
           protocol: TCP
         - containerPort: 8388
           protocol: UDP
-        - containerPort: 8081
+        - containerPort: 8080 # gluetun
+          protocol: TCP
+        - containerPort: 8081 # qbittorrent 
 
         volumeMounts:
         - name: gluetun
@@ -61,11 +65,13 @@ spec:
 
       - name: qbittorrent
         image: lscr.io/linuxserver/qbittorrent:5.1.0
+
         env:
         - name: WEBUI_PORT
           value: '8081'
         - name: TORRENTING_PORT
           value: '6881'
+
         - name: PUID
           value: '1000'
         - name: PGID
