@@ -48,6 +48,8 @@ spec:
           value: '8081'
         - name: FIREWALL_OUTBOUND_SUBNETS
           value: "10.0.0.0/8,192.168.0.0/16"
+        - name: FIREWALL_INPUT_PORTS
+          value: "8081"
 
         ports:
         - containerPort: 8888
