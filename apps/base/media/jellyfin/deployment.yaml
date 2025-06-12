@@ -35,18 +35,6 @@ spec:
         securityContext:
           privileged: true
 
-        lifecycle:
-          postStart:
-            exec:
-              command:
-              - sh
-              - -c
-              - |
-                echo "[*] Fixing permissions on /jellyfin/jellyfin-web..."
-                chown -R 1000:1000 /jellyfin/jellyfin-web || true
-                chmod -R u+rwX /jellyfin/jellyfin-web || true
-                echo "[✓] Permissions fixed."
-
         volumeMounts:
         - name: media
           mountPath: /data/media
