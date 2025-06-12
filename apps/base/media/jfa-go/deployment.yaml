@@ -15,7 +15,7 @@ spec:
       containers:
       - name: jfa-go
         image: hrfee/jfa-go:latest
-        
+
         env:
         - name: PUID
           value: "1000"
@@ -24,7 +24,7 @@ spec:
 
         securityContext:
           allowPrivilegeEscalation: false
-          
+
         ports:
         - containerPort: 8056
         volumeMounts:
@@ -34,7 +34,7 @@ spec:
           mountPath: /data
         - name: localtime
           mountPath: /etc/localtime
-            
+
       volumes:
       - name: config-jellyfin
         hostPath:
@@ -48,4 +48,3 @@ spec:
         hostPath:
           path: /etc/localtime
           type: File
-

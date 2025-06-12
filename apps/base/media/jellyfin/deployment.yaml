@@ -14,13 +14,13 @@ spec:
 
     spec:
       securityContext:
-        # runAsUser: 1000
-        #runAsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
         fsGroup: 993
         supplementalGroups:
         - 993
         - 44
-        #runAsNonRoot: true
+        runAsNonRoot: true
 
       containers:
       - name: jellyfin
@@ -34,6 +34,18 @@ spec:
 
         securityContext:
           privileged: true
+
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - sh
+              - -c
+              - |
+                echo "[*] Fixing permissions on /jellyfin/jellyfin-web..."
+                chown -R 1000:1000 /jellyfin/jellyfin-web || true
+                chmod -R u+rwX /jellyfin/jellyfin-web || true
+                echo "[✓] Permissions fixed.
 
         volumeMounts:
         - name: media
