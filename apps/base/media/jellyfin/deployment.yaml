@@ -20,7 +20,7 @@ spec:
         supplementalGroups:
         - 993
         - 44
-        runAsNonRoot: true
+        #runAsNonRoot: true
 
       containers:
       - name: jellyfin
