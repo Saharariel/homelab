@@ -31,14 +31,20 @@ spec:
         env:
         - name: JELLYFIN_ServerName
           value: "saharserver"
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
 
         securityContext:
           privileged: true
-          #allowPrivilegeEscalation: false
+
+        lifecycle:
+          postStart:
+            exec:
+              # make the web UI directory writable by UID 1000
+              command:
+              - sh
+              - -c
+              - |
+                chown -R 1000:1000 /jellyfin/jellyfin-web || true
+                chmod -R u+rwX      /jellyfin/jellyfin-web || true
 
         volumeMounts:
         - name: media

@@ -4,3 +4,4 @@ terraform/terraform.tfstate.backup
 terraform/.terraform
 terraform/.terraform.locl.hcl
 .devcontainer/
+.devcontainer.json
