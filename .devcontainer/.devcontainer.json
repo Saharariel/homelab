@@ -1,0 +1,8 @@
+{
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": ".devcontainer/setup"
+}
+
