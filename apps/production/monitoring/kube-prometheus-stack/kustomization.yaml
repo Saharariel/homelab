@@ -3,6 +3,3 @@ kind: Kustomization
 namespace: monitoring
 resources:
 - ../../../base/monitoring/kube-prometheus-stack/
-
-patchesStrategicMerge:
-- node-affinity-patch.yaml
