@@ -8,7 +8,7 @@ This repository follows a GitOps approach to manage and automate the infrastruct
 
 Originally, I ran everything with Docker and Docker Compose. But as my setup grew in complexity, I decided to migrate to Kubernetes.
 
-Admittedly, this is overkill for a homelab — but that's kind of the point. This project is my playground for learning Kubernetes through hands-on experience, while also powering the self-hosted services I use every day.
+Admittedly, this is overkill for a homelab - but that's kind of the point. This project is my playground for learning Kubernetes through hands-on experience, while also powering the self-hosted services I use every day.
 
 ## Infrastructure Specs
 
