@@ -6,3 +6,4 @@ resources:
 
 patchesStrategicMerge:
 - node-affinity-patch.yaml
+- media-ns.yaml
