@@ -13,7 +13,7 @@ Admittedly, this is overkill for a homelab — but that's kind of the point. Thi
 ## Infrastructure Specs
 
 ### Control Plane 
-- **Dell Vostro Laptop** 
+**Dell Vostro Laptop** 
 - **CPU:** Intel Core i5-8265U 
 - **Memory:** 8 GB DDR4 RAM 
 - **Storage:** 256GB SSD
