@@ -2,8 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: media
 
-resources:
-- ../../../base/media/radarr/
+# resources:
+# - ../../../base/media/radarr/
 
-patchesStrategicMerge:
-- node-affinity-patch.yaml
+# patchesStrategicMerge:
+# - node-affinity-patch.yaml
