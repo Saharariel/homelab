@@ -1,0 +1,9 @@
+apiVersion: apps/v1
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+spec:
+  template:
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: "true"
