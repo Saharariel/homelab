@@ -12,11 +12,18 @@ Admittedly, this is overkill for a homelab — but that's kind of the point. Thi
 
 ## ⚙️ Infrastructure Specs
 
+### Control Plane 
+- **Dell Vostro Laptop** 
+- **CPU:** Intel Core i5-8265U 
+- **Memory:** 8 GB DDR4 RAM 
+- **Storage:** 256GB SSD
+- **OS:** Ubuntu Server
+
+### Worker Node
 - **CPU:** Intel Core i7-8700  
-- **Memory:** 16 GB DDR4 RAM  
+- **Memory:** 16 GB DDR4 RAM
 - **Storage:** 12 TB HDD  
-- **Hypervisor:** Proxmox VE  
-- **Kubernetes Distribution:** [K3s](https://k3s.io/)  
+- **Hypervisor:** Proxmox VE
 - **OS:** Ubuntu Server (running in VM)
 
 ## 📦 Core Tools & Technologies
