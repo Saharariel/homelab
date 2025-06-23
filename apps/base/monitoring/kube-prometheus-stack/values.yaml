@@ -34,6 +34,8 @@ alertmanager:
   enabled: true
   ingress:
     enabled: false
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: "true"
 
 grafana:
   enabled: true
@@ -59,6 +61,8 @@ grafana:
     existingSecret: grafana-admin-credentials
     userKey: admin-user
     passwordKey: admin-password
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: "true"
 
 kubeApiServer:
   enabled: true
@@ -76,7 +80,8 @@ kubeControllerManager:
   enabled: true
   endpoints:
   # ips of servers 
-  - 10.0.0.16
+  - 10.0.0.18
+  - 10.0.0.19
 
 coreDns:
   enabled: true
@@ -88,7 +93,8 @@ kubeEtcd:
   enabled: true
   endpoints:
   # ips of servers
-  - 10.0.0.16
+  - 10.0.0.18
+  - 10.0.0.19
   service:
     enabled: true
     port: 2381
@@ -98,13 +104,15 @@ kubeScheduler:
   enabled: true
   endpoints:
   # ips of servers
-  - 10.0.0.16
+  - 10.0.0.18
+  - 10.0.0.19
 
 kubeProxy:
   enabled: true
   endpoints:
   # ips of servers
-  - 10.0.0.16
+  - 10.0.0.18
+  - 10.0.0.19
 
 kubeStateMetrics:
   enabled: true
@@ -185,6 +193,8 @@ prometheus:
     walCompression: true
     scrapeInterval: 30s
     evaluationInterval: 30s
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: "true"
 
 thanosRuler:
   enabled: false
