@@ -5,5 +5,5 @@ namespace: media
 resources:
 - ../../../base/media/jfa-go/
 
-patchesStrategicMerge:
-- node-affinity-patch.yaml
+patches:
+- path: node-affinity-patch.yaml
