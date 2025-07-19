@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: n8n-configmap
+data:
+  N8N_PORT: "3008"
+  N8N_PROTOCOL: "http"
+  N8N_SECURE_COOKIE: "false"
