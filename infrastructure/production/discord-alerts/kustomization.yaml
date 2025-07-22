@@ -4,3 +4,4 @@ resources:
 - discord-provider.yaml
 - discord-alert.yaml
 - discord-alert-error.yaml
+- secret.yaml
