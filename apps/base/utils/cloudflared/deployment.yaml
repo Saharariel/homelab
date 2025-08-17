@@ -2,8 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cloudflared-deployment
+  namespace: utils
 spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      pod: cloudflared # <-- keep exactly what you already have
   template:
+    metadata:
+      labels:
+        pod: cloudflared # <-- must match the selector above
     spec:
       terminationGracePeriodSeconds: 30
       dnsConfig:
@@ -13,6 +21,13 @@ spec:
       containers:
       - name: cloudflared
         image: cloudflare/cloudflared:2025.7.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TUNNEL_TOKEN # <-- keep your existing secret ref
+          valueFrom:
+            secretKeyRef:
+              name: tunnel-token
+              key: token
         command: [ "cloudflared", "tunnel", "--no-autoupdate", "--loglevel", "debug", "--metrics", "0.0.0.0:2000", "run" ]
         ports:
         - name: metrics
@@ -21,7 +36,6 @@ spec:
           requests: { cpu: "50m", memory: "64Mi" }
           limits: { cpu: "200m", memory: "128Mi" }
 
-        # Let it fully establish the QUIC connections before liveness kicks in
         startupProbe:
           httpGet: { path: /ready, port: 2000 }
           periodSeconds: 5
@@ -34,12 +48,13 @@ spec:
           timeoutSeconds: 2
           failureThreshold: 3
 
+        # <-- liveness uses TCP, not /ready
         livenessProbe:
-          httpGet: { path: /ready, port: 2000 }
+          tcpSocket: { port: 2000 }
           initialDelaySeconds: 30
           periodSeconds: 20
           timeoutSeconds: 2
-          failureThreshold: 5 # be generous; brief disconnects are normal
+          failureThreshold: 5
 
         lifecycle:
           preStop:
