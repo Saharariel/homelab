@@ -3,85 +3,43 @@ kind: Deployment
 metadata:
   name: cloudflared-deployment
 spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      pod: cloudflared
   template:
-    metadata:
-      labels:
-        pod: cloudflared
     spec:
       terminationGracePeriodSeconds: 30
       dnsConfig:
         options:
         - name: ndots
           value: "1"
-      securityContext:
-        sysctls:
-        # If you really need ICMP proxy, a broad safe range is common:
-        - name: net.ipv4.ping_group_range
-          value: "0 2147483647"
       containers:
       - name: cloudflared
         image: cloudflare/cloudflared:2025.7.0
-        imagePullPolicy: IfNotPresent
-        env:
-        - name: TUNNEL_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: tunnel-token
-              key: token
-        # TEMP workaround if QUIC is unstable. Remove after raising node UDP buffers.
-        # - name: TUNNEL_TRANSPORT_PROTOCOL
-        #   value: http2
-        command:
-        - cloudflared
-        - tunnel
-        - --no-autoupdate
-        - --loglevel
-        - debug
-        - --metrics
-        - 0.0.0.0:2000
-        - run
+        command: [ "cloudflared", "tunnel", "--no-autoupdate", "--loglevel", "debug", "--metrics", "0.0.0.0:2000", "run" ]
         ports:
         - name: metrics
           containerPort: 2000
         resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
-          limits:
-            cpu: 200m
-            memory: 128Mi
+          requests: { cpu: "50m", memory: "64Mi" }
+          limits: { cpu: "200m", memory: "128Mi" }
 
-        # Let it come up fully before kubelet starts killing it
+        # Let it fully establish the QUIC connections before liveness kicks in
         startupProbe:
-          httpGet:
-            path: /ready
-            port: 2000
+          httpGet: { path: /ready, port: 2000 }
           periodSeconds: 5
           failureThreshold: 30 # ~150s
 
-        # Are we connected to CF? Use for readiness only
         readinessProbe:
-          httpGet:
-            path: /ready
-            port: 2000
+          httpGet: { path: /ready, port: 2000 }
           initialDelaySeconds: 5
           periodSeconds: 10
           timeoutSeconds: 2
           failureThreshold: 3
 
-        # Liveness should be more forgiving than readiness
         livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 2000
-          initialDelaySeconds: 20
+          httpGet: { path: /ready, port: 2000 }
+          initialDelaySeconds: 30
           periodSeconds: 20
           timeoutSeconds: 2
-          failureThreshold: 3
+          failureThreshold: 5 # be generous; brief disconnects are normal
 
         lifecycle:
           preStop:
