@@ -12,23 +12,30 @@ spec:
       labels:
         pod: cloudflared
     spec:
+      terminationGracePeriodSeconds: 30
+      dnsConfig:
+        options:
+        - name: ndots
+          value: "1"
       securityContext:
         sysctls:
-        # Allows ICMP traffic (ping, traceroute) to resources behind cloudflared.
+        # If you really need ICMP proxy, a broad safe range is common:
         - name: net.ipv4.ping_group_range
-          value: "65532 65532"
+          value: "0 2147483647"
       containers:
-      - image: cloudflare/cloudflared:2025.7.0
-        name: cloudflared
+      - name: cloudflared
+        image: cloudflare/cloudflared:2025.7.0
+        imagePullPolicy: IfNotPresent
         env:
-        # Defines an environment variable for the tunnel token.
         - name: TUNNEL_TOKEN
           valueFrom:
             secretKeyRef:
               name: tunnel-token
               key: token
+        # TEMP workaround if QUIC is unstable. Remove after raising node UDP buffers.
+        # - name: TUNNEL_TRANSPORT_PROTOCOL
+        #   value: http2
         command:
-        # Configures tunnel run parameters
         - cloudflared
         - tunnel
         - --no-autoupdate
@@ -37,12 +44,46 @@ spec:
         - --metrics
         - 0.0.0.0:2000
         - run
-        livenessProbe:
+        ports:
+        - name: metrics
+          containerPort: 2000
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+
+        # Let it come up fully before kubelet starts killing it
+        startupProbe:
           httpGet:
-            # Cloudflared has a /ready endpoint which returns 200 if and only if
-            # it has an active connection to Cloudflare's network.
             path: /ready
             port: 2000
-          failureThreshold: 1
-          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 30 # ~150s
+
+        # Are we connected to CF? Use for readiness only
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 2000
+          initialDelaySeconds: 5
           periodSeconds: 10
+          timeoutSeconds: 2
+          failureThreshold: 3
+
+        # Liveness should be more forgiving than readiness
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 2000
+          initialDelaySeconds: 20
+          periodSeconds: 20
+          timeoutSeconds: 2
+          failureThreshold: 3
+
+        lifecycle:
+          preStop:
+            exec:
+              command: [ "/bin/sh", "-c", "sleep 5" ]
