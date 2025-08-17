@@ -7,11 +7,11 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      pod: cloudflared # <-- keep exactly what you already have
+      pod: cloudflared
   template:
     metadata:
       labels:
-        pod: cloudflared # <-- must match the selector above
+        pod: cloudflared
     spec:
       terminationGracePeriodSeconds: 30
       dnsConfig:
@@ -23,7 +23,7 @@ spec:
         image: cloudflare/cloudflared:2025.8.0
         imagePullPolicy: IfNotPresent
         env:
-        - name: TUNNEL_TOKEN # <-- keep your existing secret ref
+        - name: TUNNEL_TOKEN
           valueFrom:
             secretKeyRef:
               name: tunnel-token
