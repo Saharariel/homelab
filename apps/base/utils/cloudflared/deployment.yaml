@@ -12,7 +12,7 @@ spec:
           value: "1"
       containers:
       - name: cloudflared
-        image: cloudflare/cloudflared:2025.7.0
+        image: cloudflare/cloudflared:2025.8.0
         command: [ "cloudflared", "tunnel", "--no-autoupdate", "--loglevel", "debug", "--metrics", "0.0.0.0:2000", "run" ]
         ports:
         - name: metrics
