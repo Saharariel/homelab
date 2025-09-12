@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: sabnzbd
-        image: lscr.io/linuxserver/sabnzbd:4.5.3-ls213
+        image: lscr.io/linuxserver/sabnzbd:4.5.3
         
         env:
         - name: PUID
