@@ -20,6 +20,10 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+        - 10.0.0.20
 
       containers:
       - name: n8n
