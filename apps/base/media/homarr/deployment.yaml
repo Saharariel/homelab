@@ -15,7 +15,7 @@ spec:
       dnsPolicy: None
       dnsConfig:
         nameservers:
-          - 10.0.0.20
+        - 10.0.0.20
       containers:
       - name: homarr
         image: ghcr.io/homarr-labs/homarr:v1.31.0
@@ -28,7 +28,7 @@ spec:
 
         securityContext:
           allowPrivilegeEscalation: false
-          
+
         ports:
         - containerPort: 7575
         envFrom:
