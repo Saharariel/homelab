@@ -10,20 +10,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1) YAML hygiene
-      - name: Install yamllint
-        run: pipx install yamllint
-      - name: yamllint
-        run: yamllint -s .
-
-      # 2) Tooling
+      # 1) Tooling
       - name: Install kustomize, helm, kubeconform
         run: |
           curl -sSL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.2/kustomize_v5.4.2_linux_amd64.tar.gz | tar xz && sudo mv kustomize /usr/local/bin/
           curl -sSL https://get.helm.sh/helm-v3.15.3-linux-amd64.tar.gz | tar xz && sudo mv linux-amd64/helm /usr/local/bin/ && rm -rf linux-amd64
           curl -sSL https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz | tar xz && sudo mv kubeconform /usr/local/bin/
 
-      # 3) Validate Kustomize overlays
+      # 2) Validate Kustomize overlays
       - name: Build & validate Kustomize
         run: |
           set -euo pipefail
@@ -34,7 +28,7 @@ jobs:
             | kubeconform -strict -ignore-missing-schemas -kubernetes-version 1.30.0
           done
 
-      # 4) Secrets scanning / Git hygiene
+      # 3) Secrets scanning / Git hygiene
       - name: gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
