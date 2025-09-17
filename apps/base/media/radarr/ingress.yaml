@@ -7,13 +7,13 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-  - host: radarr.homelab
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: radarr
-            port:
-              number: 7878
+    - host: radarr.homelab
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: radarr
+                port:
+                  number: 7878

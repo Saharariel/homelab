@@ -6,7 +6,7 @@ image:
   pullPolicy: IfNotPresent
 
 nodeSelector:
-    role: arrstack
+  role: arrstack
 
 service:
   main:

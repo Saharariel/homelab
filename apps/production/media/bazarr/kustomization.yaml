@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: media
 
 resources:
-- ../../../base/media/bazarr/
+  - ../../../base/media/bazarr/
 
 patches:
-- path: node-affinity-patch.yaml
+  - path: node-affinity-patch.yaml

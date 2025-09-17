@@ -3,4 +3,4 @@ kind: Kustomization
 namespace: media
 
 resources:
-- ../../../base/media/radarr/
+  - ../../../base/media/radarr/

@@ -20,29 +20,33 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 10.0.0.20
 
       containers:
-      - name: n8n
-        image: docker.n8n.io/n8nio/n8n:1.111.0
+        - name: n8n
+          image: docker.n8n.io/n8nio/n8n:1.111.0
 
-        securityContext:
-          allowPrivilegeEscalation: false
+          securityContext:
+            allowPrivilegeEscalation: false
 
-        envFrom:
-        - configMapRef:
-            name: n8n-configmap
+          envFrom:
+            - configMapRef:
+                name: n8n-configmap
 
-        ports:
-        - containerPort: 3008
-          protocol: TCP
+          ports:
+            - containerPort: 3008
+              protocol: TCP
 
-        volumeMounts:
-        - mountPath: /home/node/.n8n
-          name: n8n-data
+          volumeMounts:
+            - mountPath: /home/node/.n8n
+              name: n8n-data
 
       restartPolicy: Always
 
       volumes:
-      - name: n8n-data
-        persistentVolumeClaim:
-          claimName: n8n-data
+        - name: n8n-data
+          persistentVolumeClaim:
+            claimName: n8n-data

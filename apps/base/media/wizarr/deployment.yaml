@@ -13,45 +13,44 @@ spec:
         app: wizarr
     spec:
       containers:
-      - name: wizarr
-        image: ghcr.io/wizarrrr/wizarr:latest
+        - name: wizarr
+          image: ghcr.io/wizarrrr/wizarr:latest
 
-        env:
-        - name: PUID
-          value: "1000"
+          env:
+            - name: PUID
+              value: "1000"
 
-        - name: PGID
-          value: "1000"
+            - name: PGID
+              value: "1000"
 
-        - name: APP_URL
-          value: "https://wizarr.saharserver.com"
+            - name: APP_URL
+              value: "https://wizarr.saharserver.com"
 
-        - name: DISABLE_BUILTIN_AUTH
-          value: "false"
+            - name: DISABLE_BUILTIN_AUTH
+              value: "false"
 
-        - name: "TZ"
-          value: "Asia/Jerusalem"
+            - name: "TZ"
+              value: "Asia/Jerusalem"
 
-        securityContext:
-          allowPrivilegeEscalation: false
+          securityContext:
+            allowPrivilegeEscalation: false
 
-        ports:
-        - containerPort: 5690
-        volumeMounts:
+          ports:
+            - containerPort: 5690
+          volumeMounts:
+            - name: config
+              mountPath: /data/datebase
 
-        - name: config
-          mountPath: /data/datebase
-
-        - name: database
-          mountPath: /data/wizard_steps
+            - name: database
+              mountPath: /data/wizard_steps
 
       volumes:
-      - name: config
-        hostPath:
-          path: /mnt/data/configs/wizard/wizard
-          type: DirectoryOrCreate
+        - name: config
+          hostPath:
+            path: /mnt/data/configs/wizard/wizard
+            type: DirectoryOrCreate
 
-      - name: database
-        hostPath:
-          path: /mnt/data/configs/wizard/database
-          type: DirectoryOrCreate
+        - name: database
+          hostPath:
+            path: /mnt/data/configs/wizard/database
+            type: DirectoryOrCreate

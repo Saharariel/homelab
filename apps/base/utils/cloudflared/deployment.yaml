@@ -16,47 +16,57 @@ spec:
       terminationGracePeriodSeconds: 30
       dnsConfig:
         options:
-        - name: ndots
-          value: "1"
+          - name: ndots
+            value: "1"
       containers:
-      - name: cloudflared
-        image: cloudflare/cloudflared:2025.8.1
-        imagePullPolicy: IfNotPresent
-        env:
-        - name: TUNNEL_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: tunnel-token
-              key: token
-        command: [ "cloudflared", "tunnel", "--no-autoupdate", "--loglevel", "debug", "--metrics", "0.0.0.0:2000", "run" ]
-        ports:
-        - name: metrics
-          containerPort: 2000
-        resources:
-          requests: { cpu: "50m", memory: "64Mi" }
-          limits: { cpu: "200m", memory: "128Mi" }
+        - name: cloudflared
+          image: cloudflare/cloudflared:2025.8.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TUNNEL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: tunnel-token
+                  key: token
+          command:
+            [
+              "cloudflared",
+              "tunnel",
+              "--no-autoupdate",
+              "--loglevel",
+              "debug",
+              "--metrics",
+              "0.0.0.0:2000",
+              "run",
+            ]
+          ports:
+            - name: metrics
+              containerPort: 2000
+          resources:
+            requests: { cpu: "50m", memory: "64Mi" }
+            limits: { cpu: "200m", memory: "128Mi" }
 
-        startupProbe:
-          httpGet: { path: /ready, port: 2000 }
-          periodSeconds: 5
-          failureThreshold: 30 # ~150s
+          startupProbe:
+            httpGet: { path: /ready, port: 2000 }
+            periodSeconds: 5
+            failureThreshold: 30 # ~150s
 
-        readinessProbe:
-          httpGet: { path: /ready, port: 2000 }
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 2
-          failureThreshold: 3
+          readinessProbe:
+            httpGet: { path: /ready, port: 2000 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
 
-        # <-- liveness uses TCP, not /ready
-        livenessProbe:
-          tcpSocket: { port: 2000 }
-          initialDelaySeconds: 30
-          periodSeconds: 20
-          timeoutSeconds: 2
-          failureThreshold: 5
+          # <-- liveness uses TCP, not /ready
+          livenessProbe:
+            tcpSocket: { port: 2000 }
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 2
+            failureThreshold: 5
 
-        lifecycle:
-          preStop:
-            exec:
-              command: [ "/bin/sh", "-c", "sleep 5" ]
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "sleep 5"]

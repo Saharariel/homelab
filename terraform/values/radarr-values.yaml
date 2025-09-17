@@ -6,14 +6,13 @@ image:
   pullPolicy: IfNotPresent
 
 nodeSelector:
-    role: arrstack
+  role: arrstack
 
 service:
   main:
     enabled: true
     type: ClusterIP
     port: 7878
-    
 
 persistence:
   config:
@@ -27,7 +26,6 @@ persistence:
     type: hostPath
     hostPath: /mnt/data
     mountPath: /data
-
 
 ingress:
   main:

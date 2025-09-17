@@ -6,6 +6,6 @@ spec:
   selector:
     app: n8n
   ports:
-  - port: 3008
-    targetPort: 3008
+    - port: 3008
+      targetPort: 3008
   type: NodePort

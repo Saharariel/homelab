@@ -6,6 +6,6 @@ spec:
   selector:
     app: jfa-go
   ports:
-  - port: 8056
-    targetPort: 8056
+    - port: 8056
+      targetPort: 8056
   type: NodePort

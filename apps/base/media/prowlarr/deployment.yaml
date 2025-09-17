@@ -13,45 +13,45 @@ spec:
         app: prowlarr
     spec:
       containers:
-      - name: prowlarr
-        image: lscr.io/linuxserver/prowlarr:1.37.0
+        - name: prowlarr
+          image: lscr.io/linuxserver/prowlarr:1.37.0
 
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        - name: DOTNET_SYSTEM_NET_SOCKETS_IPV6SUPPORT
-          value: "0"
-        - name: WEBUI_PORT
-          value: '9696'
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: DOTNET_SYSTEM_NET_SOCKETS_IPV6SUPPORT
+              value: "0"
+            - name: WEBUI_PORT
+              value: "9696"
 
-        securityContext:
-          allowPrivilegeEscalation: false
+          securityContext:
+            allowPrivilegeEscalation: false
 
-        ports:
-        - containerPort: 9696
-        volumeMounts:
-        - name: media
-          mountPath: /data
-        - name: config
-          mountPath: /config
+          ports:
+            - containerPort: 9696
+          volumeMounts:
+            - name: media
+              mountPath: /data
+            - name: config
+              mountPath: /config
 
-      - name: flaresolverr
-        image: flaresolverr/flaresolverr:v3.4.0
-        env:
-        - name: LOG_LEVEL
-          value: info
-        ports:
-        - containerPort: 8191
+        - name: flaresolverr
+          image: flaresolverr/flaresolverr:v3.4.0
+          env:
+            - name: LOG_LEVEL
+              value: info
+          ports:
+            - containerPort: 8191
 
       volumes:
-      - name: media
-        hostPath:
-          path: /mnt/data
-          type: Directory
+        - name: media
+          hostPath:
+            path: /mnt/data
+            type: Directory
 
-      - name: config
-        hostPath:
-          path: /mnt/data/configs/prowlarr
-          type: Directory
+        - name: config
+          hostPath:
+            path: /mnt/data/configs/prowlarr
+            type: Directory

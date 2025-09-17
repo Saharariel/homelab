@@ -6,6 +6,6 @@ spec:
   selector:
     app: notifiarr
   ports:
-  - port: 5454
-    targetPort: 5454
+    - port: 5454
+      targetPort: 5454
   type: NodePort
