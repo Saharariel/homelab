@@ -6,6 +6,6 @@ spec:
   selector:
     app: wizarr
   ports:
-  - port: 5690
-    targetPort: 5690
+    - port: 5690
+      targetPort: 5690
   type: NodePort

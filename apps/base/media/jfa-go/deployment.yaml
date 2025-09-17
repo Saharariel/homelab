@@ -13,38 +13,38 @@ spec:
         app: jfa-go
     spec:
       containers:
-      - name: jfa-go
-        image: hrfee/jfa-go:latest
+        - name: jfa-go
+          image: hrfee/jfa-go:latest
 
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
 
-        securityContext:
-          allowPrivilegeEscalation: false
+          securityContext:
+            allowPrivilegeEscalation: false
 
-        ports:
-        - containerPort: 8056
-        volumeMounts:
-        - name: config-jellyfin
-          mountPath: /jf
-        - name: config
-          mountPath: /data
-        - name: localtime
-          mountPath: /etc/localtime
+          ports:
+            - containerPort: 8056
+          volumeMounts:
+            - name: config-jellyfin
+              mountPath: /jf
+            - name: config
+              mountPath: /data
+            - name: localtime
+              mountPath: /etc/localtime
 
       volumes:
-      - name: config-jellyfin
-        hostPath:
-          path: /mnt/data/configs/jellyfin
-          type: Directory
-      - name: config
-        hostPath:
-          path: /mnt/data/configs/jfa-go
-          type: Directory
-      - name: localtime
-        hostPath:
-          path: /etc/localtime
-          type: File
+        - name: config-jellyfin
+          hostPath:
+            path: /mnt/data/configs/jellyfin
+            type: Directory
+        - name: config
+          hostPath:
+            path: /mnt/data/configs/jfa-go
+            type: Directory
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File

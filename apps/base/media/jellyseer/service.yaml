@@ -6,6 +6,6 @@ spec:
   selector:
     app: jellyseer
   ports:
-  - port: 5055
-    targetPort: 5055
+    - port: 5055
+      targetPort: 5055
   type: NodePort

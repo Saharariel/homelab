@@ -18,40 +18,40 @@ spec:
         #runAsGroup: 1000
         fsGroup: 993
         supplementalGroups:
-        - 993
-        - 44
+          - 993
+          - 44
         #runAsNonRoot: true
 
       containers:
-      - name: jellyfin
-        #image: lscr.io/linuxserver/jellyfin:10.10.7
-        image: ghcr.io/jellyfin/jellyfin:10.10.7
-        ports:
-        - containerPort: 8096
-        env:
-        - name: JELLYFIN_ServerName
-          value: "saharserver"
+        - name: jellyfin
+          #image: lscr.io/linuxserver/jellyfin:10.10.7
+          image: ghcr.io/jellyfin/jellyfin:10.10.7
+          ports:
+            - containerPort: 8096
+          env:
+            - name: JELLYFIN_ServerName
+              value: "saharserver"
 
-        securityContext:
-          privileged: true
+          securityContext:
+            privileged: true
 
-        volumeMounts:
-        - name: media
-          mountPath: /data/media
-        - name: config
-          mountPath: /config
-        - name: dri
-          mountPath: /dev/dri
+          volumeMounts:
+            - name: media
+              mountPath: /data/media
+            - name: config
+              mountPath: /config
+            - name: dri
+              mountPath: /dev/dri
       volumes:
-      - name: media
-        hostPath:
-          path: /mnt/data/media
-          type: Directory
-      - name: dri
-        hostPath:
-          path: /dev/dri
-          type: Directory
-      - name: config
-        hostPath:
-          path: /mnt/data/configs/jellyfin
-          type: DirectoryOrCreate
+        - name: media
+          hostPath:
+            path: /mnt/data/media
+            type: Directory
+        - name: dri
+          hostPath:
+            path: /dev/dri
+            type: Directory
+        - name: config
+          hostPath:
+            path: /mnt/data/configs/jellyfin
+            type: DirectoryOrCreate

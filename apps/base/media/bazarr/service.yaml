@@ -6,6 +6,6 @@ spec:
   selector:
     app: bazarr
   ports:
-  - port: 6767
-    targetPort: 6767
+    - port: 6767
+      targetPort: 6767
   type: NodePort

@@ -6,6 +6,6 @@ spec:
   selector:
     app: huntarr
   ports:
-  - port: 9705
-    targetPort: 9705
+    - port: 9705
+      targetPort: 9705
   type: NodePort
