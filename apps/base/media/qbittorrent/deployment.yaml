@@ -17,96 +17,96 @@ spec:
 
     spec:
       containers:
-      - name: qbittorrent
-        image: lscr.io/linuxserver/qbittorrent:5.1.2
-
-        env:
-        - name: WEBUI_PORT
-          value: '8081'
-        - name: TORRENTING_PORT
-          value: '6881'
-
-        - name: PUID
-          value: '1000'
-        - name: PGID
-          value: '1000'
-
-        ports:
-        - containerPort: 8081
-          name: webui
-        - containerPort: 6881
-          name: torrent-tcp
-          protocol: TCP
-        - containerPort: 6881
-          name: torrent-udp
-          protocol: UDP
-
-        volumeMounts:
-        - name: downloads
-          mountPath: /data/torrents
         - name: qbittorrent
-          mountPath: /config/qBittorrent
+          image: lscr.io/linuxserver/qbittorrent:5.1.2
 
-      - name: gluetun
-        image: qmcgaw/gluetun:v3.40.0
-        securityContext:
-          capabilities:
-            add: [ "NET_ADMIN" ]
-        env:
-        - name: VPN_SERVICE_PROVIDER
-          value: nordvpn
+          env:
+            - name: WEBUI_PORT
+              value: "8081"
+            - name: TORRENTING_PORT
+              value: "6881"
 
-        - name: OPENVPN_USER
-          valueFrom:
-            secretKeyRef:
-              name: vpn-creds
-              key: username
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
 
-        - name: OPENVPN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: vpn-creds
-              key: password
+          ports:
+            - containerPort: 8081
+              name: webui
+            - containerPort: 6881
+              name: torrent-tcp
+              protocol: TCP
+            - containerPort: 6881
+              name: torrent-udp
+              protocol: UDP
 
-        - name: SERVER_COUNTRIES
-          value: Israel
-        - name: FIREWALL
-          value: 'on'
-        - name: QBITTORRENT_ENABLED
-          value: 'on'
-        - name: QBITTORRENT_WEBUI_PORT
-          value: '8081'
-        - name: FIREWALL_OUTBOUND_SUBNETS
-          value: "10.42.0.0/16,192.168.0.0/16"
-        - name: FIREWALL_INPUT_PORTS
-          value: "8081,6881"
-        - name: FIREWALL_VPN_INPUT_PORTS
-          value: "6881"
+          volumeMounts:
+            - name: downloads
+              mountPath: /data/torrents
+            - name: qbittorrent
+              mountPath: /config/qBittorrent
 
-        ports:
-        - containerPort: 8888
-        - containerPort: 8388
-          protocol: TCP
-        - containerPort: 8388
-          protocol: UDP
-        - containerPort: 8080 # gluetun
-          protocol: TCP
-        - containerPort: 8081 # qbittorrent 
-
-        volumeMounts:
         - name: gluetun
-          mountPath: /gluetun
+          image: qmcgaw/gluetun:v3.40.0
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN"]
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: nordvpn
+
+            - name: OPENVPN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: vpn-creds
+                  key: username
+
+            - name: OPENVPN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: vpn-creds
+                  key: password
+
+            - name: SERVER_COUNTRIES
+              value: Israel
+            - name: FIREWALL
+              value: "on"
+            - name: QBITTORRENT_ENABLED
+              value: "on"
+            - name: QBITTORRENT_WEBUI_PORT
+              value: "8081"
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: "10.42.0.0/16,192.168.0.0/16"
+            - name: FIREWALL_INPUT_PORTS
+              value: "8081,6881"
+            - name: FIREWALL_VPN_INPUT_PORTS
+              value: "6881"
+
+          ports:
+            - containerPort: 8888
+            - containerPort: 8388
+              protocol: TCP
+            - containerPort: 8388
+              protocol: UDP
+            - containerPort: 8080 # gluetun
+              protocol: TCP
+            - containerPort: 8081 # qbittorrent
+
+          volumeMounts:
+            - name: gluetun
+              mountPath: /gluetun
 
       volumes:
-      - name: gluetun
-        hostPath:
-          path: /mnt/data/configs/gluetun
-          type: Directory
-      - name: qbittorrent
-        hostPath:
-          path: /mnt/data/configs/qbittorrent
-          type: DirectoryOrCreate
-      - name: downloads
-        hostPath:
-          path: /mnt/data/torrents
-          type: Directory
+        - name: gluetun
+          hostPath:
+            path: /mnt/data/configs/gluetun
+            type: Directory
+        - name: qbittorrent
+          hostPath:
+            path: /mnt/data/configs/qbittorrent
+            type: DirectoryOrCreate
+        - name: downloads
+          hostPath:
+            path: /mnt/data/torrents
+            type: Directory

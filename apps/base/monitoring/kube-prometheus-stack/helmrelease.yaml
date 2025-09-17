@@ -13,5 +13,5 @@ spec:
         name: prometheus-community
         namespace: flux-system
   valuesFrom:
-  - kind: ConfigMap
-    name: kube-prometheus-stack-values
+    - kind: ConfigMap
+      name: kube-prometheus-stack-values

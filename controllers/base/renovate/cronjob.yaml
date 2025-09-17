@@ -11,15 +11,15 @@ spec:
       template:
         spec:
           containers:
-          - name: renovate
-            image: renovate/renovate:latest
-            args:
-            - Saharariel/homelab
+            - name: renovate
+              image: renovate/renovate:latest
+              args:
+                - Saharariel/homelab
 
-            envFrom:
-            - secretRef:
-                name: renovate-container-env
-            - configMapRef:
-                name: renovate-configmap
+              envFrom:
+                - secretRef:
+                    name: renovate-container-env
+                - configMapRef:
+                    name: renovate-configmap
 
           restartPolicy: Never

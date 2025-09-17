@@ -8,17 +8,17 @@ spec:
   type: NodePort
 
   ports:
-  - name: webui
-    port: 8081
-    targetPort: 8081
-    nodePort: 30080
-  - name: torrent-tcp
-    port: 6881
-    targetPort: 6881
-    protocol: TCP
-    nodePort: 30081
-  - name: torrent-udp
-    port: 6881
-    targetPort: 6881
-    protocol: UDP
-    nodePort: 30082
+    - name: webui
+      port: 8081
+      targetPort: 8081
+      nodePort: 30080
+    - name: torrent-tcp
+      port: 6881
+      targetPort: 6881
+      protocol: TCP
+      nodePort: 30081
+    - name: torrent-udp
+      port: 6881
+      targetPort: 6881
+      protocol: UDP
+      nodePort: 30082

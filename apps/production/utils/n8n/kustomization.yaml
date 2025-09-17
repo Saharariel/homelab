@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: utils
 
 resources:
-- ../../../base/utils/n8n/
+  - ../../../base/utils/n8n/
 
 patches:
-- path: node-affinity-patch.yaml
+  - path: node-affinity-patch.yaml

@@ -2,7 +2,7 @@ name: ci
 on:
   pull_request:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   lint-validate:
@@ -48,4 +48,3 @@ jobs:
             echo "::error::Found plaintext Secret(s). Use SOPS."
             exit 1
           fi
-
