@@ -2,43 +2,44 @@ name: ci
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   lint-validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      # 1) Tooling
-      - name: Install kustomize, helm, kubeconform
-        run: |
-          curl -sSL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.2/kustomize_v5.4.2_linux_amd64.tar.gz | tar xz && sudo mv kustomize /usr/local/bin/
-          curl -sSL https://get.helm.sh/helm-v3.15.3-linux-amd64.tar.gz | tar xz && sudo mv linux-amd64/helm /usr/local/bin/ && rm -rf linux-amd64
-          curl -sSL https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz | tar xz && sudo mv kubeconform /usr/local/bin/
+    # 1) Tooling
+    - name: Install kustomize, helm, kubeconform
+      run: |
+        curl -sSL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.2/kustomize_v5.4.2_linux_amd64.tar.gz | tar xz && sudo mv kustomize /usr/local/bin/
+        curl -sSL https://get.helm.sh/helm-v3.15.3-linux-amd64.tar.gz | tar xz && sudo mv linux-amd64/helm /usr/local/bin/ && rm -rf linux-amd64
+        curl -sSL https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz | tar xz && sudo mv kubeconform /usr/local/bin/
 
-      # 2) Validate Kustomize overlays
-      - name: Build & validate Kustomize
-        run: |
-          set -euo pipefail
-          for o in clusters/**/kustomization.yaml overlays/**/kustomization.yaml 2>/dev/null; do
-            dir=$(dirname "$o")
-            echo ">>> Kustomize build: $dir"
-            kustomize build "$dir" \
-            | kubeconform -strict -ignore-missing-schemas -kubernetes-version 1.30.0
-          done
+    # 2) Validate Kustomize overlays
+    - name: Build & validate Kustomize
+      shell: bash
+      run: |
+        set -euo pipefail
+        mapfile -t ks < <(find clusters overlays -type f -name kustomization.yaml)
+        for o in "${ks[@]}"; do
+          dir="$(dirname "$o")"
+          echo ">>> Kustomize build: $dir"
+          kustomize build "$dir" | kubeconform -strict -ignore-missing-schemas -kubernetes-version 1.30.0
+        done
 
-      # 3) Secrets scanning / Git hygiene
-      - name: gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }} # optional, OSS works too
+    # 3) Secrets scanning / Git hygiene
+    - name: gitleaks
+      uses: gitleaks/gitleaks-action@v2
+      env:
+        GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }} # optional, OSS works too
 
-      - name: Block plaintext Kubernetes Secrets
-        run: |
-          if grep -RIl --include \*.ya\?ml -e '^kind:\s*Secret\s*$' . | xargs -r awk 'BEGIN{p=0} /^sops:/{p=1} END{if (NR>0 && p==0) exit 1}'; then
-            echo "No plaintext Secrets found"
-          else
-            echo "::error::Found plaintext Secret(s). Use SOPS."
-            exit 1
-          fi
+    - name: Block plaintext Kubernetes Secrets
+      run: |
+        if grep -RIl --include \*.ya\?ml -e '^kind:\s*Secret\s*$' . | xargs -r awk 'BEGIN{p=0} /^sops:/{p=1} END{if (NR>0 && p==0) exit 1}'; then
+          echo "No plaintext Secrets found"
+        else
+          echo "::error::Found plaintext Secret(s). Use SOPS."
+          exit 1
+        fi
