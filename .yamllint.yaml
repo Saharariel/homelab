@@ -2,3 +2,10 @@ extends: default
 
 rules:
   document-start: disable
+  line-length: disable      # turn off long line rule
+  indentation:
+    spaces: 2
+    indent-sequences: consistent
+  truthy:
+    level: warning
+
