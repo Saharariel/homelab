@@ -1,0 +1,26 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  lint-validate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    # Secrets scanning / Git hygiene
+    - name: gitleaks
+      uses: gitleaks/gitleaks-action@v2
+      env:
+        GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }} # optional, OSS works too
+
+    - name: Block plaintext Kubernetes Secrets
+      run: |
+        if grep -RIl --include \*.ya\?ml -e '^kind:\s*Secret\s*$' . | xargs -r awk 'BEGIN{p=0} /^sops:/{p=1} END{if (NR>0 && p==0) exit 1}'; then
+          echo "No plaintext Secrets found"
+        else
+          echo "::error::Found plaintext Secret(s). Use SOPS."
+          exit 1
+        fi

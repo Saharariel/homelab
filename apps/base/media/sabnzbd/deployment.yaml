@@ -13,31 +13,31 @@ spec:
         app: sabnzbd
     spec:
       containers:
-      - name: sabnzbd
-        image: lscr.io/linuxserver/sabnzbd:4.5.3
-        
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
+        - name: sabnzbd
+          image: lscr.io/linuxserver/sabnzbd:4.5.3
 
-        securityContext:
-          allowPrivilegeEscalation: false
-          
-        ports:
-        - containerPort: 8080
-        volumeMounts:
-        - name: downloads
-          mountPath: /data/usenet
-        - name: config
-          mountPath: /config
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+
+          securityContext:
+            allowPrivilegeEscalation: false
+
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: downloads
+              mountPath: /data/usenet
+            - name: config
+              mountPath: /config
       volumes:
-      - name: downloads
-        hostPath:
-          path: /mnt/data/usenet
-          type: Directory
-      - name: config
-        hostPath:
-          path: /mnt/data/configs/sabnzbd
-          type: Directory
+        - name: downloads
+          hostPath:
+            path: /mnt/data/usenet
+            type: Directory
+        - name: config
+          hostPath:
+            path: /mnt/data/configs/sabnzbd
+            type: Directory

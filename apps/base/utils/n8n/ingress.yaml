@@ -7,13 +7,13 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-  - host: n8n.homelab
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: n8n
-            port:
-              number: 3008
+    - host: n8n.homelab
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: n8n
+                port:
+                  number: 3008

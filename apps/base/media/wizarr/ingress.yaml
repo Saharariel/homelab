@@ -7,13 +7,13 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-  - host: wizarr.homelab
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: wizarr
-            port:
-              number: 5690
+    - host: wizarr.homelab
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: wizarr
+                port:
+                  number: 5690

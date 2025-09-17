@@ -13,31 +13,31 @@ spec:
         app: notifiarr
     spec:
       containers:
-      - name: notifiarr
-        image: golift/notifiarr:0.8.3
-        
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
+        - name: notifiarr
+          image: golift/notifiarr:0.8.3
 
-        securityContext:
-          allowPrivilegeEscalation: false
-          
-        ports:
-        - containerPort: 5454
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: machine-id
-          mountPath: /etc/machine-id
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+
+          securityContext:
+            allowPrivilegeEscalation: false
+
+          ports:
+            - containerPort: 5454
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: machine-id
+              mountPath: /etc/machine-id
       volumes:
-      - name: config
-        hostPath:
-          path: /mnt/data/configs/notifiarr
-          type: Directory
-      - name: machine-id
-        hostPath:
-          path: /etc/machine-id
-          type: File
+        - name: config
+          hostPath:
+            path: /mnt/data/configs/notifiarr
+            type: Directory
+        - name: machine-id
+          hostPath:
+            path: /etc/machine-id
+            type: File

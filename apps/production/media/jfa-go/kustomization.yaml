@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: media
 
 resources:
-- ../../../base/media/jfa-go/
+  - ../../../base/media/jfa-go/
 
 patches:
-- path: node-affinity-patch.yaml
+  - path: node-affinity-patch.yaml

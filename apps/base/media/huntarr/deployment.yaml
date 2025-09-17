@@ -13,29 +13,29 @@ spec:
         app: huntarr
     spec:
       containers:
-      - name: huntarr
-        image: ghcr.io/plexguide/huntarr:8.2.10
+        - name: huntarr
+          image: ghcr.io/plexguide/huntarr:8.2.10
 
-        ports:
-        - containerPort: 9705
+          ports:
+            - containerPort: 9705
 
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        - name: TZ
-          value: "Asia/Jerusalem"
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Asia/Jerusalem"
 
-        securityContext:
-          allowPrivilegeEscalation: false
+          securityContext:
+            allowPrivilegeEscalation: false
 
-        volumeMounts:
-        - name: config
-          mountPath: /config
+          volumeMounts:
+            - name: config
+              mountPath: /config
 
       volumes:
-      - name: config
-        hostPath:
-          path: /mnt/data/configs/huntarr
-          type: DirectoryOrCreate
+        - name: config
+          hostPath:
+            path: /mnt/data/configs/huntarr
+            type: DirectoryOrCreate

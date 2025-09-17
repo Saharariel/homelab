@@ -3,4 +3,4 @@ kind: Kustomization
 namespace: utils
 
 resources:
-- ../../../base/utils/cloudflared/
+  - ../../../base/utils/cloudflared/

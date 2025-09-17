@@ -13,31 +13,31 @@ spec:
         app: radarr
     spec:
       containers:
-      - name: radarr
-        image: lscr.io/linuxserver/radarr:5.26.2
+        - name: radarr
+          image: lscr.io/linuxserver/radarr:5.26.2
 
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
 
-        securityContext:
-          allowPrivilegeEscalation: false
+          securityContext:
+            allowPrivilegeEscalation: false
 
-        ports:
-        - containerPort: 7878
-        volumeMounts:
-        - name: media
-          mountPath: /data
-        - name: config
-          mountPath: /config
+          ports:
+            - containerPort: 7878
+          volumeMounts:
+            - name: media
+              mountPath: /data
+            - name: config
+              mountPath: /config
       volumes:
-      - name: media
-        hostPath:
-          path: /mnt/data
-          type: Directory
-      - name: config
-        hostPath:
-          path: /mnt/data/configs/radarr
-          type: Directory
+        - name: media
+          hostPath:
+            path: /mnt/data
+            type: Directory
+        - name: config
+          hostPath:
+            path: /mnt/data/configs/radarr
+            type: Directory

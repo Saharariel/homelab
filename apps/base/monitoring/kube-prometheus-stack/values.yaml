@@ -52,7 +52,7 @@ grafana:
     annotations:
       traefik.ingress.kubernetes.io/router.entrypoints: web
     hosts:
-    - grafana.homelab
+      - grafana.homelab
     path: /
     pathType: Prefix
   serviceMonitor:
@@ -71,17 +71,17 @@ kubelet:
   enabled: true
   serviceMonitor:
     metricRelabelings:
-    - action: replace
-      sourceLabels:
-      - node
-      targetLabel: instance
+      - action: replace
+        sourceLabels:
+          - node
+        targetLabel: instance
 
 kubeControllerManager:
   enabled: true
   endpoints:
-  # ips of servers 
-  - 10.0.0.18
-  - 10.0.0.19
+    # ips of servers
+    - 10.0.0.18
+    - 10.0.0.19
 
 coreDns:
   enabled: true
@@ -92,9 +92,9 @@ kubeDns:
 kubeEtcd:
   enabled: true
   endpoints:
-  # ips of servers
-  - 10.0.0.18
-  - 10.0.0.19
+    # ips of servers
+    - 10.0.0.18
+    - 10.0.0.19
   service:
     enabled: true
     port: 2381
@@ -103,16 +103,16 @@ kubeEtcd:
 kubeScheduler:
   enabled: true
   endpoints:
-  # ips of servers
-  - 10.0.0.18
-  - 10.0.0.19
+    # ips of servers
+    - 10.0.0.18
+    - 10.0.0.19
 
 kubeProxy:
   enabled: true
   endpoints:
-  # ips of servers
-  - 10.0.0.18
-  - 10.0.0.19
+    # ips of servers
+    - 10.0.0.18
+    - 10.0.0.19
 
 kubeStateMetrics:
   enabled: true
@@ -125,43 +125,43 @@ kube-state-metrics:
     monitor:
       enabled: true
       relabelings:
-      - action: replace
-        regex: (.*)
-        replacement: $1
-        sourceLabels:
-        - __meta_kubernetes_pod_node_name
-        targetLabel: kubernetes_node
+        - action: replace
+          regex: (.*)
+          replacement: $1
+          sourceLabels:
+            - __meta_kubernetes_pod_node_name
+          targetLabel: kubernetes_node
 
 nodeExporter:
   enabled: true
   serviceMonitor:
     relabelings:
-    - action: replace
-      regex: (.*)
-      replacement: $1
-      sourceLabels:
-      - __meta_kubernetes_pod_node_name
-      targetLabel: kubernetes_node
+      - action: replace
+        regex: (.*)
+        replacement: $1
+        sourceLabels:
+          - __meta_kubernetes_pod_node_name
+        targetLabel: kubernetes_node
 
 prometheus-node-exporter:
   fullnameOverride: node-exporter
   podLabels:
     jobLabel: node-exporter
   extraArgs:
-  - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
-  - --collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$
+    - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
+    - --collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$
   service:
     portName: http-metrics
   prometheus:
     monitor:
       enabled: true
       relabelings:
-      - action: replace
-        regex: (.*)
-        replacement: $1
-        sourceLabels:
-        - __meta_kubernetes_pod_node_name
-        targetLabel: kubernetes_node
+        - action: replace
+          regex: (.*)
+          replacement: $1
+          sourceLabels:
+            - __meta_kubernetes_pod_node_name
+          targetLabel: kubernetes_node
   resources:
     requests:
       memory: 512Mi
