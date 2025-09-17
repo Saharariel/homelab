@@ -1,11 +1,32 @@
 extends: default
 
 rules:
-  document-start: disable
-  line-length: disable      # turn off long line rule
+  # Enable this if you ran the script/step that adds '---'.
+  # If you prefer not to require it, set to 'disable'.
+  document-start: enable
+
+  # K8s manifests often have long annotations/labels; avoid noisy failures
+  line-length: disable
+
+  # Prettier/yq won't enforce comment spacing strictly; keep this lenient
+  comments:
+    min-spaces-from-content: 1
+
+  # If you still use { inline: maps }, either disable or set exact spacing
+  # braces: disable
+  braces:
+    min-spaces-inside: 1
+    max-spaces-inside: 1
+    min-spaces-inside-empty: 1
+    max-spaces-inside-empty: 1
+
+  # Keep indentation strict—this catches real errors
   indentation:
     spaces: 2
     indent-sequences: consistent
-  truthy:
-    level: warning
 
+  # Avoid failures on YAML 1.1 truthy words; your script normalizes them anyway
+  truthy: disable
+
+  # Avoid top-of-file blank line nits
+  empty-lines: disable
