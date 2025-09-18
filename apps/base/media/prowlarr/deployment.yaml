@@ -38,7 +38,7 @@ spec:
               mountPath: /config
 
         - name: flaresolverr
-          image: flaresolverr/flaresolverr:v3.4.0
+          image: flaresolverr/flaresolverr:v3.4.1
           env:
             - name: LOG_LEVEL
               value: info
