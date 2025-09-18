@@ -15,6 +15,7 @@ jobs:
 
     # Secrets scanning / Git hygiene
     - name: Run Gitleaks
+      if: github.event_name == 'push'
       uses: gitleaks/gitleaks-action@v2
       with:
         args: detect --source . --verbose --redact
