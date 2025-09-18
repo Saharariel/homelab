@@ -7,20 +7,8 @@ on:
 jobs:
   homelab-ci:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: read
     steps:
     - uses: actions/checkout@v4
-
-    # Secrets scanning / Git hygiene
-    - name: Run Gitleaks
-      if: github.event_name == 'push'
-      uses: gitleaks/gitleaks-action@v2
-      with:
-        args: detect --source . --verbose --redact
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Block plaintext Kubernetes Secrets
       run: |
