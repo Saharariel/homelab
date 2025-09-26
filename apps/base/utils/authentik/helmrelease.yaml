@@ -30,6 +30,7 @@ spec:
         ingressClassName: traefik
         hosts:
         - auth.${BASE_DOMAIN}
+        - auth.homelab
         annotations:
           # Optional: keep TLS off at origin so CF Tunnel speaks HTTP to Traefik
           traefik.ingress.kubernetes.io/router.entrypoints: web
