@@ -5,4 +5,4 @@ resources:
 - monitoring-ns.yaml
 - utils-ns.yaml
 - renovate-ns.yaml
-- authentik.yaml
+- authentik-ns.yaml
