@@ -18,4 +18,3 @@ spec:
     substituteFrom:
     - kind: Secret
       name: cluster-params
-      namespace: flux-system
