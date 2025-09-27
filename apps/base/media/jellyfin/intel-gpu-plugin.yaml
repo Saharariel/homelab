@@ -35,6 +35,11 @@ spec:
           readOnly: true
         - name: kubeletsockets
           mountPath: /var/lib/kubelet/device-plugins
+        # Add this volume mount for the termination log
+        - name: tmp
+          mountPath: /tmp
+        - name: var-log
+          mountPath: /var/log
       volumes:
       - name: devfs
         hostPath:
@@ -45,3 +50,8 @@ spec:
       - name: kubeletsockets
         hostPath:
           path: /var/lib/kubelet/device-plugins
+      # Add these volumes for writable directories
+      - name: tmp
+        emptyDir: {}
+      - name: var-log
+        emptyDir: {}
