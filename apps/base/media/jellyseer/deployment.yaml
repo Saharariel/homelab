@@ -14,32 +14,33 @@ spec:
 
     spec:
       containers:
-        - name: jellyseer
-          image: fallenbagel/jellyseerr:2.7.3
+      - name: jellyseer
+        image: fallenbagel/jellyseerr:2.7.3
 
-          env:
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
 
-          securityContext:
-            allowPrivilegeEscalation: false
+        securityContext:
+          allowPrivilegeEscalation: false
 
-          ports:
-            - containerPort: 9696
+        ports:
+        - containerPort: 9696
 
-          volumeMounts:
-            - name: media
-              mountPath: /data/media
-            - name: config
-              mountPath: /app/config
-      volumes:
+        volumeMounts:
         - name: media
-          hostPath:
-            path: /mnt/data/media
-            type: Directory
+          mountPath: /data/media
+          readOnly: true
         - name: config
-          hostPath:
-            path: /mnt/data/configs/jellyseer
-            type: DirectoryOrCreate
+          mountPath: /app/config
+      volumes:
+      - name: media
+        hostPath:
+          path: /mnt/data/media
+          type: Directory
+      - name: config
+        hostPath:
+          path: /mnt/data/configs/jellyseer
+          type: DirectoryOrCreate
