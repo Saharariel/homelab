@@ -143,7 +143,7 @@ Everything needed to run my cluster & deploy my applications
         <img width="34" src="https://avatars.githubusercontent.com/u/129185620?s=200&v=4" style="padding-top:6px;">
         </td>
         <td>
-        <a href="https://developers.cloudflare.com/cloudflare-one">SOPS</a>
+        <a href="https://github.com/getsops/sops">SOPS</a>
     </td>
     <td>Simple And Flexible Tool For Managing Secrets</td>
     </tr>
