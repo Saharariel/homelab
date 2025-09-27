@@ -20,6 +20,8 @@ spec:
         - 104 # render group (common on Ubuntu/Debian)
         - 109 # render group (alternative)
         - 993 # jellyfin group
+      strategy:
+        type: Recreate
 
       containers:
       - name: jellyfin
