@@ -38,9 +38,9 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: jellyfin
+            name: jellyseer
             port:
-              number: 8096
+              number: 5055
   tls:
   - hosts:
     - requests.${BASE_DOMAIN}
