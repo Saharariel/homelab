@@ -1,9 +1,35 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: jellyfin
+  name: jellyfin-lan
+  namespace: media
   annotations:
+    kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: jellyfin.homelab
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: jellyfin
+            port:
+              number: 8096
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jellyfin-public
+  namespace: media
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    # HTTPS entrypoint
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   ingressClassName: traefik
   rules:
@@ -17,3 +43,6 @@ spec:
             name: jellyfin
             port:
               number: 8096
+  tls:
+  - hosts:
+    - watch.${BASE_DOMAIN}
