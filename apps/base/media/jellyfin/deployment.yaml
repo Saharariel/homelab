@@ -11,47 +11,105 @@ spec:
     metadata:
       labels:
         app: jellyfin
-
     spec:
+      # Security context at pod level
       securityContext:
-        #runAsUser: 1000
-        #runAsGroup: 1000
         fsGroup: 993
         supplementalGroups:
-          - 993
-          - 44
-        #runAsNonRoot: true
+        - 44 # video group
+        - 104 # render group (common on Ubuntu/Debian)
+        - 109 # render group (alternative)
+        - 993 # jellyfin group
 
       containers:
-        - name: jellyfin
-          #image: lscr.io/linuxserver/jellyfin:10.10.7
-          image: ghcr.io/jellyfin/jellyfin:10.10.7
-          ports:
-            - containerPort: 8096
-          env:
-            - name: JELLYFIN_ServerName
-              value: "saharserver"
+      - name: jellyfin
+        image: ghcr.io/jellyfin/jellyfin:10.10.7
+        ports:
+        - containerPort: 8096
+          name: http-web
+        - containerPort: 8920
+          name: https-web
+        - containerPort: 1900
+          protocol: UDP
+          name: dlna-udp
+        - containerPort: 7359
+          protocol: UDP
+          name: discovery
 
-          securityContext:
-            privileged: true
+        env:
+        - name: JELLYFIN_ServerName
+          value: "saharserver"
+        # Optimize for Intel Quick Sync
+        - name: JELLYFIN_FFmpeg__hwaccel_args
+          value: "-hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_output_format vaapi"
+        - name: TZ
+          value: "Asia/Jerusalem"
+        # Request Intel GPU resource
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+            gpu.intel.com/i915: "1"
+          limits:
+            memory: "4Gi"
+            cpu: "4000m"
+            gpu.intel.com/i915: "1"
 
-          volumeMounts:
-            - name: media
-              mountPath: /data/media
-            - name: config
-              mountPath: /config
-            - name: dri
-              mountPath: /dev/dri
-      volumes:
+        # Security context - no privileged mode needed
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+            add:
+            # Minimal capabilities needed
+            - CHOWN
+            - SETUID
+            - SETGID
+            - DAC_OVERRIDE
+            - KILL
+
+        volumeMounts:
         - name: media
-          hostPath:
-            path: /mnt/data/media
-            type: Directory
-        - name: dri
-          hostPath:
-            path: /dev/dri
-            type: Directory
+          mountPath: /data/media
         - name: config
-          hostPath:
-            path: /mnt/data/configs/jellyfin
-            type: DirectoryOrCreate
+          mountPath: /config
+        - name: cache
+          mountPath: /cache
+        - name: transcodes
+          mountPath: /config/transcodes
+        # Health checks
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8096
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8096
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 5
+
+      volumes:
+      - name: media
+        hostPath:
+          path: /mnt/data/media
+          type: Directory
+      - name: config
+        hostPath:
+          path: /mnt/data/configs/jellyfin
+          type: DirectoryOrCreate
+      - name: cache
+        hostPath:
+          path: /mnt/data/configs/jellyfin/cache
+          type: DirectoryOrCreate
+      - name: transcodes
+        hostPath:
+          path: /mnt/data/configs/jellyfin/transcodes
+          type: DirectoryOrCreate

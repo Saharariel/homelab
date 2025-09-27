@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: intel-gpu-plugin
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: intel-gpu-plugin
+  template:
+    metadata:
+      labels:
+        name: intel-gpu-plugin
+    spec:
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      containers:
+      - name: intel-gpu-plugin
+        image: intel/intel-gpu-plugin:0.30.0
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        volumeMounts:
+        - name: devfs
+          mountPath: /dev
+          readOnly: true
+        - name: sysfs
+          mountPath: /sys
+          readOnly: true
+        - name: kubeletsockets
+          mountPath: /var/lib/kubelet/device-plugins
+      volumes:
+      - name: devfs
+        hostPath:
+          path: /dev
+      - name: sysfs
+        hostPath:
+          path: /sys
+      - name: kubeletsockets
+        hostPath:
+          path: /var/lib/kubelet/device-plugins
