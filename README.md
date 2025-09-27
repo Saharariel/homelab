@@ -1,6 +1,6 @@
 # 🏠 Homelab Infrastructure
 
-This repository contains the GitOps-managed configuration for my home Kubernetes cluster using FluxCD, K3s, and various self-hosted services.
+This repository contains the GitOps-managed configuration for all the self-hosted services on my homelab Kubernetes cluster using K3s
 
 ## Overview
 
@@ -28,10 +28,9 @@ Admittedly, this is overkill for a homelab - but that's kind of the point. This 
 
 ## Core Apps & Tools
 
-
 ### Apps
 
-End User Applications
+Services i use everyday
 <table>
     <tr>
         <th>Logo</th>
@@ -54,7 +53,16 @@ End User Applications
         <td>
         <a href="https://docs.jellyseerr.dev/">Jellyseer</a>
     </td>
-    <td> Requests manager for media library</td>
+    <td>Requests manager for media library</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/n8n.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://n8n.io/">n8n</a>
+    </td>
+    <td>Secure, AI-native workflow automation</td>
     </tr>
     <tr>
     <td>
@@ -63,18 +71,86 @@ End User Applications
         <td>
         <a href="https://homarr.dev/">Homarr</a>
     </td>
-    <td> A sleek, modern dashboard</td>
+    <td>A sleek, modern dashboard</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/authentik.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://goauthentik.io/">Authentik</a>
+    </td>
+    <td>Identity provider</td>
     </tr>
 </table> 
 
-## Features & Services
+### Infrastructure
 
-- Jellyfin, Sonarr, Radarr, and other media services  
-- QBittorrent with Gluetun for VPN routing and safely downloading torrents  
-- Grafana & Prometheus monitoring and observability stack  
-- Automated updates with Renovate and Flux
+Everything needed to run my cluster & deploy my applications
+<table>
+    <tr>
+        <th>Logo</th>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/flux-cd.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://fluxcd.io/">Flux-CD</a>
+    </td>
+    <td>My GitOps solution of choice</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/renovate.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://docs.renovatebot.com/">Renovate</a>
+    </td>
+    <td>Automated dependency updates.</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/prometheus.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://prometheus.io/">Prometheus</a>
+    </td>
+    <td>Metrics and monitoring for your systems and services</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/grafana.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://grafana.com/">Grafana</a>
+    </td>
+    <td>Platform for visualizing metrics</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://developers.cloudflare.com/cloudflare-one">Cloudflare Zero Trust</a>
+    </td>
+    <td>Used for private tunnels to expose public services</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://avatars.githubusercontent.com/u/129185620?s=200&v=4" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://developers.cloudflare.com/cloudflare-one">SOPS</a>
+    </td>
+    <td>Simple And Flexible Tool For Managing Secrets</td>
+    </tr>
+</table> 
 
-## Goals
+
+## My Goals in this Project
 
 - Automate and version all infrastructure and services  
 - Ensure reproducibility and recoverability  
