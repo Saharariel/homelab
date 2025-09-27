@@ -66,6 +66,8 @@ spec:
             - CHOWN
             - SETUID
             - SETGID
+            - DAC_OVERRIDE
+            - KILL
 
         volumeMounts:
         - name: media
