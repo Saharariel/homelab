@@ -63,12 +63,9 @@ spec:
             drop:
             - ALL
             add:
-            # Minimal capabilities needed
             - CHOWN
             - SETUID
             - SETGID
-            - DAC_OVERRIDE
-            - KILL
 
         volumeMounts:
         - name: media
