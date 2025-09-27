@@ -12,12 +12,16 @@ spec:
       labels:
         name: intel-gpu-plugin
     spec:
+      # Target only worker-node-1
       nodeSelector:
-        kubernetes.io/arch: amd64
+        kubernetes.io/hostname: worker-node-1
       containers:
       - name: intel-gpu-plugin
         image: intel/intel-gpu-plugin:0.30.0
         imagePullPolicy: IfNotPresent
+        # Move termination log to writable location
+        terminationMessagePath: /var/log/termination-log
+        terminationMessagePolicy: File
         securityContext:
           readOnlyRootFilesystem: true
           allowPrivilegeEscalation: false
@@ -35,11 +39,11 @@ spec:
           readOnly: true
         - name: kubeletsockets
           mountPath: /var/lib/kubelet/device-plugins
-        # Add this volume mount for the termination log
-        - name: tmp
-          mountPath: /tmp
+        # Writable directories
         - name: var-log
           mountPath: /var/log
+        - name: tmp
+          mountPath: /tmp
       volumes:
       - name: devfs
         hostPath:
@@ -50,8 +54,7 @@ spec:
       - name: kubeletsockets
         hostPath:
           path: /var/lib/kubelet/device-plugins
-      # Add these volumes for writable directories
-      - name: tmp
-        emptyDir: {}
       - name: var-log
+        emptyDir: {}
+      - name: tmp
         emptyDir: {}
