@@ -26,12 +26,46 @@ Admittedly, this is overkill for a homelab - but that's kind of the point. This 
 - **Hypervisor:** Proxmox VE
 - **OS:** Ubuntu Server (running in VM)
 
-## Core Tools & Technologies
+## Core Apps & Tools
 
-- [Proxmox VE](https://www.proxmox.com/) – Virtualization hyprvisor platform
-- [FluxCD](https://fluxcd.io/) – GitOps operator for continuous delivery
-- [K3s](https://k3s.io/) – Lightweight Kubernetes distribution
-- [Renovate](https://www.mend.io/free-developer-tools/renovate/) – Dependency update automation  
+
+### Apps
+
+End User Applications
+<table>
+    <tr>
+        <th>Logo</th>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/jellyfin.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://jellyfin.org/">Jellyfin</a>
+    </td>
+    <td>The Open-Source Media System</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/a2594d147cfd8eabca0ea40474e532377aebbb44/svg/jellyseerr.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://docs.jellyseerr.dev/">Jellyseer</a>
+    </td>
+    <td> Requests manager for media library</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/homarr.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://homarr.dev/">Homarr</a>
+    </td>
+    <td> A sleek, modern dashboard</td>
+    </tr>
+</table> 
 
 ## Features & Services
 
