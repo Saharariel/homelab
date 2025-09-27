@@ -17,8 +17,7 @@ spec:
         fsGroup: 993
         supplementalGroups:
         - 44 # video group
-        - 104 # render group (common on Ubuntu/Debian)
-        - 109 # render group (alternative)
+        - 104 # render group
         - 993 # jellyfin group
       strategy:
         type: Recreate
