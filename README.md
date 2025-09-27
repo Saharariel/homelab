@@ -140,6 +140,15 @@ Everything needed to run my cluster & deploy my applications
     </tr>
     <tr>
     <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/proxmox.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://www.proxmox.com/en/">Proxmox</a>
+    </td>
+    <td>Open-source Hypervisor</td>
+    </tr>
+    <tr>
+    <td>
         <img width="34" src="https://avatars.githubusercontent.com/u/129185620?s=200&v=4" style="padding-top:6px;">
         </td>
         <td>
