@@ -4,4 +4,4 @@ resources:
 - helmrepo.yaml
 - helmrelease.yaml
 - node-disk.yaml
-- storageclass-longhorn-config
+- storageclass-longhorn-config.yaml
