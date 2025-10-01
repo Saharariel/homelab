@@ -103,14 +103,9 @@ spec:
           path: /mnt/data/media
           type: Directory
       - name: config
-        hostPath:
-          path: /mnt/data/configs/jellyfin
-          type: DirectoryOrCreate
+        persistentVolumeClaim:
+          claimName: jellyfin-config
       - name: cache
-        hostPath:
-          path: /mnt/data/configs/jellyfin/cache
-          type: DirectoryOrCreate
+        emptyDir: {}
       - name: transcodes
-        hostPath:
-          path: /mnt/data/configs/jellyfin/transcodes
-          type: DirectoryOrCreate
+        emptyDir: {}
