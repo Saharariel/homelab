@@ -26,14 +26,14 @@ spec:
     defaultSettings:
       defaultReplicaCount: "1"
 
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web
+    host: longhorn.homelab
+    path: /
+    tls: false
+
     longhornUI:
       replicas: 1
-      ingress:
-        enabled: true
-        ingressClassName: traefik
-        annotations:
-          traefik.ingress.kubernetes.io/router.entrypoints: web
-        hosts:
-        - longhorn.homelab
-        paths:
-        - /
