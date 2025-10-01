@@ -25,3 +25,5 @@ spec:
       defaultFsType: ext4
     defaultSettings:
       defaultReplicaCount: "1"
+    longhornUI:
+      replicas: 1
