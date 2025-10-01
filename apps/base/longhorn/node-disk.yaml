@@ -1,0 +1,13 @@
+apiVersion: longhorn.io/v1beta2
+kind: Node
+metadata:
+  name: worker-node-1 # your node name
+  namespace: longhorn-system
+spec:
+  disks:
+    longhorn1:
+      path: /mnt/data/longhorn
+      allowScheduling: true
+      storageReserved: 10Gi
+      tags:
+      - media
