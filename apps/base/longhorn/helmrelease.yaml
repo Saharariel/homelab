@@ -18,7 +18,6 @@ spec:
   upgrade:
     remediation: { retries: 3 }
   values:
-    # sensible defaults for your use-case
     persistence:
       defaultClass: true
       defaultClassReplicaCount: 1
@@ -26,4 +25,10 @@ spec:
     defaultSettings:
       defaultReplicaCount: "1"
     longhornUI:
-      replicas: 1
+    ingress:
+      enabled: true
+      ingressClassName: traefik
+      annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: web
+      hosts:
+      - longhorn.homelab
