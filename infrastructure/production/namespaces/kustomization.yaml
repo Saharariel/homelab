@@ -6,3 +6,4 @@ resources:
 - utils-ns.yaml
 - renovate-ns.yaml
 - authentik-ns.yaml
+- longhorn-ns.yaml

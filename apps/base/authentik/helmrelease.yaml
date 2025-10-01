@@ -11,7 +11,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: goauthentik
-        namespace: flux-system
+        namespace: authentik
   values:
     authentik:
       # secret_key is injected via valuesFrom below
