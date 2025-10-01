@@ -7,3 +7,4 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/hostname: worker-node-1
+      replicas: 0 # TODO: Find / Develop a alterative for this app
