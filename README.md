@@ -156,6 +156,15 @@ Everything needed to run my cluster & deploy my applications
     </td>
     <td>Simple And Flexible Tool For Managing Secrets</td>
     </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/longhorn.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://longhorn.io/">Longhorn</a>
+    </td>
+    <td>Distributed Storage for Kubernetes</td>
+    </tr>
 </table> 
 
 
