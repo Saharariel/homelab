@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: jellyseer
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: jellyseer
@@ -41,6 +41,5 @@ spec:
           path: /mnt/data/media
           type: Directory
       - name: config
-        hostPath:
-          path: /mnt/data/configs/jellyseer
-          type: DirectoryOrCreate
+        persistentVolumeClaim:
+          claimName: jellyseer-config
