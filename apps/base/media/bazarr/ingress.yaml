@@ -7,13 +7,13 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: bazarr.homelab
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: bazarr
-                port:
-                  number: 6767
+  - host: bazarr.homelab
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: bazarr
+            port:
+              number: 6767
