@@ -15,30 +15,29 @@ spec:
       dnsPolicy: None
       dnsConfig:
         nameservers:
-          - 10.0.0.20
+        - 10.0.0.20
       containers:
-        - name: homarr
-          image: ghcr.io/homarr-labs/homarr:v1.39.0
+      - name: homarr
+        image: ghcr.io/homarr-labs/homarr:v1.39.0
 
-          env:
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
 
-          securityContext:
-            allowPrivilegeEscalation: false
+        securityContext:
+          allowPrivilegeEscalation: false
 
-          ports:
-            - containerPort: 7575
-          envFrom:
-            - secretRef:
-                name: homarr-secret
-          volumeMounts:
-            - name: appdata
-              mountPath: /appdata
-      volumes:
+        ports:
+        - containerPort: 7575
+        envFrom:
+        - secretRef:
+            name: homarr-secret
+        volumeMounts:
         - name: appdata
-          hostPath:
-            path: /mnt/data/configs/homarr/appdata
-            type: Directory
+          mountPath: /appdata
+      volumes:
+      - name: appdata
+        persistentVolumeClaim:
+          claimName: homarr-config
