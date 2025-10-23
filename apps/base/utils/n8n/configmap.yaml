@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: n8n-configmap
 data:
-  # Public base
+  # Public/prod webhooks
   N8N_PROTOCOL: "https"
   N8N_HOST: "n8n.${BASE_DOMAIN}"
   N8N_PORT: "443"
@@ -13,11 +13,11 @@ data:
   N8N_EDITOR_BASE_URL: "https://n8n.${BASE_DOMAIN}"
   WEBHOOK_TUNNEL_URL: "https://n8n.${BASE_DOMAIN}"
 
-  # Proxy / Cloudflare Tunnel
-  N8N_TRUSTED_PROXIES: "loopback,uniquelocal"
+  # Cloudflare Tunnel / proxy
+  N8N_TRUSTED_PROXIES: "*"
   N8N_SECURE_COOKIE: "true"
 
-  # Warnings / deprecations
+  # Warnings/deprecations (optional but recommended)
   N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
   DB_SQLITE_POOL_SIZE: "5"
   N8N_RUNNERS_ENABLED: "true"
