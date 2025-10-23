@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: n8n-configmap
 data:
-  N8N_PORT: "3008"
-  N8N_PROTOCOL: "http"
-  N8N_SECURE_COOKIE: "false"
+  N8N_PROTOCOL: https
+  N8N_HOST: n8n.${BASE_DOMAIN}
+  WEBHOOK_URL: https://n8n.${BASE_DOMAIN}
