@@ -7,13 +7,40 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: n8n.homelab
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: n8n
-                port:
-                  number: 3008
+  - host: n8n.homelab
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: n8n
+            port:
+              number: 3008
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: n8n-public
+  namespace: media
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    # HTTPS entrypoint
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: n8n.${BASE_DOMAIN}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: n8n
+            port:
+              number: 3008
+  tls:
+  - hosts:
+    - n8n.${BASE_DOMAIN}
