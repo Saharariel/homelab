@@ -3,6 +3,17 @@ kind: ConfigMap
 metadata:
   name: n8n-configmap
 data:
-  N8N_PROTOCOL: https
-  N8N_HOST: n8n.${BASE_DOMAIN}
-  WEBHOOK_URL: https://n8n.${BASE_DOMAIN}
+  # Base/public URL (used for PRODUCTION webhooks)
+  N8N_PROTOCOL: "https"
+  N8N_HOST: "n8n.${BASE_DOMAIN}"
+  N8N_PORT: "443"
+  WEBHOOK_URL: "https://n8n.${BASE_DOMAIN}"
+
+  # Used for TEST webhooks when you click "Execute node"
+  WEBHOOK_TUNNEL_URL: "https://n8n.${BASE_DOMAIN}"
+
+  # UI builds absolute links correctly (OAuth, callbacks)
+  N8N_EDITOR_BASE_URL: "https://n8n.${BASE_DOMAIN}"
+
+  # TLS at the proxy and always use HTTPS in the browser
+  N8N_SECURE_COOKIE: "true"
