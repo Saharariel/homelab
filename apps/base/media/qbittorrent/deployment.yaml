@@ -63,16 +63,17 @@ spec:
 
         resources:
           requests:
-            memory: "32Mi"
+            memory: "64Mi"
             cpu: "50m"
           limits:
-            memory: "128Mi"
+            memory: "256Mi"
             cpu: "500m"
 
         env:
         - name: VPN_SERVICE_PROVIDER
           value: nordvpn
-
+        - name: DISABLE_IP6
+          value: "on"
         - name: OPENVPN_USER
           valueFrom:
             secretKeyRef:
