@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: telegram-bot
-        image: ghcr.io/saharariel/telegram-bot:main-3fa233d
+        image: ghcr.io/saharariel/telegram-bot:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 6868
 
