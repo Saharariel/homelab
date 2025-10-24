@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telegram-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telegram-bot
+  template:
+    metadata:
+      labels:
+        app: telegram-bot
+    spec:
+      containers:
+      - name: telegram-bot
+        image: ghcr.io/saharariel/telegram-bot:main-3fa233d
+        ports:
+        - containerPort: 6868
+
+        securityContext:
+          allowPrivilegeEscalation: false
+
+        env:
+        - name: TELEGRAM_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: telegram-secret
+              key: TELEGRAM_BOT_TOKEN
+
+        - name: AUTHENTIK_URL
+          valueFrom:
+            secretKeyRef:
+              name: telegram-secret
+              key: AUTHENTIK_URL
+
+        - name: AUTHENTIK_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: telegram-secret
+              key: AUTHENTIK_API_TOKEN
+
+        - name: JELLYFIN_URL
+          valueFrom:
+            secretKeyRef:
+              name: telegram-secret
+              key: JELLYFIN_URL
+
+        - name: BOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: telegram-secret
+              key: BOT_PASSWORD
+
+        - name: CF_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: telegram-secret
+              key: CF_API_TOKEN
+
+        - name: CF_ACCOUNT_ID
+          valueFrom:
+            secretKeyRef:
+              name: telegram-secret
+              key: CF_ACCOUNT_ID
+
+        - name: CF_ACCESS_POLICY_ID
+          valueFrom:
+            secretKeyRef:
+              name: telegram-secret
+              key: CF_ACCESS_POLICY_ID
