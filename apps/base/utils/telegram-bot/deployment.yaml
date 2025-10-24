@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: telegram-bot
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: telegram-bot
