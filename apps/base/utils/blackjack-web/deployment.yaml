@@ -17,5 +17,14 @@ spec:
       containers:
         - name: blackjack-web
           image: ghcr.io/saharariel/blackjack-web:1.0.4 # {"$imagepolicy": "flux-system:blackjack-web-image-policy"}
+
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+
           ports:
             - containerPort: 80

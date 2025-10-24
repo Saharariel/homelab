@@ -32,6 +32,14 @@ spec:
         securityContext:
           allowPrivilegeEscalation: false
 
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "768Mi"
+            cpu: "1000m"
+
         envFrom:
         - configMapRef:
             name: n8n-configmap
