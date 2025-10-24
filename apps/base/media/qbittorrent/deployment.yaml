@@ -31,6 +31,14 @@ spec:
         - name: PGID
           value: "1000"
 
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+
         ports:
         - containerPort: 8081
           name: webui
@@ -52,6 +60,15 @@ spec:
         securityContext:
           capabilities:
             add: [ "NET_ADMIN" ]
+
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+
         env:
         - name: VPN_SERVICE_PROVIDER
           value: nordvpn

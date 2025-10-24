@@ -15,6 +15,15 @@ spec:
       containers:
       - name: linkding
         image: sissbruecker/linkding:1.44.0
+
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+
         ports:
         - containerPort: 9090
         volumeMounts:

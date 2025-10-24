@@ -29,6 +29,14 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
 
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
+
           ports:
             - containerPort: 9696
           volumeMounts:
@@ -42,6 +50,15 @@ spec:
           env:
             - name: LOG_LEVEL
               value: info
+
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+
           ports:
             - containerPort: 8191
 
