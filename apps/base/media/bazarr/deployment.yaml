@@ -48,5 +48,6 @@ spec:
           path: /mnt/data
           type: Directory
       - name: config
-        persistentVolumeClaim:
-          claimName: bazarr-config
+        hostPath:
+          path: /mnt/data/configs/bazarr
+          type: Directory
