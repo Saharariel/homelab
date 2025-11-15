@@ -5,4 +5,5 @@ resources:
 - service.yaml
 - ingress.yaml
 - secret.yaml
-- pvc.yaml
+
+# - pvc.yaml # TODO: think about how to handle longhorn pvcs with backups
