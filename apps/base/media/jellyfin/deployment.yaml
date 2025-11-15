@@ -24,7 +24,7 @@ spec:
 
       containers:
       - name: jellyfin
-        image: ghcr.io/jellyfin/jellyfin:10.11.2
+        image: ghcr.io/jellyfin/jellyfin:10.10.7
         ports:
         - containerPort: 8096
           name: http-web
