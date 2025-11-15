@@ -47,5 +47,6 @@ spec:
           path: /mnt/data
           type: Directory
       - name: config
-        persistentVolumeClaim:
-          claimName: sonarr-config
+        hostPath:
+          path: /mnt/data/configs/sonarr
+          type: Directory

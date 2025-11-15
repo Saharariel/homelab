@@ -47,5 +47,6 @@ spec:
           mountPath: /appdata
       volumes:
       - name: appdata
-        persistentVolumeClaim:
-          claimName: homarr-config
+        hostPath:
+          path: /mnt/data/configs/homarr
+          type: Directory

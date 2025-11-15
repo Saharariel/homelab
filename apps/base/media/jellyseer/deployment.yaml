@@ -49,5 +49,6 @@ spec:
           path: /mnt/data/media
           type: Directory
       - name: config
-        persistentVolumeClaim:
-          claimName: jellyseer-config
+        hostPath:
+          path: /mnt/data/configs/jellyseer
+          type: Directory
