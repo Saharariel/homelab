@@ -19,8 +19,6 @@ spec:
       retries: 3
   values:
     podSecurityContext:
-      runAsNonRoot: true
-      runAsUser: 911
       fsGroup: 911
 
     service:
