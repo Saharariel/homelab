@@ -1,0 +1,43 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: qbittorrent
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: qbittorrent-vpn
+      sourceRef:
+        kind: HelmRepository
+        name: rtomik
+        namespace: flux-system
+      # version: "x.y.z"   # optional pin
+  install:
+    createNamespace: false
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    service:
+      type: ClusterIP
+    persistence:
+      enabled: true
+      data:
+        size: 50Gi
+    gluetun:
+      enabled: true
+      credsSecretName: vpn-creds
+      env:
+        VPN_SERVICE_PROVIDER: "nordvpn"
+        DISABLE_IP6: "on"
+        SERVER_COUNTRIES: "Israel"
+        FIREWALL: "on"
+        FIREWALL_INPUT_PORTS: "8081,6881"
+        FIREWALL_VPN_INPUT_PORTS: "6881"
+        FIREWALL_OUTBOUND_SUBNETS: "10.42.0.0/16,192.168.0.0/16"
+    qbittorrent:
+      enabled: true
+      webui:
+        port: 8081
+      listenPort: 6881
+      downloadsPath: /data/torrents
