@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: qbittorrent-vpn-vpn-credentials
+  namespace: media
 data:
   username: ENC[AES256_GCM,data:87pzSn8tm6vevM3Of/xuWquwLf/IhazPTZr6+yZ+SBoMC9rk,iv:acUUEmeEyi3iRjbiJN/OhThOgb/fU7xbt51mU9qk0t0=,tag:t5N2SFN4LPRfGemNPGXD/g==,type:str]
   password: ENC[AES256_GCM,data:lnWBZuyejEJ7+PONhzmedBhCprhHcgp/b6W0azkwD7H7fEjf,iv:fENa6aNgCiUmPXKn5Pk+lnRGKKNaZrcrpXGXEp7dQlY=,tag:yPACXi7nLFdxfdsszzJlQw==,type:str]

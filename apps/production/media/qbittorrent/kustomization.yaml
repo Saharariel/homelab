@@ -7,3 +7,4 @@ resources:
 
 patchesStrategicMerge:
   - node-affinity-patch.yaml
+  - vpn-creds-patch.yaml
