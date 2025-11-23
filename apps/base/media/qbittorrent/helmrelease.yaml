@@ -27,45 +27,81 @@ spec:
       type: ClusterIP
       port: 8081
 
-    persistence:
+    qbittorrent:
       enabled: true
-      config:
-        size: 2Gi
-      downloads:
-        size: 50Gi
+      bittorrentPort: 6881
+      service:
+        port: 8081
+      env:
+      - name: PUID
+        value: "0"
+      - name: PGID
+        value: "0"
+      - name: TZ
+        value: "UTC"
+      - name: WEBUI_PORT
+        value: "8081"
+      persistence:
+        config:
+          enabled: false
+        downloads:
+          enabled: false
+      extraVolumeMounts:
+      - name: qbittorrent-config
+        mountPath: /config
+      - name: data-torrents
+        mountPath: /data/torrents
+      extraVolumes:
+      - name: qbittorrent-config
+        hostPath:
+          path: /mnt/data/configs/qbittorrent
+          type: Directory
+      - name: data-torrents
+        hostPath:
+          path: /mnt/data/torrents
+          type: Directory
 
-    livenessProbe:
-      enabled: true
-      initialDelaySeconds: 30
-      periodSeconds: 30
-      timeoutSeconds: 10
-      failureThreshold: 3
-
-    readinessProbe:
-      enabled: true
-      initialDelaySeconds: 10
-      periodSeconds: 10
-      timeoutSeconds: 5
-      failureThreshold: 3
+    probes:
+      liveness:
+        enabled: true
+        path: /
+        initialDelaySeconds: 30
+        periodSeconds: 30
+        timeoutSeconds: 5
+        failureThreshold: 3
+        successThreshold: 1
+      readiness:
+        enabled: true
+        path: /
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
+        successThreshold: 1
 
     gluetun:
       enabled: true
-      credsSecretName: vpn-creds
       securityContext:
-        runAsUser: 0
-        runAsNonRoot: false
+        privileged: true
         capabilities:
           add:
-            - NET_ADMIN
-            - SYS_MODULE
-      env:
-        VPN_SERVICE_PROVIDER: nordvpn
-        VPN_TYPE: openvpn
-        SERVER_COUNTRIES: Israel
+          - NET_ADMIN
+      vpn:
+        provider: nordvpn
+        type: openvpn
+        serverCountries: Israel
+        randomize: "true"
+        openvpn:
+          OPENVPN_PROTOCOL: udp
+      credentials:
+        create: false
+        existingSecret: vpn-creds
+        usernameKey: username
+        passwordKey: password
+      settings:
         FIREWALL: "on"
         FIREWALL_INPUT_PORTS: "8081,6881"
         FIREWALL_VPN_INPUT_PORTS: "6881"
         FIREWALL_OUTBOUND_SUBNETS: "10.42.0.0/16,192.168.0.0/16"
-
-    qbittorrent:
-      enabled: true
+        DNS_ADDRESS: "1.1.1.1"
+        SERVER_ALLOWLIST: "qbittorrent:8081"
