@@ -1,0 +1,156 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+  labels:
+    app: qbittorrent
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      securityContext:
+        runAsUser: 0
+        runAsNonRoot: false
+        fsGroup: 911
+
+      containers:
+      # Gluetun VPN container
+      - name: gluetun
+        image: qmcgaw/gluetun:v3.40.0
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+            - NET_ADMIN
+
+        env:
+        - name: VPN_SERVICE_PROVIDER
+          value: "nordvpn"
+        - name: VPN_TYPE
+          value: "openvpn"
+        - name: SERVER_COUNTRIES
+          value: "Israel"
+        - name: SERVER_HOSTNAMES_RANDOMIZED
+          value: "true"
+        - name: OPENVPN_PROTOCOL
+          value: "udp"
+        - name: OPENVPN_USER
+          valueFrom:
+            secretKeyRef:
+              name: vpn-creds
+              key: username
+        - name: OPENVPN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vpn-creds
+              key: password
+        - name: FIREWALL
+          value: "on"
+        - name: FIREWALL_INPUT_PORTS
+          value: "8081,6881"
+        - name: FIREWALL_VPN_INPUT_PORTS
+          value: "6881"
+        - name: FIREWALL_OUTBOUND_SUBNETS
+          value: "10.42.0.0/16,192.168.0.0/16"
+        - name: DNS_ADDRESS
+          value: "1.1.1.1"
+        - name: SERVER_ALLOWLIST
+          value: "qbittorrent:8081"
+
+        volumeMounts:
+        - name: tun
+          mountPath: /dev/net/tun
+
+        resources:
+          limits:
+            cpu: 300m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+
+      # qBittorrent container
+      - name: qbittorrent
+        image: linuxserver/qbittorrent:5.1.0
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - name: http
+          containerPort: 8081
+          protocol: TCP
+        - name: bittorrent-tcp
+          containerPort: 6881
+          protocol: TCP
+        - name: bittorrent-udp
+          containerPort: 6881
+          protocol: UDP
+
+        env:
+        - name: PUID
+          value: "0"
+        - name: PGID
+          value: "0"
+        - name: TZ
+          value: "UTC"
+        - name: WEBUI_PORT
+          value: "8081"
+
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: downloads
+          mountPath: /data/torrents
+
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+          requests:
+            cpu: 500m
+            memory: 512Mi
+
+      volumes:
+      # TUN device for VPN
+      - name: tun
+        hostPath:
+          path: /dev/net/tun
+          type: CharDevice
+
+      # Config directory
+      - name: config
+        hostPath:
+          path: /mnt/configs/qbittorrent
+          type: Directory
+
+      # Downloads directory
+      - name: downloads
+        hostPath:
+          path: /mnt/data/torrents
+          type: Directory
