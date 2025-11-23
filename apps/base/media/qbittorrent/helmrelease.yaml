@@ -43,23 +43,19 @@ spec:
         value: "8081"
       persistence:
         config:
-          enabled: false
+          enabled: true
+          existingClaim: ""
+          storageClass: ""
+          accessMode: "ReadWriteOnce"
+          size: "2Gi"
+          mountPath: "/config"
         downloads:
-          enabled: false
-      extraVolumeMounts:
-      - name: qbittorrent-config
-        mountPath: /config
-      - name: data-torrents
-        mountPath: /data/torrents
-      extraVolumes:
-      - name: qbittorrent-config
-        hostPath:
-          path: /mnt/data/configs/qbittorrent
-          type: Directory
-      - name: data-torrents
-        hostPath:
-          path: /mnt/data/torrents
-          type: Directory
+          enabled: true
+          existingClaim: ""
+          storageClass: ""
+          accessMode: "ReadWriteOnce"
+          size: "50Gi"
+          mountPath: "/data/torrents"
 
     probes:
       liveness:
