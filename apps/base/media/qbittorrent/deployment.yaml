@@ -94,30 +94,3 @@ spec:
         hostPath:
           path: /mnt/data/torrents
           type: DirectoryOrCreate
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: qbittorrent-vpn-svc
-  labels:
-    app: qbittorrent-vpn
-spec:
-  type: NodePort
-  selector:
-    app: qbittorrent-vpn
-  ports:
-  - name: webui
-    protocol: TCP
-    port: 8081
-    targetPort: 8081
-    nodePort: 30081
-  - name: torrent-tcp
-    protocol: TCP
-    port: 6881
-    targetPort: 6881
-    nodePort: 30082
-  - name: torrent-udp
-    protocol: UDP
-    port: 6881
-    targetPort: 6881
-    nodePort: 30083
