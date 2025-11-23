@@ -18,26 +18,54 @@ spec:
     remediation:
       retries: 3
   values:
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 911
+      fsGroup: 911
+
     service:
       type: ClusterIP
+      port: 8081
+
     persistence:
       enabled: true
-      data:
+      config:
+        size: 2Gi
+      downloads:
         size: 50Gi
+
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 30
+      timeoutSeconds: 10
+      failureThreshold: 3
+
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 3
+
     gluetun:
       enabled: true
       credsSecretName: vpn-creds
       env:
         VPN_SERVICE_PROVIDER: "nordvpn"
-        DISABLE_IP6: "on"
+        VPN_TYPE: "openvpn"
         SERVER_COUNTRIES: "Israel"
         FIREWALL: "on"
         FIREWALL_INPUT_PORTS: "8081,6881"
         FIREWALL_VPN_INPUT_PORTS: "6881"
         FIREWALL_OUTBOUND_SUBNETS: "10.42.0.0/16,192.168.0.0/16"
+        DNS_ADDRESS: "1.1.1.1"
+
     qbittorrent:
       enabled: true
-      webui:
-        port: 8081
+      env:
+        PUID: "911"
+        PGID: "911"
+        TZ: "UTC"
+        WEBUI_PORT: "8081"
       listenPort: 6881
-      downloadsPath: /data/torrents
