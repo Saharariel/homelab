@@ -49,6 +49,13 @@ spec:
     gluetun:
       enabled: true
       credsSecretName: vpn-creds
+      securityContext:
+        runAsUser: 0
+        runAsNonRoot: false
+        capabilities:
+          add:
+            - NET_ADMIN
+            - SYS_MODULE
       env:
         VPN_SERVICE_PROVIDER: nordvpn
         VPN_TYPE: openvpn
