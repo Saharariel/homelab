@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: qbittorrent-vpn
+  name: qbittorrent
   labels:
-    app: qbittorrent-vpn
+    app: qbittorrent
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: qbittorrent-vpn
+      app: qbittorrent
   template:
     metadata:
       labels:
-        app: qbittorrent-vpn
+        app: qbittorrent
     spec:
       containers:
       - name: gluetun
