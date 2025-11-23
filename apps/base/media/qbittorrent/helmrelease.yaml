@@ -52,9 +52,9 @@ spec:
       enabled: true
       credsSecretName: vpn-creds
       env:
-        VPN_SERVICE_PROVIDER: "nordvpn"
-        VPN_TYPE: "openvpn"
-        SERVER_COUNTRIES: "Israel"
+        VPN_SERVICE_PROVIDER: nordvpn
+        VPN_TYPE: openvpn
+        SERVER_COUNTRIES: Israel
         FIREWALL: "on"
         FIREWALL_INPUT_PORTS: "8081,6881"
         FIREWALL_VPN_INPUT_PORTS: "6881"
@@ -63,9 +63,3 @@ spec:
 
     qbittorrent:
       enabled: true
-      env:
-        PUID: "911"
-        PGID: "911"
-        TZ: "UTC"
-        WEBUI_PORT: "8081"
-      listenPort: 6881
