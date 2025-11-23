@@ -1,8 +1,0 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: rtomik
-  namespace: flux-system
-spec:
-  interval: 24h
-  url: https://rtomik.github.io/helm-charts
