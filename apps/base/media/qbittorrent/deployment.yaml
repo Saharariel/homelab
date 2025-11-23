@@ -54,66 +54,65 @@ spec:
           mountPath: /data/torrents
         - name: qbittorrent
           mountPath: /config/qBittorrent
+      # - name: gluetun
+      #   image: qmcgaw/gluetun:v3.40.0
+      #   securityContext:
+      #     capabilities:
+      #       add: [ "NET_ADMIN" ]
 
-      - name: gluetun
-        image: qmcgaw/gluetun:v3.40.0
-        securityContext:
-          capabilities:
-            add: [ "NET_ADMIN" ]
+      #   resources:
+      #     requests:
+      #       memory: "64Mi"
+      #       cpu: "50m"
+      #     limits:
+      #       memory: "256Mi"
+      #       cpu: "500m"
 
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "50m"
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
+      #   env:
+      #   - name: VPN_SERVICE_PROVIDER
+      #     value: nordvpn
+      #   - name: DISABLE_IP6
+      #     value: "on"
+      #   - name: OPENVPN_USER
+      #     valueFrom:
+      #       secretKeyRef:
+      #         name: vpn-creds
+      #         key: username
 
-        env:
-        - name: VPN_SERVICE_PROVIDER
-          value: nordvpn
-        - name: DISABLE_IP6
-          value: "on"
-        - name: OPENVPN_USER
-          valueFrom:
-            secretKeyRef:
-              name: vpn-creds
-              key: username
+      #   - name: OPENVPN_PASSWORD
+      #     valueFrom:
+      #       secretKeyRef:
+      #         name: vpn-creds
+      #         key: password
 
-        - name: OPENVPN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: vpn-creds
-              key: password
+      #   - name: SERVER_COUNTRIES
+      #     value: Israel
+      #   - name: FIREWALL
+      #     value: "on"
+      #   - name: QBITTORRENT_ENABLED
+      #     value: "on"
+      #   - name: QBITTORRENT_WEBUI_PORT
+      #     value: "8081"
+      #   - name: FIREWALL_OUTBOUND_SUBNETS
+      #     value: "10.42.0.0/16,192.168.0.0/16"
+      #   - name: FIREWALL_INPUT_PORTS
+      #     value: "8081,6881"
+      #   - name: FIREWALL_VPN_INPUT_PORTS
+      #     value: "6881"
 
-        - name: SERVER_COUNTRIES
-          value: Israel
-        - name: FIREWALL
-          value: "on"
-        - name: QBITTORRENT_ENABLED
-          value: "on"
-        - name: QBITTORRENT_WEBUI_PORT
-          value: "8081"
-        - name: FIREWALL_OUTBOUND_SUBNETS
-          value: "10.42.0.0/16,192.168.0.0/16"
-        - name: FIREWALL_INPUT_PORTS
-          value: "8081,6881"
-        - name: FIREWALL_VPN_INPUT_PORTS
-          value: "6881"
+      #   ports:
+      #   - containerPort: 8888
+      #   - containerPort: 8388
+      #     protocol: TCP
+      #   - containerPort: 8388
+      #     protocol: UDP
+      #   - containerPort: 8080 # gluetun
+      #     protocol: TCP
+      #   - containerPort: 8081 # qbittorrent
 
-        ports:
-        - containerPort: 8888
-        - containerPort: 8388
-          protocol: TCP
-        - containerPort: 8388
-          protocol: UDP
-        - containerPort: 8080 # gluetun
-          protocol: TCP
-        - containerPort: 8081 # qbittorrent
-
-        volumeMounts:
-        - name: gluetun
-          mountPath: /gluetun
+      #   volumeMounts:
+      #   - name: gluetun
+      #     mountPath: /gluetun
 
       volumes:
       - name: gluetun
