@@ -146,7 +146,7 @@ spec:
       # Config directory
       - name: config
         hostPath:
-          path: /mnt/configs/qbittorrent
+          path: /mnt/data/configs/qbittorrent
           type: Directory
 
       # Downloads directory
