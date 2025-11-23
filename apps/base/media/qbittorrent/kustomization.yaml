@@ -5,6 +5,3 @@ resources:
 - helmrepo.yaml
 - ingress.yaml
 - secret.yaml
-
-patchesStrategicMerge:
-- vpn-creds-patch.yaml
