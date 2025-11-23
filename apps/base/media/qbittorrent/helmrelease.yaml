@@ -87,17 +87,17 @@ spec:
           add:
           - NET_ADMIN
       vpn:
-        provider: nordvpn
-        type: openvpn
-        serverCountries: Israel
+        provider: "nordvpn"
+        type: "openvpn"
+        serverCountries: "Israel"
         randomize: "true"
         openvpn:
-          OPENVPN_PROTOCOL: udp
+          OPENVPN_PROTOCOL: "udp"
       credentials:
         create: false
-        existingSecret: vpn-creds
-        usernameKey: username
-        passwordKey: password
+        existingSecret: "vpn-creds"
+        usernameKey: "username"
+        passwordKey: "password"
       settings:
         FIREWALL: "on"
         FIREWALL_INPUT_PORTS: "8081,6881"
