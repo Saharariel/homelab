@@ -1,0 +1,83 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vaultwarden
+  namespace: vaultwarden
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: vaultwarden
+      version: "0.34.x"
+      sourceRef:
+        kind: HelmRepository
+        name: vaultwarden
+        namespace: flux-system
+  install:
+    createNamespace: false
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    domain: "http://vault.homelab"
+    
+    image:
+      registry: docker.io
+      repository: vaultwarden/server
+      tag: "1.32.7"
+      pullPolicy: IfNotPresent
+    
+    # Signup settings
+    signupsAllowed: true  # Set to false after creating your account
+    signupsVerify: false
+    signupsDomainWhitelist: ""
+    
+    invitationsAllowed: false
+    
+    
+    websocket:
+      enabled: true
+    
+    adminToken:
+      existingSecret: "vaultwarden-secrets"
+      existingSecretKey: "admin-token"
+    
+    # Storage using Longhorn
+    storage:
+      enabled: true
+      size: "1Gi"
+      class: "longhorn"
+    
+    # Resource limits
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    
+    ingress:
+      enabled: true
+      class: "traefik"  
+      hostname: vault.homelab
+      tls: true
+      # tlsSecret: vaultwarden-tls  # Uncomment if using cert-manager
+      additionalAnnotations: {}
+
+    
+    service:
+      type: ClusterIP
+      httpPort: 80
+      websocketPort: 3012
+    
+    podSecurityContext:
+      fsGroup: 65534
+    
+    securityContext:
+      runAsUser: 65534
+      runAsGroup: 65534
