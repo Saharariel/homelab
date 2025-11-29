@@ -8,3 +8,4 @@ resources:
 - authentik-ns.yaml
 - longhorn-ns.yaml
 - cert-manager-ns.yaml
+- external-dns-ns.yaml
