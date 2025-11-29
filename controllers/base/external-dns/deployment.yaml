@@ -30,7 +30,7 @@ spec:
         - --policy=upsert-only
         - --provider=pihole
         - --pihole-api-version=6
-        - --pihole-server=http://192.168.50.20/admin
+        - --pihole-server=http://192.168.50.20
         - --pihole-tls-skip-verify
       securityContext:
         fsGroup: 65534
