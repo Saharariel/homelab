@@ -28,7 +28,7 @@ spec:
         - --provider=pihole
         - --pihole-api-version=6
         - --pihole-server=https://192.168.50.20
-        - --pihole-password=EXTERNAL_DNS_PIHOLE_PASSWORD
+        - --pihole-password=$(EXTERNAL_DNS_PIHOLE_PASSWORD)
         - --pihole-tls-skip-verify
       securityContext:
         fsGroup: 65534
