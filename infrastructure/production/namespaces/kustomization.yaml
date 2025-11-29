@@ -7,3 +7,4 @@ resources:
 - renovate-ns.yaml
 - authentik-ns.yaml
 - longhorn-ns.yaml
+- cert-manager-ns.yaml
