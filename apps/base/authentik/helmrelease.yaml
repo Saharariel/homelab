@@ -22,7 +22,6 @@ spec:
         # other connection params use chart defaults when bundled Postgres is enabled
         {}
 
-    # TRAEFIK + PLAIN HTTP AT ORIGIN (Cloudflare Tunnel handles TLS)
     server:
       ingress:
         enabled: true
@@ -32,7 +31,6 @@ spec:
           traefik.ingress.kubernetes.io/router.tls: "true"
         hosts:
         - auth.${BASE_DOMAIN}
-        - auth.homelab
 
     # Bundle Postgres & Redis 
     postgresql:
