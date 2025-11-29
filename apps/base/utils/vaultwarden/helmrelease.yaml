@@ -22,6 +22,7 @@ spec:
     remediation:
       retries: 3
   values:
+    # Required - must be https for web vault to work
     domain: "https://vault.homelab"
     
     image:
@@ -30,28 +31,26 @@ spec:
       tag: "1.32.7"
       pullPolicy: IfNotPresent
     
-    # Signup settings
-    signupsAllowed: true  # Set to false after creating your account
+    # Signups
+    signupsAllowed: true
     signupsVerify: false
-    signupsDomainWhitelist: ""
-    
     invitationsAllowed: false
     
-    
-    websocket:
-      enabled: true
-    
+    # Admin token from secret
     adminToken:
       existingSecret: "vaultwarden-secrets"
       existingSecretKey: "admin-token"
     
-    # Storage using Longhorn
+    # Storage
     storage:
-      enabled: true
-      size: "1Gi"
-      class: "longhorn"
+      data:
+        name: "vaultwarden-data"
+        size: "1Gi"
+        class: "longhorn"
+        path: "/data"
+        accessMode: "ReadWriteOnce"
     
-    # Resource limits
+    # Resources
     resources:
       requests:
         cpu: 50m
@@ -60,14 +59,16 @@ spec:
         cpu: 500m
         memory: 512Mi
     
+    # Ingress
     ingress:
       enabled: true
-      class: "traefik"  
+      class: "traefik"
+      nginxIngressAnnotations: false  # Important: disable nginx-specific annotations
       hostname: vault.homelab
-      tls: false
-      # tlsSecret: vaultwarden-tls  # Uncomment if using cert-manager
-      additionalAnnotations: {}
-
+      tls: true
+      path: "/"
+      pathType: "Prefix"
     
+    # Service
     service:
       type: ClusterIP
