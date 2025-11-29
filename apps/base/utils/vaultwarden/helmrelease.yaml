@@ -61,13 +61,14 @@ spec:
     
     # Ingress
     ingress:
-      enabled: true
-      class: "traefik"
-      nginxIngressAnnotations: false  # Important: disable nginx-specific annotations
-      hostname: vault.homelab
-      tls: true
-      path: "/"
-      pathType: "Prefix"
+    enabled: true
+    class: "traefik"
+    nginxIngressAnnotations: false
+    hostname: vault.homelab
+    tls: true
+    tlsSecret: "vaultwarden-tls"
+    additionalAnnotations:
+      cert-manager.io/cluster-issuer: "selfsigned-issuer"
     
     # Service
     service:
