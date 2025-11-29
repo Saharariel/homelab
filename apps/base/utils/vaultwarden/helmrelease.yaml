@@ -22,7 +22,6 @@ spec:
     remediation:
       retries: 3
   values:
-    # Required - must be https for web vault to work
     domain: "https://vault.homelab"
     
     image:
@@ -31,17 +30,14 @@ spec:
       tag: "1.32.7"
       pullPolicy: IfNotPresent
     
-    # Signups
     signupsAllowed: true
     signupsVerify: false
     invitationsAllowed: false
     
-    # Admin token from secret
     adminToken:
       existingSecret: "vaultwarden-secrets"
       existingSecretKey: "admin-token"
     
-    # Storage
     storage:
       data:
         name: "vaultwarden-data"
@@ -50,7 +46,6 @@ spec:
         path: "/data"
         accessMode: "ReadWriteOnce"
     
-    # Resources
     resources:
       requests:
         cpu: 50m
@@ -59,17 +54,15 @@ spec:
         cpu: 500m
         memory: 512Mi
     
-    # Ingress
     ingress:
-    enabled: true
-    class: "traefik"
-    nginxIngressAnnotations: false
-    hostname: vault.homelab
-    tls: true
-    tlsSecret: "vaultwarden-tls"
-    additionalAnnotations:
-      cert-manager.io/cluster-issuer: "selfsigned-issuer"
+      enabled: true
+      class: "traefik"
+      nginxIngressAnnotations: false
+      hostname: vault.homelab
+      tls: true
+      tlsSecret: "vaultwarden-tls"
+      additionalAnnotations:
+        cert-manager.io/cluster-issuer: "selfsigned-issuer"
     
-    # Service
     service:
       type: ClusterIP
