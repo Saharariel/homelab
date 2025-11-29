@@ -8,4 +8,4 @@ spec:
   ports:
     - port: 8056
       targetPort: 8056
-  type: NodePort
+  type: ClusterIP

@@ -8,4 +8,4 @@ spec:
   ports:
     - port: 9705
       targetPort: 9705
-  type: NodePort
+  type: ClusterIP

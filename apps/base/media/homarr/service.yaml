@@ -8,4 +8,4 @@ spec:
   ports:
     - port: 7575
       targetPort: 7575
-  type: NodePort
+  type: ClusterIP

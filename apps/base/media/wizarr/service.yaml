@@ -8,4 +8,4 @@ spec:
   ports:
     - port: 5690
       targetPort: 5690
-  type: NodePort
+  type: ClusterIP

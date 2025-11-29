@@ -8,4 +8,4 @@ spec:
   ports:
     - port: 7878
       targetPort: 7878
-  type: NodePort
+  type: ClusterIP
