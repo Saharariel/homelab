@@ -30,7 +30,7 @@ spec:
       tag: "1.32.7"
       pullPolicy: IfNotPresent
     
-    signupsAllowed: true
+    signupsAllowed: false
     signupsVerify: false
     invitationsAllowed: false
     
