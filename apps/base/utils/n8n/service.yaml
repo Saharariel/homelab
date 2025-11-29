@@ -8,4 +8,4 @@ spec:
   ports:
     - port: 3008
       targetPort: 3008
-  type: NodePort
+  type: ClusterIP

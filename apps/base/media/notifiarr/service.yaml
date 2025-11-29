@@ -8,4 +8,4 @@ spec:
   ports:
     - port: 5454
       targetPort: 5454
-  type: NodePort
+  type: ClusterIP

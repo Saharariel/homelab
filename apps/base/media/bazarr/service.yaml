@@ -8,4 +8,4 @@ spec:
   ports:
   - port: 6767
     targetPort: 6767
-  type: NodePort
+  type: ClusterIP
