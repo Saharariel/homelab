@@ -82,6 +82,15 @@ Services i use everyday
     </td>
     <td>Identity provider</td>
     </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/vaultwarden.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://github.com/dani-garcia/vaultwarden">VaultWarden</a>
+    </td>
+    <td>Password Manager</td>
+    </tr>
 </table> 
 
 ### Infrastructure
@@ -164,6 +173,15 @@ Everything needed to run my cluster & deploy my applications
         <a href="https://longhorn.io/">Longhorn</a>
     </td>
     <td>Distributed Storage for Kubernetes</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://github.com/kubernetes-sigs/external-dns/blob/master/docs/img/external-dns.png?raw=true" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://github.com/kubernetes-sigs/external-dns">External DNS</a>
+    </td>
+    <td>External DNS manager for Kubernetes</td>
     </tr>
 </table> 
 
