@@ -46,7 +46,7 @@ spec:
       data:
         name: "vaultwarden-data"
         size: "1Gi"
-        class: "longhorn"
+        class: "local-path"
         path: "/data"
         accessMode: "ReadWriteOnce"
     
