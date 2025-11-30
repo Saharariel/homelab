@@ -25,6 +25,8 @@ spec:
       defaultFsType: ext4
     defaultSettings:
       defaultReplicaCount: "1"
+      backupTarget: "s3://homelab-sahar-backups@us-east-1/"
+      backupTargetCredentialSecret: "aws-secret"
 
     ingress:
       enabled: true
