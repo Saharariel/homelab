@@ -62,6 +62,10 @@ spec:
       enabled: true
       postgresqlUser: postgres
       postgresqlDatabase: wiki
+      image:
+        registry: docker.io
+        repository: bitnami/postgresql
+        tag: "11.22.0"
       persistence:
         enabled: true
         storageClass: "longhorn"
