@@ -1,0 +1,73 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: wikijs
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: wiki
+      version: "2.x"
+      sourceRef:
+        kind: HelmRepository
+        name: wikijs
+        namespace: utils
+  install:
+    createNamespace: false
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  valuesFrom:
+    - kind: Secret
+      name: wikijs-postgres-secret
+      valuesKey: postgresql-password
+      targetPath: postgresql.postgresqlPassword
+  values:
+    image:
+      repository: requarks/wiki
+      tag: "2.5.308"
+      pullPolicy: IfNotPresent
+
+    replicaCount: 1
+    revisionHistoryLimit: 10
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: "selfsigned-issuer"
+      className: "traefik"
+      hosts:
+        - host: wiki.homelab
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: wikijs-tls
+          hosts:
+            - wiki.homelab
+
+    postgresql:
+      enabled: true
+      postgresqlUser: postgres
+      postgresqlDatabase: wiki
+      persistence:
+        enabled: true
+        storageClass: "longhorn"
+        accessMode: ReadWriteOnce
+        size: 8Gi
+
+    service:
+      type: ClusterIP
+      port: 80
