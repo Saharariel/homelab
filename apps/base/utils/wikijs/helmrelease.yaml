@@ -65,7 +65,7 @@ spec:
       image:
         registry: docker.io
         repository: bitnami/postgresql
-        tag: "11.22.0"
+        tag: "latest"
       persistence:
         enabled: true
         storageClass: "longhorn"
