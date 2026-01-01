@@ -1,14 +1,14 @@
 apiVersion: longhorn.io/v1beta2
 kind: Node
 metadata:
-  name: worker-node-1 # your node name
+  name: worker-node-nfs
   namespace: longhorn-system
   annotations:
     kustomize.toolkit.fluxcd.io/skip-dry-run: "true"
 spec:
   disks:
     longhorn:
-      path: /mnt/data/longhorn
+      path: ${BASE_PATH}/longhorn
       allowScheduling: true
       # 10 GiB in bytes = 10 * 1024^3 = 10737418240
       storageReserved: 10737418240
