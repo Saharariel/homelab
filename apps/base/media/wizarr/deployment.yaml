@@ -55,10 +55,10 @@ spec:
       volumes:
         - name: config
           hostPath:
-            path: /mnt/data/configs/wizard/wizard
+            path: ${BASE_PATH}/configs/wizard/wizard
             type: DirectoryOrCreate
 
         - name: database
           hostPath:
-            path: /mnt/data/configs/wizard/database
+            path: ${BASE_PATH}/configs/wizard/database
             type: DirectoryOrCreate

@@ -45,5 +45,5 @@ spec:
       volumes:
         - name: config
           hostPath:
-            path: /mnt/data/configs/huntarr
+            path: ${BASE_PATH}/configs/huntarr
             type: DirectoryOrCreate

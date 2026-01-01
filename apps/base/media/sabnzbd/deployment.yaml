@@ -43,9 +43,9 @@ spec:
       volumes:
       - name: downloads
         hostPath:
-          path: /mnt/data/usenet
+          path: ${BASE_PATH}/usenet
           type: Directory
       - name: config
         hostPath:
-          path: /mnt/data/configs/sabnzbd
+          path: ${BASE_PATH}/configs/sabnzbd
           type: Directory

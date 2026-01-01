@@ -100,11 +100,11 @@ spec:
       volumes:
       - name: media
         hostPath:
-          path: /mnt/data/media
+          path: ${BASE_PATH}/media
           type: Directory
       - name: config
         hostPath:
-          path: /mnt/data/configs/jellyfin
+          path: ${BASE_PATH}/configs/jellyfin
           type: Directory
       - name: cache
         emptyDir: {}

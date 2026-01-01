@@ -43,9 +43,9 @@ spec:
       volumes:
         - name: media
           hostPath:
-            path: /mnt/data
+            path: ${BASE_PATH}
             type: Directory
         - name: config
           hostPath:
-            path: /mnt/data/configs/radarr
+            path: ${BASE_PATH}/configs/radarr
             type: Directory
