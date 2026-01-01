@@ -16,5 +16,7 @@ spec:
       name: sops-age
   postBuild:
     substituteFrom:
-    - kind: Secret
-      name: cluster-params
+      - kind: Secret
+        name: cluster-params
+      - kind: Secret
+        name: base-path
