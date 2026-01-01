@@ -50,5 +50,5 @@ spec:
             type: DirectoryOrCreate
         - name: torrents
           hostPath:
-            path: ${BASE_PATH}/torrents
+            path: ${BASE_PATH}/data/media/torrents
             type: DirectoryOrCreate

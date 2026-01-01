@@ -43,7 +43,7 @@ spec:
       volumes:
       - name: downloads
         hostPath:
-          path: ${BASE_PATH}/usenet
+          path: ${BASE_PATH}/data/media/usenet
           type: Directory
       - name: config
         hostPath:
