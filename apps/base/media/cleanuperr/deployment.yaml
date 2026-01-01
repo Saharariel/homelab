@@ -46,9 +46,9 @@ spec:
       volumes:
         - name: config
           hostPath:
-            path: /mnt/data/configs/cleanuperr
+            path: ${BASE_PATH}/configs/cleanuperr
             type: DirectoryOrCreate
         - name: torrents
           hostPath:
-            path: /mnt/data/torrents
+            path: ${BASE_PATH}/torrents
             type: DirectoryOrCreate
