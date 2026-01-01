@@ -48,5 +48,5 @@ spec:
       volumes:
       - name: appdata
         hostPath:
-          path: /mnt/data/configs/homarr
+          path: ${BASE_PATH}/configs/homarr
           type: Directory
