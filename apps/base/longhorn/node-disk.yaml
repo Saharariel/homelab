@@ -8,7 +8,7 @@ metadata:
 spec:
   disks:
     longhorn:
-      path: /tank/longhorn
+      path: /mnt/data/longhorn
       allowScheduling: true
       storageReserved: 10737418240
       tags:
