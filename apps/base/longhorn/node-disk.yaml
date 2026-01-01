@@ -7,9 +7,15 @@ metadata:
     kustomize.toolkit.fluxcd.io/skip-dry-run: "true"
 spec:
   disks:
-    nfs-disk:
+    longhorn:
       path: /tank/longhorn
       allowScheduling: true
-      storageReserved: 21474836480 # 20 GiB
+      storageReserved: 10737418240
       tags:
-        - nfs
+        - media
+        
+    #   path: /tank/longhorn
+    #   allowScheduling: true
+    #   storageReserved: 21474836480 # 20 GiB
+    #   tags:
+    #     - nfs
