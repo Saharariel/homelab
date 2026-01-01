@@ -1,7 +1,7 @@
 apiVersion: longhorn.io/v1beta2
 kind: Node
 metadata:
-  name: worker-node-nfs
+  name: worker-node-1 # your node name
   namespace: longhorn-system
   annotations:
     kustomize.toolkit.fluxcd.io/skip-dry-run: "true"
@@ -14,3 +14,4 @@ spec:
       storageReserved: 10737418240
       tags:
         - media
+        - nfs
