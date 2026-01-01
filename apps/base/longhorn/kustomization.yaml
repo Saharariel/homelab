@@ -4,7 +4,6 @@ resources:
   - helmrepo.yaml
   - helmrelease.yaml
   - node-disk.yaml
-  - node-disk-nfs.yaml
   - storageclass-longhorn-config.yaml
   - secret.yaml
 
