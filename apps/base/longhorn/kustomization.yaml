@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - helmrepo.yaml
   - helmrelease.yaml
-  - node-disk.yaml
+  # - node-disk.yaml
   - storageclass-longhorn-config.yaml
   - secret.yaml
 
