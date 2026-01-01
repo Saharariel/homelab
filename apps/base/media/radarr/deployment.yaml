@@ -43,7 +43,7 @@ spec:
       volumes:
         - name: media
           hostPath:
-            path: ${BASE_PATH}/data/media
+            path: ${BASE_PATH}/data
             type: Directory
         - name: config
           hostPath:

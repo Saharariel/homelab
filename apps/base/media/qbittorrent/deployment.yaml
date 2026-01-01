@@ -152,5 +152,5 @@ spec:
       # Downloads directory
       - name: downloads
         hostPath:
-          path: ${BASE_PATH}/data/media/torrents
+          path: ${BASE_PATH}/data/torrents
           type: Directory
