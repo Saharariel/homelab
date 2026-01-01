@@ -43,7 +43,7 @@ spec:
       volumes:
         - name: config
           hostPath:
-            path: /mnt/data/configs/notifiarr
+            path: ${BASE_PATH}/configs/notifiarr
             type: Directory
         - name: machine-id
           hostPath:

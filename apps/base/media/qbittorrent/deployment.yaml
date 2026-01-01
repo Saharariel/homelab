@@ -146,11 +146,11 @@ spec:
       # Config directory
       - name: config
         hostPath:
-          path: /mnt/data/configs/qbittorrent
+          path: ${BASE_PATH}/configs/qbittorrent
           type: Directory
 
       # Downloads directory
       - name: downloads
         hostPath:
-          path: /mnt/data/torrents
+          path: ${BASE_PATH}/torrents
           type: Directory
