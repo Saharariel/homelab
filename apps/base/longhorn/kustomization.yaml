@@ -5,5 +5,5 @@ resources:
   - helmrelease.yaml
   - node-disk.yaml
   - storageclass-longhorn-config.yaml
+  - recurringjob.yaml
   - secret.yaml
-
