@@ -11,5 +11,4 @@ spec:
       path: /var/lib/longhorn/
       allowScheduling: true
       storageReserved: 21474836480  # 20 GiB
-      diskUUID: "5e274eb1-7b2b-4f1e-81bc-8884e3007dcc"
       tags: []
