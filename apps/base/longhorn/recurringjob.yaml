@@ -1,0 +1,14 @@
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: s3-weekly
+  namespace: longhorn-system
+spec:
+  cron: "0 3 * * SUN"
+  task: "backup"
+  groups:
+    - s3-weekly # This matches the selector in your StorageClass
+  retain: 4
+  concurrency: 1
+  parameters:
+    full-backup-interval: "4"
