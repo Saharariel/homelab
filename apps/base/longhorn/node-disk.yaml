@@ -11,4 +11,5 @@ spec:
       path: /var/lib/longhorn/
       allowScheduling: true
       storageReserved: 21474836480  # 20 GiB
-      tags: []
+      tags: 
+        - nfs
