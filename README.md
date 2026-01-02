@@ -12,17 +12,20 @@ Admittedly, this is overkill for a homelab - but that's kind of the point. This 
 
 ## Infrastructure Specs
 
-### Control Plane 
-**Dell Vostro Laptop** 
-- **CPU:** Intel Core i5-8265U 
-- **Memory:** 8 GB DDR4 RAM 
+### Control Plane
+
+**Dell Vostro Laptop**
+
+- **CPU:** Intel Core i5-8265U
+- **Memory:** 8 GB DDR4 RAM
 - **Storage:** 256GB SSD
 - **OS:** Ubuntu Server
 
 ### Worker Node
+
 - **CPU:** Intel Core i7-8700  
 - **Memory:** 16 GB DDR4 RAM
-- **Storage:** 12 TB HDD  
+- **Storage:** 2x12 TB HDD ZFS mirror pool
 - **Hypervisor:** Proxmox VE
 - **OS:** Ubuntu Server (running in VM)
 
@@ -91,7 +94,7 @@ Services i use everyday
     </td>
     <td>Password Manager</td>
     </tr>
-</table> 
+</table>
 
 ### Infrastructure
 
@@ -183,12 +186,17 @@ Everything needed to run my cluster & deploy my applications
     </td>
     <td>External DNS manager for Kubernetes</td>
     </tr>
-</table> 
+</table>
 
+## Cluster Storage Architecture
+<p align="center">
+  <img src="./docs/storage_strecture.png" width="800" alt="Lab Architecture">
+</p>
 
 ## My Goals in this Project
 
 - Automate and version all infrastructure and services  
 - Ensure reproducibility and recoverability  
 - Improve DevOps skills using real-world tools and patterns  
-- Provide secure, performant, and resilient home services 
+- Provide secure, performant, and resilient home services
+
