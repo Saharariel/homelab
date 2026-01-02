@@ -5,11 +5,11 @@ metadata:
   namespace: longhorn-system
   annotations:
     kustomize.toolkit.fluxcd.io/skip-dry-run: "true"
-# spec:
-#   disks:
-#     longhorn:
-#       path: /tank/longhorn
-#       allowScheduling: true
-#       storageReserved: 21474836480 # 20 GiB
-#       tags:
-#         - media
+spec:
+  disks:
+    default-disk:
+      path: /var/lib/longhorn/
+      allowScheduling: true
+      storageReserved: 21474836480  # 20 GiB
+      diskUUID: "5e274eb1-7b2b-4f1e-81bc-8884e3007dcc"
+      tags: []
