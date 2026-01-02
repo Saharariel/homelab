@@ -23,29 +23,28 @@ spec:
       retries: 3
   values:
     domain: "https://vault.homelab"
-    
+
     image:
       registry: docker.io
       repository: vaultwarden/server
       tag: "1.32.7"
       pullPolicy: IfNotPresent
-    
+
     signupsAllowed: false
     signupsVerify: false
     invitationsAllowed: false
-    
+
     adminToken:
       existingSecret: "vaultwarden-secrets"
       existingSecretKey: "admin-token"
-    
+
     storage:
       data:
         name: "vaultwarden-data"
         size: "1Gi"
-        class: "longhorn"
         path: "/data"
         accessMode: "ReadWriteOnce"
-    
+
     resources:
       requests:
         cpu: 50m
@@ -53,7 +52,7 @@ spec:
       limits:
         cpu: 500m
         memory: 512Mi
-    
+
     ingress:
       enabled: true
       class: "traefik"
@@ -63,6 +62,7 @@ spec:
       tlsSecret: "vaultwarden-tls"
       additionalAnnotations:
         cert-manager.io/cluster-issuer: "selfsigned-issuer"
-    
+
     service:
       type: ClusterIP
+
