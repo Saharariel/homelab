@@ -21,25 +21,13 @@ spec:
   values:
     persistence:
       defaultClass: true
-      defaultClassReplicaCount: 1
+      defaultClassReplicaCount: 2
       defaultFsType: ext4
-      
+
     defaultSettings:
-      defaultReplicaCount: "1"
+      defaultReplicaCount: "2"
       backupTarget: "s3://homelab-sahar-backups@us-east-1/"
       backupTargetCredentialSecret: "aws-secret"
-
-    recurringJobs:
-      default:
-        jobs:
-        - name: weekly-backup
-          task: backup
-          cron: "0 2 * * 0"
-          retain: 4
-          concurrency: 3
-          parameters:
-            full-backup-interval: "14"
-
 
     ingress:
       enabled: true
