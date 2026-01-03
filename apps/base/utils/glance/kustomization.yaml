@@ -3,6 +3,8 @@ kind: Kustomization
 
 resources:
   - deployment.yaml
+  - ingress.yaml
+  - service.yaml
 
 configMapGenerator:
   - name: glance-config
