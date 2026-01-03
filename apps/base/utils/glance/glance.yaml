@@ -1,14 +1,15 @@
 theme:
-  background-color: 235 6 13 # Dark Grey/Brown (#1d2021)
-  primary-color: 45 100 80 # Beige/Gold accent (#f9d793)
-  contrast-color: 45 20 90 # Off-white text (#ebdbb2)
-  positive-color: 142 60 55 # Muted Green (#b8bb26)
-  negative-color: 0 75 55 # Muted Red (#fb4934)
+  # "Gruvbox" style dark theme
+  background-color: 235 6 13 # Dark Grey/Brown
+  primary-color: 45 100 80 # Beige/Gold accent
+  contrast-color: 45 20 90 # Off-white text
+  positive-color: 142 60 55 # Muted Green
+  negative-color: 0 75 55 # Muted Red
 
 pages:
   - name: Home
     columns:
-      # --- Left Column: Calendar & Social ---
+      # --- Left Column ---
       - size: small
         widgets:
           - type: calendar
@@ -17,8 +18,6 @@ pages:
           - type: group
             title: Twitch Channels
             widgets:
-              # Using 'bookmarks' here so it works without API keys immediately.
-              # Real Twitch widget requires Oauth setup.
               - type: bookmarks
                 groups:
                   - links:
@@ -29,9 +28,8 @@ pages:
                       - title: k3soju
                         url: https://twitch.tv/k3soju
 
-      # --- Middle Column: The Infrastructure Core ---
-      - size: large
-        widgets:
+      # --- Middle Column (Auto-Width) ---
+      - widgets: # <--- REMOVED "size: large"
           - type: group
             title: Services
             widgets:
@@ -45,7 +43,6 @@ pages:
             widgets:
               - type: monitor
                 title: Traefik
-                # Standard k3s DNS for Traefik dashboard
                 url: http://traefik.kube-system.svc.cluster.local:8080
                 icon: network
 
@@ -64,7 +61,6 @@ pages:
             widgets:
               - type: monitor
                 title: Longhorn
-                # The one we fixed earlier
                 url: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
                 icon: hard-drive
 
@@ -73,23 +69,19 @@ pages:
                 url: http://vaultwarden.default.svc.cluster.local:80
                 icon: lock
 
-      # --- Right Column: Environment & Nodes ---
+      # --- Right Column ---
       - size: small
         widgets:
           - type: weather
             location: "Jerusalem, Israel"
-            # Note: Weather might show 'N/A' until you add an API key,
-            # but it won't crash the pod.
 
           - type: group
             title: Kubernetes Nodes
             widgets:
-              # Simple placeholder links for your nodes
-              # The screenshot used a custom API widget for this.
               - type: bookmarks
                 groups:
                   - links:
-                      - title: "talos-awe-w01 (Control)"
+                      - title: "talos-awe-w01"
                         url: "https://proxmox:8006"
-                      - title: "talos-cz9-9tb (Worker)"
+                      - title: "talos-cz9-9tb"
                         url: "https://proxmox:8006"
