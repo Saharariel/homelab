@@ -1,87 +1,171 @@
 theme:
-  # "Gruvbox" style dark theme
-  background-color: 235 6 13 # Dark Grey/Brown
-  primary-color: 45 100 80 # Beige/Gold accent
-  contrast-color: 45 20 90 # Off-white text
-  positive-color: 142 60 55 # Muted Green
-  negative-color: 0 75 55 # Muted Red
+  # Gruvbox Dark Theme
+  background-color: 40 23 23 # #282828 (Dark Grey)
+  primary-color: 46 92 84 # #fabd2f (Gold/Yellow)
+  contrast-color: 48 23 92 # #ebdbb2 (Off-white)
+  positive-color: 106 47 56 # #b8bb26 (Green)
+  negative-color: 2 73 59 # #fb4934 (Red)
+  text-color: 48 23 92 # Text matching contrast
 
 pages:
   - name: Home
     columns:
-      # --- Left Column ---
+      # --- LEFT COLUMN (Small) ---
       - size: small
         widgets:
+          - type: clock
+            time-format: "15:04"
+            date-format: "Monday, 02 Jan"
+
           - type: calendar
             first-day-of-week: monday
 
-          - type: group
-            title: Twitch Channels
-            widgets:
-              - type: bookmarks
-                groups:
-                  - links:
-                      - title: forsen
-                        url: https://twitch.tv/forsen
-                      - title: Northernlion
-                        url: https://twitch.tv/northernlion
-                      - title: k3soju
-                        url: https://twitch.tv/k3soju
+          - type: markets
+            markets:
+              - symbol: SPY
+                name: S&P 500
+              - symbol: BTC-USD
+                name: Bitcoin
+              - symbol: NVDA
+                name: NVIDIA
 
-      # --- Middle Column (Auto-Width) ---
-      - widgets: # <--- REMOVED "size: large"
+          # NASA APOD (Requires API Key, using DEMO for now)
+          - type: custom-api
+            title: Astronomy Picture
+            cache: 4h
+            url: https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY
+            headers:
+              Accept: application/json
+            template: |
+              {{- if eq (.JSON.String "media_type") "image" -}}
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <a href="{{ .JSON.String "hdurl" }}" target="_blank">
+                    <img src="{{ .JSON.String "url" }}" style="max-width:100%; border-radius:4px;" />
+                  </a>
+                  <p class="size-h6" style="margin-top:5px;">{{ .JSON.String "title" }}</p>
+                </div>
+              {{- else -}}
+                <p>No image today.</p>
+              {{- end }}
+
+      # --- CENTER COLUMN (Full/Wide) ---
+      - size: full
+        widgets:
+          # Replaced "Server Stats" (which only shows Pod stats) with Cluster Monitoring links
           - type: group
-            title: Services
+            title: Cluster Health
             widgets:
               - type: monitor
-                title: Linkding
-                url: http://linkding.default.svc.cluster.local:9090
-                icon: bookmark
-
-          - type: group
-            title: Networking & Monitoring
-            widgets:
-              - type: monitor
-                title: Traefik
-                url: http://traefik.kube-system.svc.cluster.local:8080
-                icon: network
-
-              - type: monitor
-                title: Headplane
-                url: http://headplane.default.svc.cluster.local:8080
-                icon: globe
-
+                title: Proxmox
+                url: https://proxmox:8006 # External link
+                icon: server
               - type: monitor
                 title: Grafana
                 url: http://grafana.monitoring.svc.cluster.local:3000
                 icon: activity
-
-          - type: group
-            title: Infrastructure
-            widgets:
               - type: monitor
                 title: Longhorn
                 url: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
                 icon: hard-drive
 
-              - type: monitor
-                title: Vaultwarden
-                url: http://vaultwarden.default.svc.cluster.local:80
-                icon: lock
+          # Converted to K8s Internal DNS
+          - type: monitor
+            title: Media Services
+            cache: 1m
+            sites:
+              - title: Jellyfin
+                url: http://jellyfin.default.svc.cluster.local:8096
+                icon: play
+              - title: Radarr
+                url: http://radarr.default.svc.cluster.local:7878
+                icon: film
+              - title: Sonarr
+                url: http://sonarr.default.svc.cluster.local:8989
+                icon: tv
+              - title: Prowlarr
+                url: http://prowlarr.default.svc.cluster.local:9696
+                icon: search
+              - title: qBittorrent
+                url: http://qbittorrent.default.svc.cluster.local:8080
+                icon: download
+              - title: Immich
+                url: http://immich-server.default.svc.cluster.local:2283
+                icon: image
 
-      # --- Right Column ---
-      - size: small
-        widgets:
-          - type: weather
-            location: "Jerusalem, Israel"
+          - type: rss
+            title: Tech News
+            limit: 5
+            collapse-after: 3
+            feeds:
+              - url: https://feeds.arstechnica.com/arstechnica/index
+                title: Ars Technica
+              - url: https://www.theverge.com/rss/index.xml
+                title: The Verge
 
           - type: group
-            title: Kubernetes Nodes
             widgets:
-              - type: bookmarks
-                groups:
-                  - links:
-                      - title: "talos-awe-w01"
-                        url: "https://proxmox:8006"
-                      - title: "talos-cz9-9tb"
-                        url: "https://proxmox:8006"
+              - type: reddit
+                subreddit: selfhosted
+                show-thumbnails: true
+              - type: reddit
+                subreddit: kubernetes
+                show-thumbnails: false
+
+      # --- RIGHT COLUMN (Small) ---
+      - size: small
+        widgets:
+          # Weather adapted for Israel
+          - type: custom-api
+            title: Weather
+            body-type: string
+            cache: 1h
+            options:
+              location: Jerusalem, Israel
+              temp_unit: celsius
+            # (Keeping the standard template to save space, the one you pasted is very long)
+            template: |
+              {{ $location := replaceAll " " "%20" (.Options.StringOr "location" "") }}
+              {{ $url := printf "https://api.open-meteo.com/v1/forecast?latitude=31.76&longitude=35.21&current_weather=true&temperature_unit=%s" (.Options.StringOr "temp_unit" "celsius") }}
+              {{ $req := newRequest $url | getResponse }}
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                 <span class="size-h2">{{ $req.JSON.Float "current_weather.temperature" }}°</span>
+                 <span class="size-h5">{{ .Options.StringOr "location" "" }}</span>
+              </div>
+
+          # Aircraft adapted for Tel Aviv / Ben Gurion Area
+          - type: custom-api
+            title: Aircraft Overhead (TLV)
+            cache: 1m
+            # Coordinates box for Israel/Central
+            url: https://opensky-network.org/api/states/all?lamin=31.8&lomin=34.6&lamax=32.2&lomax=35.0
+            template: |
+              {{ $states := .JSON.Array "states" }}
+              {{ $count := len $states }}
+              <div style="text-align:center;">
+                <span class="size-h1 color-primary">{{ $count }}</span>
+                <p class="size-h6">Aircraft detected</p>
+                {{ if gt $count 0 }}
+                  <div style="margin-top:10px; font-size:0.8rem; text-align:left;">
+                  {{ range $i, $plane := $states }}
+                    {{ if lt $i 5 }}
+                      <div>✈ {{ index $plane 1 }} ({{ printf "%.0f" (index $plane 7) }}m)</div>
+                    {{ end }}
+                  {{ end }}
+                  </div>
+                {{ end }}
+              </div>
+
+          - type: custom-api
+            title: Epic Games Free
+            cache: 6h
+            url: https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale=en&country=US&allowCountries=US
+            template: |
+              {{ range .JSON.Array "data.Catalog.searchStore.elements" }}
+                {{ $price := .String "price.totalPrice.discountPrice" }}
+                {{ if eq $price "0" }}
+                   <div style="margin-bottom:10px;">
+                     <div class="color-highlight">{{ .String "title" }}</div>
+                     <div class="size-h6">Free Now</div>
+                   </div>
+                {{ end }}
+              {{ end }}
