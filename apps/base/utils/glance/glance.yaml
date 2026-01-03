@@ -1,11 +1,9 @@
 theme:
   # Gruvbox Dark Theme
-  background-color: 40 23 23 # #282828 (Dark Grey)
-  primary-color: 46 92 84 # #fabd2f (Gold/Yellow)
-  contrast-color: 48 23 92 # #ebdbb2 (Off-white)
-  positive-color: 106 47 56 # #b8bb26 (Green)
-  negative-color: 2 73 59 # #fb4934 (Red)
-  text-color: 48 23 92 # Text matching contrast
+  background-color: 0 0 16
+  primary-color: 43 59 81
+  positive-color: 61 66 44
+  negative-color: 6 96 59
 
 pages:
   - name: Home
@@ -57,7 +55,7 @@ pages:
             widgets:
               - type: monitor
                 title: Proxmox
-                url: https://proxmox:8006 # External link
+                url: https://192.168.50.10:8006 # External link
                 icon: server
               - type: monitor
                 title: Grafana
@@ -74,23 +72,20 @@ pages:
             cache: 1m
             sites:
               - title: Jellyfin
-                url: http://jellyfin.default.svc.cluster.local:8096
+                url: http://jellyfin.media.svc.cluster.local:8096
                 icon: play
               - title: Radarr
-                url: http://radarr.default.svc.cluster.local:7878
+                url: http://radarr.media.svc.cluster.local:7878
                 icon: film
               - title: Sonarr
-                url: http://sonarr.default.svc.cluster.local:8989
+                url: http://sonarr.media.svc.cluster.local:8989
                 icon: tv
               - title: Prowlarr
-                url: http://prowlarr.default.svc.cluster.local:9696
+                url: http://prowlarr.media.svc.cluster.local:9696
                 icon: search
-              - title: qBittorrent
-                url: http://qbittorrent.default.svc.cluster.local:8080
+              - title: Sabnzbd
+                url: http://sabnzbd.media.svc.cluster.local:8080
                 icon: download
-              - title: Immich
-                url: http://immich-server.default.svc.cluster.local:2283
-                icon: image
 
           - type: rss
             title: Tech News
@@ -120,7 +115,7 @@ pages:
             body-type: string
             cache: 1h
             options:
-              location: Jerusalem, Israel
+              location: Tel Aviv, Israel
               temp_unit: celsius
             # (Keeping the standard template to save space, the one you pasted is very long)
             template: |
@@ -130,29 +125,6 @@ pages:
               <div style="display:flex; justify-content:space-between; align-items:center;">
                  <span class="size-h2">{{ $req.JSON.Float "current_weather.temperature" }}°</span>
                  <span class="size-h5">{{ .Options.StringOr "location" "" }}</span>
-              </div>
-
-          # Aircraft adapted for Tel Aviv / Ben Gurion Area
-          - type: custom-api
-            title: Aircraft Overhead (TLV)
-            cache: 1m
-            # Coordinates box for Israel/Central
-            url: https://opensky-network.org/api/states/all?lamin=31.8&lomin=34.6&lamax=32.2&lomax=35.0
-            template: |
-              {{ $states := .JSON.Array "states" }}
-              {{ $count := len $states }}
-              <div style="text-align:center;">
-                <span class="size-h1 color-primary">{{ $count }}</span>
-                <p class="size-h6">Aircraft detected</p>
-                {{ if gt $count 0 }}
-                  <div style="margin-top:10px; font-size:0.8rem; text-align:left;">
-                  {{ range $i, $plane := $states }}
-                    {{ if lt $i 5 }}
-                      <div>✈ {{ index $plane 1 }} ({{ printf "%.0f" (index $plane 7) }}m)</div>
-                    {{ end }}
-                  {{ end }}
-                  </div>
-                {{ end }}
               </div>
 
           - type: custom-api
