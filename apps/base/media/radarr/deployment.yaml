@@ -46,6 +46,5 @@ spec:
             path: ${BASE_PATH}/data
             type: Directory
         - name: config
-          hostPath:
-            path: ${BASE_PATH}/configs/radarr
-            type: Directory
+          persistentVolumeClaim:
+            claimName: radarr-config
