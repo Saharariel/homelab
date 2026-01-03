@@ -80,8 +80,8 @@ kubeControllerManager:
   enabled: true
   endpoints:
     # ips of servers
-    - 10.0.0.18
-    - 10.0.0.19
+    - 192.168.50.18
+    - 192.168.50.18
 
 coreDns:
   enabled: true
@@ -93,8 +93,8 @@ kubeEtcd:
   enabled: true
   endpoints:
     # ips of servers
-    - 10.0.0.18
-    - 10.0.0.19
+    - 192.168.50.18
+    - 192.168.50.18
   service:
     enabled: true
     port: 2381
@@ -104,15 +104,15 @@ kubeScheduler:
   enabled: true
   endpoints:
     # ips of servers
-    - 10.0.0.18
-    - 10.0.0.19
+    - 192.168.50.18
+    - 192.168.50.18
 
 kubeProxy:
   enabled: true
   endpoints:
     # ips of servers
-    - 10.0.0.18
-    - 10.0.0.19
+    - 192.168.50.18
+    - 192.168.50.18
 
 kubeStateMetrics:
   enabled: true
