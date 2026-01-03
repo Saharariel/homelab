@@ -3,7 +3,6 @@ kind: Ingress
 metadata:
   name: glance
   annotations:
-    kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
   ingressClassName: traefik
