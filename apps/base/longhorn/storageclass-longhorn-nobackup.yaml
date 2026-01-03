@@ -1,0 +1,8 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-no-backup
+provisioner: driver.longhorn.io
+reclaimPolicy: Delete
+parameters:
+  numberOfReplicas: "2"
