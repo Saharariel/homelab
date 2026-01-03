@@ -3,6 +3,10 @@ kind: StorageClass
 metadata:
   name: longhorn-no-backup
 provisioner: driver.longhorn.io
-reclaimPolicy: Delete
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
 parameters:
   numberOfReplicas: "2"
+  dataLocality: "best-effort"
+  replicaAutoBalance: "disabled"
