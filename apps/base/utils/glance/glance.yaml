@@ -1,11 +1,95 @@
 theme:
-  background-color: 20 20 20
-  primary-color: 219 233 238
+  background-color: 235 6 13 # Dark Grey/Brown (#1d2021)
+  primary-color: 45 100 80 # Beige/Gold accent (#f9d793)
+  contrast-color: 45 20 90 # Off-white text (#ebdbb2)
+  positive-color: 142 60 55 # Muted Green (#b8bb26)
+  negative-color: 0 75 55 # Muted Red (#fb4934)
+
 pages:
   - name: Home
     columns:
+      # --- Left Column: Calendar & Social ---
+      - size: small
+        widgets:
+          - type: calendar
+            first-day-of-week: monday
+
+          - type: group
+            title: Twitch Channels
+            widgets:
+              # Using 'bookmarks' here so it works without API keys immediately.
+              # Real Twitch widget requires Oauth setup.
+              - type: bookmarks
+                groups:
+                  - links:
+                      - title: forsen
+                        url: https://twitch.tv/forsen
+                      - title: Northernlion
+                        url: https://twitch.tv/northernlion
+                      - title: k3soju
+                        url: https://twitch.tv/k3soju
+
+      # --- Middle Column: The Infrastructure Core ---
       - size: large
+        widgets:
+          - type: group
+            title: Services
+            widgets:
+              - type: monitor
+                title: Linkding
+                url: http://linkding.default.svc.cluster.local:9090
+                icon: bookmark
+
+          - type: group
+            title: Networking & Monitoring
+            widgets:
+              - type: monitor
+                title: Traefik
+                # Standard k3s DNS for Traefik dashboard
+                url: http://traefik.kube-system.svc.cluster.local:8080
+                icon: network
+
+              - type: monitor
+                title: Headplane
+                url: http://headplane.default.svc.cluster.local:8080
+                icon: globe
+
+              - type: monitor
+                title: Grafana
+                url: http://grafana.monitoring.svc.cluster.local:3000
+                icon: activity
+
+          - type: group
+            title: Infrastructure
+            widgets:
+              - type: monitor
+                title: Longhorn
+                # The one we fixed earlier
+                url: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
+                icon: hard-drive
+
+              - type: monitor
+                title: Vaultwarden
+                url: http://vaultwarden.default.svc.cluster.local:80
+                icon: lock
+
+      # --- Right Column: Environment & Nodes ---
+      - size: small
         widgets:
           - type: weather
             location: "Jerusalem, Israel"
-          - type: calendar
+            # Note: Weather might show 'N/A' until you add an API key,
+            # but it won't crash the pod.
+
+          - type: group
+            title: Kubernetes Nodes
+            widgets:
+              # Simple placeholder links for your nodes
+              # The screenshot used a custom API widget for this.
+              - type: bookmarks
+                groups:
+                  - links:
+                      - title: "talos-awe-w01 (Control)"
+                        url: "https://proxmox:8006"
+                      - title: "talos-cz9-9tb (Worker)"
+                        url: "https://proxmox:8006"
