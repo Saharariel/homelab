@@ -1,0 +1,11 @@
+theme:
+  background-color: 20 20 20
+  primary-color: 219 233 238
+pages:
+  - name: Home
+    columns:
+      - size: large
+        widgets:
+          - type: weather
+            location: "Jerusalem, Israel"
+          - type: calendar
