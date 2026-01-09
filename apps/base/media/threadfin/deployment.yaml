@@ -29,9 +29,15 @@ spec:
               mountPath: /home/threadfin/conf
             - name: temp-buffer
               mountPath: /tmp/threadfin
+            - name: m3u8
+              mountPath: /data
       volumes:
         - name: config
           persistentVolumeClaim:
             claimName: threadfin-config
         - name: temp-buffer
           emptyDir: {}
+        - name: m3u8
+          hostPath:
+            path: ${BASE_PATH}/data/media/livetv
+            type: Directory
