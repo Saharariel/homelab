@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: threadfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: threadfin
+  template:
+    metadata:
+      labels:
+        app: threadfin
+    spec:
+      containers:
+        - name: threadfin
+          image: fyb3roptik/threadfin:1.2.37
+          ports:
+            - containerPort: 34400
+          env:
+            - name: PUID
+              value: "1001"
+            - name: PGID
+              value: "1001"
+            - name: TZ
+              value: "Israel"
+          volumeMounts:
+            - name: config
+              mountPath: /home/threadfin/conf
+            - name: temp-buffer
+              mountPath: /tmp/threadfin
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: threadfin-config
+        - name: temp-buffer
+          emptyDir: {}
