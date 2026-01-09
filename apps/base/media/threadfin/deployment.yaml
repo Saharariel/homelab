@@ -18,6 +18,10 @@ spec:
           ports:
             - containerPort: 34400
           env:
+            - name: THREADFIN_PORT
+              value: "34400"
+            - name: THREADFIN_BIND
+              value: "0.0.0.0" # This forces the app to listen on all interfaces
             - name: PUID
               value: "1001"
             - name: PGID
