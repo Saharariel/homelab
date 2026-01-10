@@ -55,10 +55,10 @@ spec:
               memory: "1Gi"
               cpu: "500m"
               gpu.intel.com/i915: "1"
-            # limits:
-            #   memory: "4Gi"
-            #   cpu: "4000m"
-            #   gpu.intel.com/i915: "1"
+            limits:
+              # memory: "4Gi"
+              # cpu: "4000m"
+              gpu.intel.com/i915: "1"
 
           # Security context - no privileged mode needed
           securityContext:
