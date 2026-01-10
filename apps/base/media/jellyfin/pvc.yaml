@@ -3,8 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: jellyfin-config
 spec:
-  accessModes: [ "ReadWriteOnce" ]
-  storageClassName: longhorn-config
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: longhorn-no-backup
   resources:
     requests:
       storage: 10Gi
