@@ -55,10 +55,10 @@ spec:
               memory: "1Gi"
               cpu: "500m"
               gpu.intel.com/i915: "1"
-            limits:
-              memory: "4Gi"
-              cpu: "4000m"
-              gpu.intel.com/i915: "1"
+            # limits:
+            #   memory: "4Gi"
+            #   cpu: "4000m"
+            #   gpu.intel.com/i915: "1"
 
           # Security context - no privileged mode needed
           securityContext:
@@ -84,22 +84,22 @@ spec:
               mountPath: /cache
             - name: transcodes
               mountPath: /config/transcodes
-          # Health checks
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8096
-            initialDelaySeconds: 30
-            periodSeconds: 30
-            timeoutSeconds: 10
-
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8096
-            initialDelaySeconds: 10
-            periodSeconds: 5
-            timeoutSeconds: 5
+          # # Health checks
+          # livenessProbe:
+          #   httpGet:
+          #     path: /health
+          #     port: 8096
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 30
+          #   timeoutSeconds: 10
+          #
+          # readinessProbe:
+          #   httpGet:
+          #     path: /health
+          #     port: 8096
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 5
+          #   timeoutSeconds: 5
 
       volumes:
         - name: media
