@@ -16,7 +16,7 @@ pages:
             date-format: "Monday, 02 Jan"
 
           - type: calendar
-            first-day-of-week: monday
+            first-day-of-week: sunday
 
           - type: markets
             markets:
@@ -49,7 +49,6 @@ pages:
       # --- CENTER COLUMN (Full/Wide) ---
       - size: full
         widgets:
-          # Replaced "Server Stats" (which only shows Pod stats) with Cluster Monitoring links
           - type: group
             title: Cluster Health
             widgets:
@@ -57,10 +56,6 @@ pages:
                 title: Proxmox
                 url: https://192.168.50.10:8006 # External link
                 icon: server
-              - type: monitor
-                title: Grafana
-                url: http://grafana.monitoring.svc.cluster.local:3000
-                icon: activity
               - type: monitor
                 title: Longhorn
                 url: http://longhorn-frontend.longhorn-system.svc.cluster.local:80
