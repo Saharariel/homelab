@@ -69,6 +69,5 @@ spec:
             type: Directory
 
         - name: config
-          hostPath:
-            path: ${BASE_PATH}/configs/prowlarr
-            type: Directory
+          persistentVolumeClaim:
+            claimName: prowlarr-config
