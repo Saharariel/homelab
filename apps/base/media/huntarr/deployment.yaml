@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: huntarr
-          image: ghcr.io/plexguide/huntarr:8.2.10
+          image: ghcr.io/plexguide/huntarr:9.1.7
 
           ports:
             - containerPort: 9705
