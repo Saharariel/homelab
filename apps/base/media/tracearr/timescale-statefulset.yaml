@@ -36,9 +36,11 @@ spec:
                   key: DB_PASSWORD
             - name: POSTGRES_DB
               value: "tracearr"
+            - name: PGDATA
+              value: "/home/postgres/pgdata/data"
           volumeMounts:
             - name: timescale-data
-              mountPath: /home/postgres/pgdata/data
+              mountPath: /home/postgres/pgdata
             - name: dshm
               mountPath: /dev/shm
           resources:
