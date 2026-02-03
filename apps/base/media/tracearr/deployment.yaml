@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tracearr
+  labels:
+    app: tracearr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tracearr
+  template:
+    metadata:
+      labels:
+        app: tracearr
+    spec:
+      containers:
+        - name: tracearr
+          image: ghcr.io/connorgallopo/tracearr:1.4.12
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+            - name: HOST
+              value: "0.0.0.0"
+            - name: TZ
+              value: "UTC"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: tracearr-secret
+                  key: DATABASE_URL
+            - name: REDIS_URL
+              value: "redis://tracearr-redis:6379"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: tracearr-secret
+                  key: JWT_SECRET
+            - name: COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: tracearr-secret
+                  key: COOKIE_SECRET
+            - name: CORS_ORIGIN
+              value: "*"
+            - name: LOG_LEVEL
+              value: "info"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+      restartPolicy: Always

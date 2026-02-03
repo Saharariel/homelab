@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tracearr-timescale
+  labels:
+    app: tracearr-timescale
+spec:
+  serviceName: tracearr-timescale
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tracearr-timescale
+  template:
+    metadata:
+      labels:
+        app: tracearr-timescale
+    spec:
+      containers:
+        - name: timescale
+          image: timescale/timescaledb-ha:pg18
+          args:
+            - postgres
+            - -c
+            - timescaledb.max_tuples_decompressed_per_dml_transaction=0
+            - -c
+            - max_locks_per_transaction=4096
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: "tracearr"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tracearr-secret
+                  key: DB_PASSWORD
+            - name: POSTGRES_DB
+              value: "tracearr"
+          volumeMounts:
+            - name: timescale-data
+              mountPath: /home/postgres/pgdata/data
+            - name: dshm
+              mountPath: /dev/shm
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "100m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - tracearr
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - tracearr
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 512Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: timescale-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: longhorn-config
+        resources:
+          requests:
+            storage: 10Gi
