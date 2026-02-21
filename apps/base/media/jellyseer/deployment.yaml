@@ -13,15 +13,22 @@ spec:
         app: jellyseer
 
     spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+
+      initContainers:
+        - name: fix-permissions
+          image: busybox:1.37
+          command: ["sh", "-c", "chown -R 1000:1000 /app/config"]
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+
       containers:
         - name: jellyseer
           image: ghcr.io/seerr-team/seerr:v3.0.1
-
-          env:
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
 
           securityContext:
             allowPrivilegeEscalation: false
