@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: jellyseer
-          image: fallenbagel/jellyseerr:3.0.1
+          image: fallenbagel/seer:3.0.1
 
           env:
             - name: PUID
