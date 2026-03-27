@@ -3,6 +3,6 @@ kind: Kustomization
 resources:
 - discord-provider.yaml
 - discord-alert.yaml
-- secret.yaml
+- externalsecret.yaml
 
 #- discord-alert-error.yaml

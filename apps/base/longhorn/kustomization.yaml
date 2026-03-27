@@ -7,4 +7,4 @@ resources:
   - storageclass-longhorn-config.yaml
   - storageclass-longhorn-nobackup.yaml
   - recurringjob.yaml
-  - secret.yaml
+  - externalsecret.yaml

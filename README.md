@@ -173,6 +173,24 @@ Everything needed to run my cluster & deploy my applications
     </td>
     <td>External DNS manager for Kubernetes</td>
     </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/aws.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://aws.amazon.com/systems-manager/features/#Parameter_Store">AWS Parameter Store</a>
+    </td>
+    <td>Centralized secret storage for the cluster</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://avatars.githubusercontent.com/u/71728066?s=200&v=4" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://external-secrets.io/">External Secrets Operator</a>
+    </td>
+    <td>Syncs secrets from AWS Parameter Store into Kubernetes</td>
+    </tr>
 </table>
 
 ## Infrastructure Specs

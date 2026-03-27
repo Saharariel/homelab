@@ -5,4 +5,4 @@ resources:
 - clusterrole.yaml
 - clusterrolebinding.yaml
 - deployment.yaml
-- secret.yaml
+- externalsecret.yaml

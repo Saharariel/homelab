@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: moneyman
+spec:
+  schedule: "0 7 * * *"  # 7am daily
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: moneyman
+            image: ghcr.io/daniel-hauser/moneyman:latest
+            imagePullPolicy: Always
+
+            resources:
+              requests:
+                memory: "512Mi"
+                cpu: "200m"
+              limits:
+                memory: "1Gi"
+                cpu: "1000m"
+
+            env:
+            - name: TZ
+              value: Asia/Jerusalem
+            - name: MONEYMAN_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  name: moneyman-secret
+                  key: MONEYMAN_CONFIG
