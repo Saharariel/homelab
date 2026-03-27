@@ -175,7 +175,7 @@ Everything needed to run my cluster & deploy my applications
     </tr>
     <tr>
     <td>
-        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/aws-parameter-store.svg" style="padding-top:6px;">
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/amazon-web-services.svg" style="padding-top:6px;">
         </td>
         <td>
         <a href="https://aws.amazon.com/systems-manager/features/#Parameter_Store">AWS Parameter Store</a>
@@ -184,7 +184,7 @@ Everything needed to run my cluster & deploy my applications
     </tr>
     <tr>
     <td>
-        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/external-secrets.svg" style="padding-top:6px;">
+        <img width="34" src="https://external-secrets.io/latest/pictures/eso-logo-large.png" style="padding-top:6px;">
         </td>
         <td>
         <a href="https://external-secrets.io/">External Secrets Operator</a>
