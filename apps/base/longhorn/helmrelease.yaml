@@ -28,7 +28,6 @@ spec:
       defaultReplicaCount: "2"
       backupTarget: "s3://homelab-sahar-backups@us-east-1/"
       backupTargetCredentialSecret: "aws-secret"
-      backupstorePollInterval: "3600"
 
     ingress:
       enabled: true

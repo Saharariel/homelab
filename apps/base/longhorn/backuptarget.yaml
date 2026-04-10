@@ -1,0 +1,9 @@
+apiVersion: longhorn.io/v1beta2
+kind: BackupTarget
+metadata:
+  name: default
+  namespace: longhorn-system
+spec:
+  backupTargetURL: s3://homelab-sahar-backups@us-east-1/
+  credentialSecret: aws-secret
+  pollInterval: 1h0m0s
