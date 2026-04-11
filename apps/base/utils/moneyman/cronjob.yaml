@@ -4,6 +4,7 @@ metadata:
   name: moneyman
 spec:
   schedule: "0 7 * * *"  # 7am daily
+  timeZone: Asia/Jerusalem
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
