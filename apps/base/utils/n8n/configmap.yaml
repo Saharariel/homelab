@@ -16,6 +16,10 @@ data:
   # Proxy / Cloudflare Tunnel
   N8N_TRUSTED_PROXIES: "loopback,uniquelocal"
   N8N_SECURE_COOKIE: "true"
+  N8N_TRUST_PROXY: "true"
+
+  # Disable telemetry (avoids DNS errors for posthog/rudder)
+  N8N_DIAGNOSTICS_ENABLED: "false"
 
   # Warnings / deprecations
   N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
