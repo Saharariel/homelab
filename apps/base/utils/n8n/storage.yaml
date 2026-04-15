@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: n8n-data
 spec:
+  storageClassName: longhorn-config
   accessModes:
     - ReadWriteOnce
   resources:
