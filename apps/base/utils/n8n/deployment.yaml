@@ -23,7 +23,8 @@ spec:
       dnsPolicy: None
       dnsConfig:
         nameservers:
-        - 10.0.0.20
+        - 192.168.50.20
+        - 1.1.1.1
 
       containers:
       - name: n8n
