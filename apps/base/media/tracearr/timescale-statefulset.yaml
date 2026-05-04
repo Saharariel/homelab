@@ -19,7 +19,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: timescale
-          image: timescale/timescaledb-ha:pg18
+          image: timescale/timescaledb-ha:pg18.3-ts2.25.2
           args:
             - postgres
             - -c
