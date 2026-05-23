@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: moneyman
 spec:
-  schedule: "0 7 * * *"  # 7am daily
+  schedule: "0 7 * * *" # 7am daily
   timeZone: Asia/Jerusalem
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
@@ -14,23 +14,23 @@ spec:
         spec:
           restartPolicy: OnFailure
           containers:
-          - name: moneyman
-            image: ghcr.io/daniel-hauser/moneyman:latest
-            imagePullPolicy: Always
+            - name: moneyman
+              image: ghcr.io/daniel-hauser/moneyman:v2026.05.14.1
+              imagePullPolicy: Always
 
-            resources:
-              requests:
-                memory: "512Mi"
-                cpu: "200m"
-              limits:
-                memory: "1Gi"
-                cpu: "1000m"
+              resources:
+                requests:
+                  memory: "512Mi"
+                  cpu: "200m"
+                limits:
+                  memory: "1Gi"
+                  cpu: "1000m"
 
-            env:
-            - name: TZ
-              value: Asia/Jerusalem
-            - name: MONEYMAN_CONFIG
-              valueFrom:
-                secretKeyRef:
-                  name: moneyman-secret
-                  key: MONEYMAN_CONFIG
+              env:
+                - name: TZ
+                  value: Asia/Jerusalem
+                - name: MONEYMAN_CONFIG
+                  valueFrom:
+                    secretKeyRef:
+                      name: moneyman-secret
+                      key: MONEYMAN_CONFIG
