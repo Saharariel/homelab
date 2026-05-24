@@ -21,6 +21,11 @@ spec:
       retries: 3
   values:
     kubeProxyReplacement: false
+    bpf:
+      hostLegacyRouting: false
+      masquerade: true
+    endpointRoutes:
+      enabled: true
     ipam:
       operator:
         clusterPoolIPv4PodCIDRList: "10.42.0.0/16"
