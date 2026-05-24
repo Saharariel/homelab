@@ -29,3 +29,12 @@ spec:
         enabled: true
       ui:
         enabled: true
+      metrics:
+        enabled:
+          - dns
+          - drop
+          - tcp
+          - flow
+          - port-distribution
+          - icmp
+          - httpV2
