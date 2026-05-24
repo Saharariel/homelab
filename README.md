@@ -157,6 +157,15 @@ Everything needed to run my cluster & deploy my applications
     </tr>
     <tr>
     <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cilium.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://cilium.io/">Cilium</a>
+    </td>
+    <td>eBPF-based networking, security, and observability (CNI)</td>
+    </tr>
+    <tr>
+    <td>
         <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/longhorn.svg" style="padding-top:6px;">
         </td>
         <td>
