@@ -15,7 +15,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: moneyman
-              image: ghcr.io/daniel-hauser/moneyman:v2026.05.14.1
+              image: ghcr.io/daniel-hauser/moneyman:v2026.05.26.1
               imagePullPolicy: Always
 
               resources:
