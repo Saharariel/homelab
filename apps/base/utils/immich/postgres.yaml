@@ -53,6 +53,10 @@ spec:
                   key: DB_PASSWORD
             - name: POSTGRES_INITDB_ARGS
               value: "--data-checksums"
+            # Use a subdirectory, not the mount root: the Longhorn ext4 volume
+            # has a lost+found dir, which makes initdb refuse the mount point.
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
