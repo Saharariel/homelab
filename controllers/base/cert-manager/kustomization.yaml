@@ -4,3 +4,4 @@ resources:
 - helmrelease.yaml
 - helmrepo.yaml
 - clusterissuer.yaml
+- ca-issuer.yaml
