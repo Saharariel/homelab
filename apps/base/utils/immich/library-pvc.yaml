@@ -1,0 +1,43 @@
+---
+# Photo library lives on its own ZFS dataset (tank/photos, recordsize=1M,
+# quota=2T) on the 12TB mirror, NFS-mounted at /tank/photos on worker-node-1.
+# The Immich chart only accepts an existing claim for the library, so we back a
+# manually-provisioned hostPath PV with this PVC.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: immich-library
+spec:
+  capacity:
+    storage: 2Ti
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  claimRef:
+    namespace: utils
+    name: immich-library
+  hostPath:
+    path: ${BASE_PATH}/photos
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - worker-node-1
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-library
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  volumeName: immich-library
+  resources:
+    requests:
+      storage: 2Ti
