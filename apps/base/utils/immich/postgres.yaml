@@ -37,7 +37,7 @@ spec:
         - name: postgres
           # Immich-maintained Postgres image with the VectorChord + pgvecto.rs
           # extensions pre-loaded. Required by Immich for smart search / face recognition.
-          image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
+          image: ghcr.io/immich-app/postgres:16-vectorchord0.4.3-pgvectors0.2.0
           ports:
             - containerPort: 5432
               name: postgres
