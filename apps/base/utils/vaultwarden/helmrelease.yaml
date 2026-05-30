@@ -62,6 +62,9 @@ spec:
       tlsSecret: "vaultwarden-tls"
       additionalAnnotations:
         cert-manager.io/cluster-issuer: "selfsigned-issuer"
+        # HTTPS only: bind the router to the websecure (443) entrypoint so
+        # port 80 is not served at all for this sensitive app.
+        traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
 
     service:
       type: ClusterIP
