@@ -38,12 +38,21 @@ Services i use everyday
     </tr>
     <tr>
     <td>
-        <img width="34" src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/a2594d147cfd8eabca0ea40474e532377aebbb44/svg/jellyseerr.svg" style="padding-top:6px;">
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/jellyseerr.svg" style="padding-top:6px;">
         </td>
         <td>
-        <a href="https://docs.jellyseerr.dev/">Jellyseer</a>
+        <a href="https://docs.jellyseerr.dev/">Jellyseerr</a>
     </td>
     <td>Requests manager for media library</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/immich.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://immich.app/">Immich</a>
+    </td>
+    <td>Self-hosted photo and video backup</td>
     </tr>
     <tr>
     <td>
@@ -56,12 +65,12 @@ Services i use everyday
     </tr>
     <tr>
     <td>
-        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/homarr.svg" style="padding-top:6px;">
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/vaultwarden.svg" style="padding-top:6px;">
         </td>
         <td>
-        <a href="https://homarr.dev/">Homarr</a>
+        <a href="https://github.com/dani-garcia/vaultwarden">Vaultwarden</a>
     </td>
-    <td>A sleek, modern dashboard</td>
+    <td>Password Manager</td>
     </tr>
     <tr>
     <td>
@@ -72,14 +81,88 @@ Services i use everyday
     </td>
     <td>Identity provider</td>
     </tr>
+</table>
+
+### Media Automation
+
+The *arr stack that keeps the media library running
+<table>
+    <tr>
+        <th>Logo</th>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
     <tr>
     <td>
-        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/vaultwarden.svg" style="padding-top:6px;">
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/sonarr.svg" style="padding-top:6px;">
         </td>
         <td>
-        <a href="https://github.com/dani-garcia/vaultwarden">VaultWarden</a>
+        <a href="https://sonarr.tv/">Sonarr</a>
     </td>
-    <td>Password Manager</td>
+    <td>TV series collection manager</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/radarr.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://radarr.video/">Radarr</a>
+    </td>
+    <td>Movie collection manager</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/prowlarr.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://prowlarr.com/">Prowlarr</a>
+    </td>
+    <td>Indexer manager for the *arr apps</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/bazarr.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://www.bazarr.media/">Bazarr</a>
+    </td>
+    <td>Subtitle management for movies and TV</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/qbittorrent.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://www.qbittorrent.org/">qBittorrent</a>
+    </td>
+    <td>BitTorrent download client</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/sabnzbd.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://sabnzbd.org/">SABnzbd</a>
+    </td>
+    <td>Usenet download client</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/notifiarr.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://notifiarr.com/">Notifiarr</a>
+    </td>
+    <td>Notifications hub for the media stack</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/tracearr.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://github.com/connorgallopo/tracearr">Tracearr</a>
+    </td>
+    <td>Analytics and tracking for the *arr stack</td>
     </tr>
 </table>
 
@@ -112,57 +195,30 @@ Everything needed to run my cluster & deploy my applications
     </tr>
     <tr>
     <td>
-        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/prometheus.svg" style="padding-top:6px;">
-        </td>
-        <td>
-        <a href="https://prometheus.io/">Prometheus</a>
-    </td>
-    <td>Metrics and monitoring for your systems and services</td>
-    </tr>
-    <tr>
-    <td>
-        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/grafana.svg" style="padding-top:6px;">
-        </td>
-        <td>
-        <a href="https://grafana.com/">Grafana</a>
-    </td>
-    <td>Platform for visualizing metrics</td>
-    </tr>
-    <tr>
-    <td>
-        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg" style="padding-top:6px;">
-        </td>
-        <td>
-        <a href="https://developers.cloudflare.com/cloudflare-one">Cloudflare Zero Trust</a>
-    </td>
-    <td>Used for private tunnels to expose public services</td>
-    </tr>
-    <tr>
-    <td>
-        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/proxmox.svg" style="padding-top:6px;">
-        </td>
-        <td>
-        <a href="https://www.proxmox.com/en/">Proxmox</a>
-    </td>
-    <td>Open-source Hypervisor</td>
-    </tr>
-    <tr>
-    <td>
-        <img width="34" src="https://avatars.githubusercontent.com/u/129185620?s=200&v=4" style="padding-top:6px;">
-        </td>
-        <td>
-        <a href="https://github.com/getsops/sops">SOPS</a>
-    </td>
-    <td>Simple And Flexible Tool For Managing Secrets</td>
-    </tr>
-    <tr>
-    <td>
         <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cilium.svg" style="padding-top:6px;">
         </td>
         <td>
         <a href="https://cilium.io/">Cilium</a>
     </td>
     <td>eBPF-based networking, security, and observability (CNI)</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/traefik-proxy.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://traefik.io/">Traefik</a>
+    </td>
+    <td>Ingress controller / reverse proxy</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cert-manager.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://cert-manager.io/">cert-manager</a>
+    </td>
+    <td>Automated TLS certificate management</td>
     </tr>
     <tr>
     <td>
@@ -184,6 +240,15 @@ Everything needed to run my cluster & deploy my applications
     </tr>
     <tr>
     <td>
+        <img width="34" src="https://avatars.githubusercontent.com/u/68335991?v=4" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://external-secrets.io/">External Secrets Operator</a>
+    </td>
+    <td>Syncs secrets from AWS Parameter Store into Kubernetes</td>
+    </tr>
+    <tr>
+    <td>
         <img width="34" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSObhWW7gEGNs1r3kbEXIeWuIDC74C6p5RVQ&s" style="padding-top:6px;">
         </td>
         <td>
@@ -193,12 +258,48 @@ Everything needed to run my cluster & deploy my applications
     </tr>
     <tr>
     <td>
-        <img width="34" src="https://avatars.githubusercontent.com/u/68335991?v=4" style="padding-top:6px;">
+        <img width="34" src="https://avatars.githubusercontent.com/u/129185620?s=200&v=4" style="padding-top:6px;">
         </td>
         <td>
-        <a href="https://external-secrets.io/">External Secrets Operator</a>
+        <a href="https://github.com/getsops/sops">SOPS</a>
     </td>
-    <td>Syncs secrets from AWS Parameter Store into Kubernetes</td>
+    <td>Simple And Flexible Tool For Managing Secrets</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://developers.cloudflare.com/cloudflare-one">Cloudflare Zero Trust</a>
+    </td>
+    <td>Used for private tunnels to expose public services</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/prometheus.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://prometheus.io/">Prometheus</a>
+    </td>
+    <td>Metrics and monitoring for your systems and services</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/grafana.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://grafana.com/">Grafana</a>
+    </td>
+    <td>Platform for visualizing metrics</td>
+    </tr>
+    <tr>
+    <td>
+        <img width="34" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/proxmox.svg" style="padding-top:6px;">
+        </td>
+        <td>
+        <a href="https://www.proxmox.com/en/">Proxmox</a>
+    </td>
+    <td>Open-source Hypervisor</td>
     </tr>
 </table>
 
@@ -227,4 +328,5 @@ Everything needed to run my cluster & deploy my applications
 - Ensure reproducibility and recoverability  
 - Improve DevOps skills using real-world tools and patterns  
 - Provide secure, performant, and resilient home services
-
+</content>
+</invoke>
