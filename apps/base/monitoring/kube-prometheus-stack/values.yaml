@@ -79,9 +79,8 @@ kubelet:
 kubeControllerManager:
   enabled: true
   endpoints:
-    # ips of servers
-    - 192.168.50.18
-    - 192.168.50.18
+    # control-plane, binds 127.0.0.1:10257 (reached via hostNetwork Prometheus)
+    - 127.0.0.1
 
 coreDns:
   enabled: true
@@ -92,9 +91,8 @@ kubeDns:
 kubeEtcd:
   enabled: true
   endpoints:
-    # ips of servers
-    - 192.168.50.18
-    - 192.168.50.18
+    # control-plane localhost; needs k3s --etcd-expose-metrics=true to come up
+    - 127.0.0.1
   service:
     enabled: true
     port: 2381
@@ -103,16 +101,14 @@ kubeEtcd:
 kubeScheduler:
   enabled: true
   endpoints:
-    # ips of servers
-    - 192.168.50.18
-    - 192.168.50.18
+    # control-plane, binds 127.0.0.1:10259 (reached via hostNetwork Prometheus)
+    - 127.0.0.1
 
 kubeProxy:
   enabled: true
   endpoints:
-    # ips of servers
-    - 192.168.50.18
-    - 192.168.50.18
+    # control-plane, binds 127.0.0.1:10249 (reached via hostNetwork Prometheus)
+    - 127.0.0.1
 
 kubeStateMetrics:
   enabled: true
@@ -195,6 +191,9 @@ prometheus:
     evaluationInterval: 30s
     nodeSelector:
       node-role.kubernetes.io/control-plane: "true"
+    # host-net so scrapes are host->host (pod->node-IP broken under Cilium Legacy)
+    hostNetwork: true
+    dnsPolicy: ClusterFirstWithHostNet
 
 thanosRuler:
   enabled: false
