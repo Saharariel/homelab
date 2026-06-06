@@ -1,3 +1,39 @@
+# TimescaleDB data lives on a static NFS PV (tank/k3s-pvcs/tracearr-timescale),
+# migrated off Longhorn via pg_dump + timescaledb pre/post_restore. Regular
+# volume (not volumeClaimTemplate) for a deterministic, rebuild-safe data path.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tracearr-timescale-data-nfs
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes: ["ReadWriteOnce"]
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+    - noatime
+  nfs:
+    server: ${NFS_SERVER}
+    path: ${NFS_ROOT}/tracearr-timescale
+  claimRef:
+    namespace: media
+    name: tracearr-timescale-data-nfs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tracearr-timescale-data-nfs
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: ""
+  volumeName: tracearr-timescale-data-nfs
+  resources:
+    requests:
+      storage: 10Gi
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -77,12 +113,6 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 512Mi
-  volumeClaimTemplates:
-    - metadata:
-        name: timescale-data
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: longhorn-config
-        resources:
-          requests:
-            storage: 10Gi
+        - name: timescale-data
+          persistentVolumeClaim:
+            claimName: tracearr-timescale-data-nfs

@@ -14,6 +14,42 @@ spec:
       port: 5432
       targetPort: 5432
 ---
+# Postgres data lives on a static NFS PV (tank/k3s-pvcs/immich-postgres),
+# migrated off Longhorn via pg_dumpall. Regular volume (not volumeClaimTemplate)
+# so the data path is deterministic and survives a cluster rebuild.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: immich-pgdata-nfs
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes: ["ReadWriteOnce"]
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+    - noatime
+  nfs:
+    server: ${NFS_SERVER}
+    path: ${NFS_ROOT}/immich-postgres
+  claimRef:
+    namespace: utils
+    name: immich-pgdata-nfs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-pgdata-nfs
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: ""
+  volumeName: immich-pgdata-nfs
+  resources:
+    requests:
+      storage: 10Gi
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -53,8 +89,7 @@ spec:
                   key: DB_PASSWORD
             - name: POSTGRES_INITDB_ARGS
               value: "--data-checksums"
-            # Use a subdirectory, not the mount root: the Longhorn ext4 volume
-            # has a lost+found dir, which makes initdb refuse the mount point.
+            # Subdirectory PGDATA: keeps the data dir clean of the mount root.
             - name: PGDATA
               value: "/var/lib/postgresql/data/pgdata"
           volumeMounts:
@@ -87,12 +122,6 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 512Mi
-  volumeClaimTemplates:
-    - metadata:
-        name: postgres-data
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: longhorn-config
-        resources:
-          requests:
-            storage: 10Gi
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: immich-pgdata-nfs
