@@ -7,6 +7,9 @@ spec:
   interval: 10m0s
   dependsOn:
     - name: controllers
+    # apps substitutes ${BASE_PATH}/${NFS_SERVER}/${NFS_ROOT} from the
+    # infra-managed base-path Secret, so it must reconcile after infra.
+    - name: infra
   path: ./apps/production
   prune: true
   sourceRef:
