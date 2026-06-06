@@ -42,9 +42,8 @@ spec:
               mountPath: /etc/machine-id
       volumes:
         - name: config
-          hostPath:
-            path: ${BASE_PATH}/configs/notifiarr
-            type: Directory
+          persistentVolumeClaim:
+            claimName: notifiarr-config-nfs
         - name: machine-id
           hostPath:
             path: /etc/machine-id

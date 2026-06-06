@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: bazarr-config-nfs
+  name: notifiarr-config-nfs
 spec:
   capacity:
     storage: 5Gi
@@ -14,19 +14,19 @@ spec:
     - noatime
   nfs:
     server: ${NFS_SERVER}
-    path: ${NFS_ROOT}/bazarr
+    path: ${NFS_ROOT}/notifiarr
   claimRef:
     namespace: media
-    name: bazarr-config-nfs
+    name: notifiarr-config-nfs
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: bazarr-config-nfs
+  name: notifiarr-config-nfs
 spec:
   accessModes: ["ReadWriteMany"]
   storageClassName: ""
-  volumeName: bazarr-config-nfs
+  volumeName: notifiarr-config-nfs
   resources:
     requests:
       storage: 5Gi
