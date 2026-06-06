@@ -2,5 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: longhorn-system
 
-resources:
-- ../../base/longhorn/
+# Longhorn retired — all storage moved to static NFS PVs on tank/k3s-pvcs.
+# Base manifests kept for reference / possible re-enable.
+# resources:
+# - ../../base/longhorn/
