@@ -4,5 +4,6 @@ resources:
   - helmrepo.yaml
   - externalsecret.yaml
   - library-pvc.yaml
+  - ml-cache-pvc.yaml
   - postgres.yaml
   - helmrelease.yaml

@@ -91,7 +91,6 @@ spec:
         # from the weekly S3 backup (longhorn-no-backup has no recurringJobSelector).
         cache:
           enabled: true
-          type: persistentVolumeClaim
-          size: 10Gi
-          accessMode: ReadWriteOnce
-          storageClass: longhorn-no-backup
+          # Static NFS PV (tank/k3s-pvcs/immich-machine-learning); models are
+          # re-downloadable, so this is just a regenerable cache on NFS.
+          existingClaim: immich-ml-cache-nfs
