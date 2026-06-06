@@ -1,0 +1,54 @@
+# Admin surface: LAN-only (web entrypoint, not exposed through the Cloudflare tunnel).
+# Defense-in-depth: put it behind Authentik forward-auth by creating a traefik
+# Middleware and uncommenting the annotation below (see the setup runbook).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: server-hub-admin
+  namespace: utils
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    # traefik.ingress.kubernetes.io/router.middlewares: authentik-forwardauth@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: hub.homelab
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: server-hub
+                port:
+                  number: 8000
+---
+# Public invite wizard: reachable through the Cloudflare tunnel.
+# Put enroll.<domain> behind the SAME Cloudflare Access email policy as watch.<domain>.
+# The admin manually adds a user's email to that policy before sending the invite, so
+# access to enroll implies access to Jellyfin. Host-isolation middleware in the app
+# serves only /invite on this host.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: server-hub-enroll
+  namespace: utils
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: enroll.${BASE_DOMAIN}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: server-hub
+                port:
+                  number: 8000
+  tls:
+    - hosts:
+        - enroll.${BASE_DOMAIN}

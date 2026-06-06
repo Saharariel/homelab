@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-hub
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate # single SQLite writer on an RWO volume
+  selector:
+    matchLabels:
+      app: server-hub
+  template:
+    metadata:
+      labels:
+        app: server-hub
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+        - name: server-hub
+          image: ghcr.io/saharariel/server-hub:v0.1.0
+
+          securityContext:
+            allowPrivilegeEscalation: false
+
+          ports:
+            - containerPort: 8000
+
+          # Non-secret config (substituted by Flux post-build from cluster-params).
+          env:
+            - name: ENROLL_BASE_URL
+              value: https://enroll.${BASE_DOMAIN}
+            - name: WATCH_URL
+              value: https://watch.${BASE_DOMAIN}
+            - name: TV_URL
+              value: https://tv.${BASE_DOMAIN}
+            - name: AUTHENTIK_URL
+              value: https://auth.${BASE_DOMAIN}
+            - name: JELLYFIN_URL
+              value: http://jellyfin.media.svc.cluster.local:8096
+            - name: DATABASE_PATH
+              value: /data/server_hub.db
+
+          # Secrets and provider IDs from AWS Parameter Store via ExternalSecret.
+          envFrom:
+            - secretRef:
+                name: server-hub-secret
+
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi" # no CPU limit (avoids CFS throttling)
+
+          readinessProbe:
+            httpGet: { path: /health, port: 8000 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /health, port: 8000 }
+            initialDelaySeconds: 10
+            periodSeconds: 20
+
+          volumeMounts:
+            - name: data
+              mountPath: /data
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: server-hub-data

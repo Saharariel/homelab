@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-hub
+spec:
+  selector:
+    app: server-hub
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
