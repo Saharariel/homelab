@@ -4,5 +4,4 @@ resources:
 - deployment.yaml
 - service.yaml
 - ingress.yaml
-
-# - pvc.yaml # TODO: think about how to handle longhorn pvcs with backups
+- pvc.yaml

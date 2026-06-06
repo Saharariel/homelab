@@ -143,9 +143,8 @@ spec:
 
       # Config directory
       - name: config
-        hostPath:
-          path: ${BASE_PATH}/configs/qbittorrent
-          type: Directory
+        persistentVolumeClaim:
+          claimName: qbittorrent-config-nfs
 
       # Downloads directory
       - name: downloads
