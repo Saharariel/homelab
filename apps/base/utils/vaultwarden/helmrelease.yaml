@@ -39,11 +39,9 @@ spec:
       existingSecretKey: "admin-token"
 
     storage:
-      data:
-        name: "vaultwarden-data"
-        size: "1Gi"
-        path: "/data"
-        accessMode: "ReadWriteOnce"
+      existingVolumeClaim:
+        claimName: "vaultwarden-data-nfs"
+        dataPath: "/data"
 
     resources:
       requests:

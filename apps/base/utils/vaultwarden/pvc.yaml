@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vaultwarden-data-nfs
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes: ["ReadWriteOnce"]
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+    - noatime
+  nfs:
+    server: ${NFS_SERVER}
+    path: ${NFS_ROOT}/vaultwarden
+  claimRef:
+    namespace: utils
+    name: vaultwarden-data-nfs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vaultwarden-data-nfs
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: ""
+  volumeName: vaultwarden-data-nfs
+  resources:
+    requests:
+      storage: 1Gi
