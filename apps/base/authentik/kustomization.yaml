@@ -4,3 +4,4 @@ resources:
 - helmrelease.yaml
 - helmrepo.yaml
 - externalsecret.yaml
+- pvc.yaml

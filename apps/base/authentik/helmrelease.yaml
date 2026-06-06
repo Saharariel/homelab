@@ -41,10 +41,17 @@ spec:
       primary:
         persistence:
           enabled: true
-          size: 8Gi
+          # Data on a static NFS PV (tank/k3s-pvcs/authentik-postgresql),
+          # migrated off Longhorn via PGDATA file copy.
+          existingClaim: authentik-postgresql-nfs
 
     redis:
       enabled: true
+      master:
+        persistence:
+          enabled: true
+          # Fresh NFS volume (redis is cache/broker only; sessions live in PG).
+          existingClaim: authentik-redis-nfs
 
   valuesFrom:
   - kind: Secret
