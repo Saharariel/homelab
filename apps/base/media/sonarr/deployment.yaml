@@ -48,4 +48,4 @@ spec:
             type: Directory
         - name: config
           persistentVolumeClaim:
-            claimName: sonarr-config
+            claimName: sonarr-config-nfs
