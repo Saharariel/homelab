@@ -70,4 +70,4 @@ spec:
 
         - name: config
           persistentVolumeClaim:
-            claimName: prowlarr-config
+            claimName: prowlarr-config-nfs

@@ -59,4 +59,4 @@ spec:
             type: Directory
         - name: config
           persistentVolumeClaim:
-            claimName: jellyseer-config
+            claimName: jellyseer-config-nfs
