@@ -13,8 +13,8 @@ spec:
     - hard
     - noatime
   nfs:
-    server: 192.168.50.10
-    path: /tank/k3s-pvcs/jellyseer
+    server: ${NFS_SERVER}
+    path: ${NFS_ROOT}/jellyseer
   claimRef:
     namespace: media
     name: jellyseer-config-nfs
