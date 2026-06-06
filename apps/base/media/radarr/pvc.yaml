@@ -13,8 +13,8 @@ spec:
     - hard
     - noatime
   nfs:
-    server: 192.168.50.10
-    path: /tank/k3s-pvcs/radarr
+    server: ${NFS_SERVER}
+    path: ${NFS_ROOT}/radarr
   claimRef:
     namespace: media
     name: radarr-config-nfs

@@ -3,7 +3,10 @@ kind: StorageClass
 metadata:
   name: longhorn-config
   annotations:
-    storageclass.kubernetes.io/is-default-class: "true"
+    # No default StorageClass cluster-wide: a PVC that omits storageClassName
+    # gets "" (static binding) instead of auto-provisioning on Longhorn.
+    # Static NFS PVs are the intended path; Longhorn is opt-in by name only.
+    storageclass.kubernetes.io/is-default-class: "false"
 provisioner: driver.longhorn.io
 reclaimPolicy: Retain
 allowVolumeExpansion: true
