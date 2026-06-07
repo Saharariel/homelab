@@ -22,8 +22,10 @@ On merge, Flux against the *old* cluster would:
 ---
 
 ## 1. Decisions to lock first (everything else depends on these)
-- [x] **D1 — DECIDED: in-place `pve8to9`, NO LUKS** on the desktop (keep unencrypted root). Less work; finish the pre-flight + `apt dist-upgrade`. ⚠️ Open: **does no-LUKS also apply to the laptop?** The laptop is a *fresh* reinstall where LUKS is one installer click and it holds the etcd/secrets — see the note under §1.
-- [x] **D2 — DECIDED: cluster (shared UI), START with no qdevice, add an RPi qdevice later.** ⚠️ A 2-node cluster with no qdevice **loses quorum if either node is down** → the survivor's `pmxcfs` goes read-only (running VMs keep running, but you can't start/stop/edit them or the cluster config). Mitigate with corosync **`two_node: 1`** (in `/etc/pve/corosync.conf`) until the qdevice is added.
+- [x] **D1 — DECIDED:**
+  - **Desktop** = in-place `pve8to9`, **no LUKS** (unencrypted root). Finish the pre-flight + `apt dist-upgrade`.
+  - **Laptop** = fresh **Debian 13 + LUKS → PVE 9** (encrypted root — it holds etcd/secrets). Unlock via **dropbear-initramfs** (remote SSH unlock, headless-friendly; battery rides through brief power loss). Runbook: `docs/runbooks/debian-luks-to-pve9-laptop.md`.
+- [x] **D2 — DECIDED: cluster (shared UI), no qdevice yet → RPi later, and SET `two_node: 1`.** A 2-node cluster with no qdevice loses quorum if either node is down → survivor's `pmxcfs` goes read-only (running VMs keep running, but no start/stop/edit). `two_node: 1` in `/etc/pve/corosync.conf` is the stopgap until the qdevice is added.
 - [x] **D3 — constrained by D1 = no-LUKS:** keyfile-on-encrypted-root is off the table → choose **passphrase** (manual each boot) or **USB keyfile** for `tank/k3s-pvcs`. Still a separate manual `send|recv`; non-blocking for the rebuild.
 - [x] **D4 — CA continuity:** ✅ **PERSIST.** `homelab-ca-tls` stored in Parameter Store (`/homelab/cert-manager/HOMELAB_CA_TLS_{CRT,KEY}`, SecureString); cert-manager no longer generates the CA — ESO materialises it (`controllers/base/cert-manager/ca-externalsecret.yaml`). Rebuild reuses the same root → devices stay trusted.
 - [ ] **D5 — Cilium datapath:** `upstream` (stock eBPF KPR) vs `safe` (legacy host routing). Plan: try `upstream` on the throwaway VM, keep the validation gate, fall back to `safe` if it wedges.
