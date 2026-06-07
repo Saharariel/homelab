@@ -22,19 +22,18 @@ On merge, Flux against the *old* cluster would:
 ---
 
 ## 1. Decisions to lock first (everything else depends on these)
-- [ ] **D1 — Desktop OS:** in-place `pve8to9` (keep unencrypted root) **OR** reinstall fresh (Debian+LUKS → PVE 9, encrypted root, import tank).
-  - If reinstalling → **do NOT** finish the in-place upgrade (wasted work + a second downtime window).
-- [ ] **D2 — PVE cluster or two standalone nodes?** Cluster needs both on v9 + a qdevice; standalone needs neither. IaC works either way.
-- [ ] **D3 — `tank/k3s-pvcs` encryption key model:** passphrase / USB keyfile / keyfile-on-LUKS-root / keyfile-on-SSD (weak). See the threat-model table in chat.
+- [x] **D1 — DECIDED: in-place `pve8to9`, NO LUKS** on the desktop (keep unencrypted root). Less work; finish the pre-flight + `apt dist-upgrade`. ⚠️ Open: **does no-LUKS also apply to the laptop?** The laptop is a *fresh* reinstall where LUKS is one installer click and it holds the etcd/secrets — see the note under §1.
+- [x] **D2 — DECIDED: cluster (shared UI), START with no qdevice, add an RPi qdevice later.** ⚠️ A 2-node cluster with no qdevice **loses quorum if either node is down** → the survivor's `pmxcfs` goes read-only (running VMs keep running, but you can't start/stop/edit them or the cluster config). Mitigate with corosync **`two_node: 1`** (in `/etc/pve/corosync.conf`) until the qdevice is added.
+- [x] **D3 — constrained by D1 = no-LUKS:** keyfile-on-encrypted-root is off the table → choose **passphrase** (manual each boot) or **USB keyfile** for `tank/k3s-pvcs`. Still a separate manual `send|recv`; non-blocking for the rebuild.
 - [x] **D4 — CA continuity:** ✅ **PERSIST.** `homelab-ca-tls` stored in Parameter Store (`/homelab/cert-manager/HOMELAB_CA_TLS_{CRT,KEY}`, SecureString); cert-manager no longer generates the CA — ESO materialises it (`controllers/base/cert-manager/ca-externalsecret.yaml`). Rebuild reuses the same root → devices stay trusted.
 - [ ] **D5 — Cilium datapath:** `upstream` (stock eBPF KPR) vs `safe` (legacy host routing). Plan: try `upstream` on the throwaway VM, keep the validation gate, fall back to `safe` if it wedges.
-- [ ] **D6 — VM-disk datastore:** encrypted ZFS pool (`local-zfs`) vs LUKS-root-backed `local-lvm`. Must match what actually exists on each node.
+- [x] **D6 — DECIDED: VM disks on `local-lvm` (host NVMe SSD), unencrypted** for fast OS (cattle). Verified: desktop `nvme0n1` 238 G → `local-lvm`; laptop `nvme0n1` 238 G → becomes `local-lvm` after the fresh PVE install (it also has a 931 G HDD left free). Terraform wired.
 
 ---
 
 ## 2. Code gaps to fix in the PR before merge
 - [ ] **C1 — Terraform: add `machine = q35` to the worker VM** (+ likely OVMF/UEFI). `hostpci { pcie = true }` is invalid on the default i440fx → **GPU passthrough won't attach**.
-- [ ] **C2 — PVE-host storage is NOT automated.** Add a `pve_host` Ansible role (or a runbook) for: `zpool import tank`, `/etc/exports` (`tank/k3s-pvcs`, `tank/data`, `tank/photos` → `192.168.50.0/24`), and the **encrypted `tank/k3s-pvcs` dataset + keyfile**. The IaC builds VMs but *assumes the NFS server already exists.*
+- [~] **C2 — PVE-host storage ALREADY EXISTS** (verified live): pool `tank` ONLINE, datasets `data`/`k3s-pvcs`/`photos`/`proxmox`, and `/etc/exports` for all three → `192.168.50.0/24`. **Do NOT automate provisioning** — data is irreplaceable; never `zpool create`/`zfs create`/`zfs destroy` in a role. Recovery after a desktop reinstall is only `zpool import tank` (non-destructive — attaches the existing pool) + restore `/etc/exports`. Capture as a **descriptive runbook** (`docs/runbooks/pve-host-storage.md`), not a role. The ONE missing piece is the **encrypted `tank/k3s-pvcs` dataset (currently encryption=off)** → that's **D3**, a manual gated `send|recv`, never automated.
 - [ ] **C3 — (optional) Cilium role toggle** `upstream | safe` per D5; keep the Ready/PV-mount validation gate.
 - [x] **C4 — bumped** to k3s `v1.36.1` + Cilium `1.19.4` (group_vars/all.yml). ⚠️ Confirm those tags exist, and note **newer Cilium 1.19 may behave differently on the D5 datapath test** — verify on the throwaway VM (the RCA was on an older Cilium).
 - [ ] **C5 — Verify substitution vars match.** Every `${VAR}` in the manifests must be supplied by a bootstrap-injected secret: `cluster-params` (BASE_DOMAIN, K3S_APISERVER_HOST, K3S_APISERVER_PORT, POD_CIDR) + `base-path` (BASE_PATH, NFS_SERVER, NFS_ROOT). No missing keys.

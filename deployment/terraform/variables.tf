@@ -28,15 +28,16 @@ variable "pve_node_worker" {
   description = "PVE node name hosting the worker (the i7 desktop with tank + iGPU)."
 }
 
-# Datastore that backs each VM's disk. Point these at an ENCRYPTED ZFS dataset
-# on each node (e.g. local-zfs on an encrypted pool) so VM disks are at-rest encrypted.
+# Datastore that backs each VM's disk = the host's NVMe SSD (local-lvm) for a
+# fast OS. Unencrypted by decision (D1 = no LUKS); VMs are cattle, no state on
+# them. NOT the tank HDD pool.
 variable "datastore_master" {
   type    = string
-  default = "local-lvm" # node SSD (NOT the tank HDD pool); master's is the laptop's encrypted NVMe
+  default = "local-lvm" # laptop NVMe SSD
 }
 variable "datastore_worker" {
   type    = string
-  default = "local-lvm" # node SSD (NOT the tank HDD pool); master's is the laptop's encrypted NVMe
+  default = "local-lvm" # desktop NVMe SSD
 }
 
 # Datastore that holds the downloaded cloud image / ISOs (snippets-capable).

@@ -5,13 +5,16 @@ proxmox_endpoint  = "https://192.168.50.19:8006/"
 proxmox_api_token = "terraform@pve!iac=REPLACE-WITH-TOKEN-SECRET"
 proxmox_insecure  = true
 
-# PVE cluster node names (run `pvecm nodes` on the cluster)
-pve_node_master = "pve-laptop"
-pve_node_worker = "pve-desktop"
+# PVE cluster node names (run `pvecm nodes` on the cluster).
+# Desktop's PVE node name is "homelab"; name the reinstalled laptop whatever you
+# like and put it here.
+pve_node_master = "pve-laptop"   # the reinstalled laptop PVE node
+pve_node_worker = "homelab"      # the desktop PVE node (current hostname)
 
-# Encrypted ZFS datastores backing the VM disks
-datastore_master = "local-zfs"
-datastore_worker = "local-zfs"
+# VM disks on the host SSD (local-lvm) for a fast OS. Unencrypted — the VMs are
+# cattle (no state on them; everything lives on tank/NFS). NOT the tank HDD pool.
+datastore_master = "local-lvm"   # laptop NVMe SSD
+datastore_worker = "local-lvm"   # desktop NVMe SSD
 datastore_images = "local"
 
 # iGPU PCI id on the desktop (lspci -nn | grep VGA) — empty disables passthrough
