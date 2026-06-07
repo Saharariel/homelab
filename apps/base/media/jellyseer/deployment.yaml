@@ -4,6 +4,8 @@ metadata:
   name: jellyseer
 spec:
   replicas: 1
+  strategy:
+    type: Recreate   # single SQLite writer over NFS — never run two pods at once
   selector:
     matchLabels:
       app: jellyseer
@@ -49,14 +51,14 @@ spec:
           volumeMounts:
             - name: media
               mountPath: /data/media
+              subPath: media
               readOnly: true
             - name: config
               mountPath: /app/config
       volumes:
         - name: media
-          hostPath:
-            path: ${BASE_PATH}/data/media
-            type: Directory
+          persistentVolumeClaim:
+            claimName: media-data
         - name: config
           persistentVolumeClaim:
             claimName: jellyseer-config-nfs

@@ -4,6 +4,3 @@ namespace: media
 
 resources:
   - ../../../base/media/qbittorrent/
-
-patchesStrategicMerge:
-  - node-affinity-patch.yaml

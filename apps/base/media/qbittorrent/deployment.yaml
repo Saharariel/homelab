@@ -126,6 +126,7 @@ spec:
           mountPath: /config
         - name: downloads
           mountPath: /data/torrents
+          subPath: torrents
 
         resources:
           limits:
@@ -148,6 +149,5 @@ spec:
 
       # Downloads directory
       - name: downloads
-        hostPath:
-          path: ${BASE_PATH}/data/torrents
-          type: Directory
+        persistentVolumeClaim:
+          claimName: media-data

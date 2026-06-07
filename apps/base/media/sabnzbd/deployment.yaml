@@ -4,6 +4,8 @@ metadata:
   name: sabnzbd
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: sabnzbd
@@ -38,13 +40,13 @@ spec:
         volumeMounts:
         - name: downloads
           mountPath: /data/usenet
+          subPath: usenet
         - name: config
           mountPath: /config
       volumes:
       - name: downloads
-        hostPath:
-          path: ${BASE_PATH}/data/usenet
-          type: Directory
+        persistentVolumeClaim:
+          claimName: media-data
       - name: config
         persistentVolumeClaim:
           claimName: sabnzbd-config-nfs

@@ -4,6 +4,3 @@ namespace: media
 
 resources:
   - ../../../base/media/radarr/
-
-patches:
-  - path: node-affinity-patch.yaml
