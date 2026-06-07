@@ -4,3 +4,7 @@ terraform/terraform.tfstate.backup
 terraform/.terraform
 terraform/.terraform.locl.hcl
 /.superset
+
+# Operational docs / runbooks — local-only, keep off the public repo
+docs/runbooks/
+deployment/REBUILD-TODO.md
