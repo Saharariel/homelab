@@ -62,6 +62,12 @@ resource "proxmox_virtual_environment_vm" "worker" {
   tags      = ["k3s", "worker", "terraform"]
 
   agent { enabled = true }
+
+  # iGPU PCIe passthrough requires q35 + OVMF (UEFI). Mirrors the proven-working
+  # worker (VM 103): bios=ovmf, machine=q35, efidisk0 with pre-enrolled keys.
+  bios    = "ovmf"
+  machine = "q35"
+
   cpu {
     cores = var.worker.cores
     type  = "host" # host CPU type required to expose iGPU features for QSV
@@ -76,6 +82,13 @@ resource "proxmox_virtual_environment_vm" "worker" {
     interface    = "scsi0"
     size         = var.worker.disk_gb
     import_from  = proxmox_virtual_environment_download_file.ubuntu_worker.id
+  }
+
+  # OVMF needs an EFI vars disk (4 MB, secure-boot keys pre-enrolled like VM 103).
+  efi_disk {
+    datastore_id      = var.datastore_worker
+    type              = "4m"
+    pre_enrolled_keys = true
   }
 
   initialization {
