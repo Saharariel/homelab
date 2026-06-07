@@ -7,18 +7,14 @@ spec:
   interval: 10m0s
   dependsOn:
     - name: controllers
-    # apps substitutes ${BASE_PATH}/${NFS_SERVER}/${NFS_ROOT} from the
-    # infra-managed base-path Secret, so it must reconcile after infra.
+    # apps substitutes ${BASE_PATH}/${NFS_SERVER}/${NFS_ROOT}; Ansible creates
+    # base-path for bootstrap and infra keeps the Git-managed copy reconciled.
     - name: infra
   path: ./apps/production
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   postBuild:
     substituteFrom:
       - kind: Secret

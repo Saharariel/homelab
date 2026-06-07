@@ -10,11 +10,9 @@
   environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
   changed_when: false
 
-# THE SECRET-ZERO. This is the only secret that can't live in the external secret
-# backend (it's the credential ESO uses to reach it). Comes from ansible-vault
-# (group_vars/secrets.yml), which itself is unlocked by a passphrase you keep in
-# your password manager. Everything else flows from the backend via ESO.
-- name: Inject ESO bootstrap credentials (secret-zero)
+# Bootstrap data that Flux needs before ESO can reconcile. Secret values come
+# from ansible-vault; non-secret cluster parameters come from group_vars/all.yml.
+- name: Inject ESO bootstrap credentials from ansible-vault
   ansible.builtin.shell:
     cmd: >
       k3s kubectl -n flux-system create secret generic aws-eso-credentials
@@ -23,6 +21,46 @@
       --dry-run=client -o yaml | k3s kubectl apply -f -
   environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
   no_log: true
+
+- name: Protect ESO bootstrap credentials from Flux pruning
+  ansible.builtin.command:
+    cmd: >
+      k3s kubectl -n flux-system annotate secret aws-eso-credentials
+      kustomize.toolkit.fluxcd.io/prune=disabled --overwrite
+  environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
+  changed_when: false
+  no_log: true
+
+- name: Inject cluster parameters for Flux substitutions
+  ansible.builtin.shell:
+    cmd: >
+      k3s kubectl -n flux-system create secret generic cluster-params
+      --from-literal=BASE_DOMAIN='{{ base_domain }}'
+      --from-literal=K3S_APISERVER_HOST='{{ k3s_apiserver_host }}'
+      --from-literal=K3S_APISERVER_PORT='{{ k3s_apiserver_port }}'
+      --from-literal=POD_CIDR='{{ pod_cidr }}'
+      --dry-run=client -o yaml | k3s kubectl apply -f -
+  environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
+  no_log: true
+
+- name: Protect cluster parameters from Flux pruning
+  ansible.builtin.command:
+    cmd: >
+      k3s kubectl -n flux-system annotate secret cluster-params
+      kustomize.toolkit.fluxcd.io/prune=disabled --overwrite
+  environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
+  changed_when: false
+  no_log: true
+
+- name: Inject base path parameters for Flux substitutions
+  ansible.builtin.shell:
+    cmd: >
+      k3s kubectl -n flux-system create secret generic base-path
+      --from-literal=BASE_PATH='{{ cluster_base_path }}'
+      --from-literal=NFS_SERVER='{{ cluster_nfs_server }}'
+      --from-literal=NFS_ROOT='{{ cluster_nfs_root }}'
+      --dry-run=client -o yaml | k3s kubectl apply -f -
+  environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
 
 # Public repo → Flux can pull read-only with no deploy key. This applies the
 # committed gotk manifests (GitRepository + root Kustomization) for clusters/production.

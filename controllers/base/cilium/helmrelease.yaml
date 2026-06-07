@@ -20,10 +20,24 @@ spec:
     remediation:
       retries: 3
   values:
-    kubeProxyReplacement: false
+    kubeProxyReplacement: true
+    k8sServiceHost: ${K3S_APISERVER_HOST}
+    k8sServicePort: ${K3S_APISERVER_PORT}
+    routingMode: tunnel
+    tunnelProtocol: vxlan
     ipam:
+      mode: cluster-pool
       operator:
-        clusterPoolIPv4PodCIDRList: "10.42.0.0/16"
+        clusterPoolIPv4PodCIDRList:
+          - ${POD_CIDR}
+    bpf:
+      hostLegacyRouting: true
+      masquerade: false
+    socketLB:
+      hostNamespaceOnly: true
+    enableIPv4Masquerade: true
+    operator:
+      replicas: 1
     hubble:
       relay:
         enabled: true

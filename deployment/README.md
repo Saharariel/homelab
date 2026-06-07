@@ -21,7 +21,7 @@ terraform output -raw ansible_inventory > ../ansible/inventory.yml
 cd ../ansible
 ansible-playbook -i inventory.yml site.yml --ask-vault-pass
 ```
-`site.yml` order: base OS → k3s control plane → **Cilium (validated)** → workers → Flux + secret-zero.
+`site.yml` order: base OS → k3s control plane → **Cilium (validated)** → workers → Flux + bootstrap secrets.
 
 ## ⚠️ Cilium KPR — the one thing not to "fix" to the docs' defaults
 KPR with **eBPF host routing** (Cilium's default) breaks the k3s loopback apiserver
@@ -34,9 +34,9 @@ mode. Full context: `docs/runbooks/cilium-kpr-rca-2026-05-30.md`.
 - **Disk at rest**: VM disks on **encrypted ZFS datastores** (`datastore_master/worker`); the desktop's
   `tank/k3s-pvcs` is a ZFS-encrypted dataset. Keys unlocked at PVE host boot.
 - **Secrets at rest in-cluster**: k3s `--secrets-encryption` (asserted by `k3s_server`).
-- **Secret-zero**: the ESO backend credential is injected by `flux_bootstrap` from an **ansible-vault'd**
-  `group_vars/secrets.yml` (vault passphrase from your password manager). It is the *only* secret not in
-  the backend or git.
+- **Bootstrap secrets**: the ESO backend credential and cluster substitution secrets are injected by
+  `flux_bootstrap` from an **ansible-vault'd** `group_vars/secrets.yml` (vault passphrase from your
+  password manager). App secrets flow from the backend through ESO.
 - **ESO identity**: least-privilege, read-only, scoped to `/homelab/*`.
 
 ## Prerequisites (manual, before first run)

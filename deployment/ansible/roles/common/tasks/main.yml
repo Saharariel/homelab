@@ -37,6 +37,13 @@
       br_netfilter
     mode: "0644"
 
+- name: Load kernel modules for this boot
+  ansible.builtin.command: "modprobe {{ item }}"
+  changed_when: false
+  loop:
+    - overlay
+    - br_netfilter
+
 - name: Sysctls for k8s networking
   ansible.posix.sysctl:
     name: "{{ item.name }}"
