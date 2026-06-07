@@ -1,0 +1,25 @@
+# Copy to terraform.tfvars (gitignored) or inject these as TF_VAR_* env vars
+# from the Semaphore secret store. NEVER commit real values.
+
+proxmox_endpoint  = "https://192.168.50.19:8006/"
+proxmox_api_token = "terraform@pve!iac=REPLACE-WITH-TOKEN-SECRET"
+proxmox_insecure  = true
+
+# PVE cluster node names (run `pvecm nodes` on the cluster)
+pve_node_master = "pve-laptop"
+pve_node_worker = "pve-desktop"
+
+# Encrypted ZFS datastores backing the VM disks
+datastore_master = "local-zfs"
+datastore_worker = "local-zfs"
+datastore_images = "local"
+
+# iGPU PCI id on the desktop (lspci -nn | grep VGA) — empty disables passthrough
+worker_igpu_pci_id = "0000:00:02.0"
+
+vm_username = "ubuntu"
+ssh_public_keys = [
+  "ssh-ed25519 AAAA... you@laptop",
+]
+
+# Optionally override the master/worker objects here, else defaults in variables.tf apply.

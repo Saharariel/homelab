@@ -1,0 +1,14 @@
+# Copy to inventory.yml (gitignored) or let Terraform render it from its
+# `ansible_inventory` output after apply. IPs match the Terraform master/worker vars.
+all:
+  vars:
+    ansible_user: ubuntu
+  children:
+    k3s_servers:
+      hosts:
+        k3s-master-01:
+          ansible_host: 192.168.50.19
+    k3s_agents:
+      hosts:
+        k3s-worker-01:
+          ansible_host: 192.168.50.18

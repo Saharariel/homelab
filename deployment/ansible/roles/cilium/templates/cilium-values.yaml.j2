@@ -1,0 +1,34 @@
+# Cilium on k3s with kube-proxy replacement — SAFE configuration.
+#
+# History (docs/runbooks/cilium-kpr-rca-2026-05-30.md, upstream cilium#27343):
+# KPR with BPF host routing (+ bpf.masquerade) breaks the k3s agent's loopback
+# apiserver proxy (127.0.0.1:6444) → node NotReady in ~30s → `hard` NFS mounts
+# wedge ~3 min later. The fix is to keep LEGACY host routing + host-namespace-only
+# socketLB + tunnel/vxlan, and NOT enable bpf.masquerade/endpointRoutes.
+
+kubeProxyReplacement: true
+k8sServiceHost: {{ k3s_apiserver_host }}
+k8sServicePort: {{ k3s_apiserver_port }}
+
+routingMode: tunnel
+tunnelProtocol: vxlan          # #27343 affects direct routing only; vxlan is spared
+
+ipam:
+  mode: cluster-pool
+  operator:
+    clusterPoolIPv4PodCIDRList:
+      - {{ pod_cidr }}
+
+# ★★★ The three guard-rails — do not change without re-reading the RCA ★★★
+bpf:
+  hostLegacyRouting: true      # KEEP legacy host routing (NOT eBPF host routing = the trigger)
+  masquerade: false            # do NOT use bpf masquerade (the other trigger)
+socketLB:
+  hostNamespaceOnly: true      # protect the host-ns loopback→apiserver path (k3s LB)
+
+enableIPv4Masquerade: true     # plain iptables masquerade — safe, avoids bpf.masquerade
+
+operator:
+  replicas: 1                  # single control plane
+
+# Intentionally NOT set: endpointRoutes.enabled, bpf.masquerade, eBPF host routing.

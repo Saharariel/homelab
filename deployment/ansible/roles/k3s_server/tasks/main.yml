@@ -1,0 +1,43 @@
+---
+# k3s control plane, configured for Cilium kube-proxy-replacement:
+#   --flannel-backend=none --disable-network-policy  (Cilium is the CNI)
+#   --disable-kube-proxy                              (Cilium does service LB)
+#   --secrets-encryption                              (encrypt Secrets at rest in etcd)
+- name: Install k3s server
+  ansible.builtin.shell:
+    cmd: |
+      curl -sfL https://get.k3s.io | \
+        INSTALL_K3S_VERSION="{{ k3s_version }}" \
+        K3S_TOKEN="{{ k3s_token }}" \
+        INSTALL_K3S_EXEC="server \
+          --flannel-backend=none \
+          --disable-network-policy \
+          --disable-kube-proxy \
+          --secrets-encryption \
+          --node-ip {{ k3s_apiserver_host }} \
+          --tls-san {{ k3s_apiserver_host }}" \
+        sh -
+    creates: /etc/rancher/k3s/k3s.yaml
+
+- name: Wait for k3s API to be up
+  ansible.builtin.command: k3s kubectl get --raw='/readyz'
+  register: k3s_ready
+  retries: 30
+  delay: 10
+  until: k3s_ready.rc == 0
+  changed_when: false
+
+- name: Confirm Secrets encryption is active
+  ansible.builtin.command: k3s secrets-encrypt status
+  register: enc
+  changed_when: false
+- name: Assert encryption enabled
+  ansible.builtin.assert:
+    that: "'Encryption Status: Enabled' in enc.stdout"
+    fail_msg: "etcd secrets encryption is NOT enabled — aborting."
+
+- name: Fetch the kubeconfig back to the controller (for cilium/flux steps)
+  ansible.builtin.fetch:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: "/tmp/k3s-kubeconfig"
+    flat: true

@@ -1,0 +1,35 @@
+---
+# Run on-demand from your management LXC after `terraform apply`:
+#   ansible-playbook -i inventory.yml site.yml --ask-vault-pass
+#
+# Order matters: base OS -> control plane -> CNI (Cilium KPR) -> agents -> Flux.
+
+- name: Base OS prep (all nodes)
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Install k3s control plane (no kube-proxy, no flannel, secrets-encryption)
+  hosts: k3s_servers
+  become: true
+  roles:
+    - k3s_server
+
+- name: Install Cilium CNI on the control plane
+  hosts: k3s_servers[0]
+  become: true
+  roles:
+    - cilium
+
+- name: Join worker agents
+  hosts: k3s_agents
+  become: true
+  roles:
+    - k3s_agent
+
+- name: Bootstrap Flux + inject the ESO secret-zero
+  hosts: k3s_servers[0]
+  become: true
+  roles:
+    - flux_bootstrap

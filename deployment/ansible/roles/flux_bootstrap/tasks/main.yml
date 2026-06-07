@@ -1,0 +1,51 @@
+---
+- name: Install flux CLI
+  ansible.builtin.shell:
+    cmd: curl -s https://fluxcd.io/install.sh | bash
+    creates: /usr/local/bin/flux
+
+- name: Ensure flux-system namespace exists
+  ansible.builtin.shell:
+    cmd: k3s kubectl create namespace flux-system --dry-run=client -o yaml | k3s kubectl apply -f -
+  environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
+  changed_when: false
+
+# THE SECRET-ZERO. This is the only secret that can't live in the external secret
+# backend (it's the credential ESO uses to reach it). Comes from ansible-vault
+# (group_vars/secrets.yml), which itself is unlocked by a passphrase you keep in
+# your password manager. Everything else flows from the backend via ESO.
+- name: Inject ESO bootstrap credentials (secret-zero)
+  ansible.builtin.shell:
+    cmd: >
+      k3s kubectl -n flux-system create secret generic aws-eso-credentials
+      --from-literal=access-key-id='{{ eso_aws_access_key_id }}'
+      --from-literal=secret-access-key='{{ eso_aws_secret_access_key }}'
+      --dry-run=client -o yaml | k3s kubectl apply -f -
+  environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
+  no_log: true
+
+# Public repo → Flux can pull read-only with no deploy key. This applies the
+# committed gotk manifests (GitRepository + root Kustomization) for clusters/production.
+- name: Bootstrap Flux against this repo (read-only, public)
+  ansible.builtin.shell:
+    cmd: |
+      flux install
+      flux create source git flux-system \
+        --url={{ flux_git_url }} \
+        --branch={{ flux_git_branch }} \
+        --interval=1m
+      flux create kustomization flux-system \
+        --source=GitRepository/flux-system \
+        --path={{ flux_git_path }} \
+        --prune=true \
+        --interval=10m
+  environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
+
+- name: Wait for Flux to reconcile the cluster
+  ansible.builtin.command: flux get kustomizations --no-header
+  environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
+  changed_when: false
+  register: flux_ks
+  retries: 30
+  delay: 20
+  until: "'False' not in flux_ks.stdout"   # crude: wait until none are failing

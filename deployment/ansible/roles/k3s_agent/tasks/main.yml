@@ -1,0 +1,20 @@
+---
+# Worker join. kube-proxy/flannel/network-policy are disabled cluster-wide by the
+# server flags, so the agent only needs the join URL + token + its node IP.
+- name: Install k3s agent and join the cluster
+  ansible.builtin.shell:
+    cmd: |
+      curl -sfL https://get.k3s.io | \
+        INSTALL_K3S_VERSION="{{ k3s_version }}" \
+        K3S_URL="https://{{ k3s_apiserver_host }}:{{ k3s_apiserver_port }}" \
+        K3S_TOKEN="{{ k3s_token }}" \
+        INSTALL_K3S_EXEC="agent --node-ip {{ ansible_host }}" \
+        sh -
+    creates: /etc/rancher/k3s/k3s-agent-installed
+  register: agent_install
+
+- name: Mark agent installed
+  ansible.builtin.file:
+    path: /etc/rancher/k3s/k3s-agent-installed
+    state: touch
+  when: agent_install is changed
