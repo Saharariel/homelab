@@ -3,5 +3,5 @@ kind: Kustomization
 resources:
 - helmrelease.yaml
 - helmrepo.yaml
-- clusterissuer.yaml
 - ca-issuer.yaml
+- ca-externalsecret.yaml

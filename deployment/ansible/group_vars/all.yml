@@ -1,10 +1,10 @@
 ---
 # Versions (pin these; bump deliberately)
-k3s_version: "v1.31.5+k3s1"
-cilium_version: "1.17.1"
+k3s_version: "v1.36.1+k3s1"
+cilium_version: "1.19.4"
 
 # Networking
-pod_cidr: "10.42.0.0/16"        # k3s default; must match Cilium ipam pool
+pod_cidr: "10.42.0.0/16" # k3s default; must match Cilium ipam pool
 service_cidr: "10.43.0.0/16"
 
 # Control-plane API endpoint (the master IP) — Cilium needs this with no kube-proxy.
