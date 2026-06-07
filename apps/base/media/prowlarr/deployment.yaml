@@ -4,6 +4,8 @@ metadata:
   name: prowlarr
 spec:
   replicas: 1
+  strategy:
+    type: Recreate   # single SQLite writer over NFS — never run two pods at once
   selector:
     matchLabels:
       app: prowlarr
@@ -64,9 +66,8 @@ spec:
 
       volumes:
         - name: media
-          hostPath:
-            path: ${BASE_PATH}/data
-            type: Directory
+          persistentVolumeClaim:
+            claimName: media-data
 
         - name: config
           persistentVolumeClaim:

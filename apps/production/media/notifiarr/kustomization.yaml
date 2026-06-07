@@ -4,6 +4,3 @@ namespace: media
 
 resources:
   - ../../../base/media/notifiarr/
-
-patches:
-  - path: node-affinity-patch.yaml
