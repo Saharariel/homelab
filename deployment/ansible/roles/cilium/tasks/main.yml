@@ -1,0 +1,53 @@
+---
+- name: Install Helm
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+    creates: /usr/local/bin/helm
+
+- name: Add Cilium helm repo
+  ansible.builtin.command: helm repo add cilium https://helm.cilium.io
+  environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
+  changed_when: false
+
+- name: Render Cilium values
+  ansible.builtin.template:
+    src: cilium-values.yaml.j2
+    dest: /tmp/cilium-values.yaml
+    mode: "0640"
+
+- name: Install/upgrade Cilium
+  ansible.builtin.command: >
+    helm upgrade --install cilium cilium/cilium
+    --version {{ cilium_version }}
+    --namespace kube-system
+    -f /tmp/cilium-values.yaml
+  environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
+
+- name: Wait for Cilium daemonset to be ready
+  ansible.builtin.command: >
+    k3s kubectl -n kube-system rollout status ds/cilium --timeout=300s
+  changed_when: false
+
+- name: Read cilium status
+  ansible.builtin.shell:
+    cmd: |
+      POD=$(k3s kubectl -n kube-system get pod -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}')
+      k3s kubectl -n kube-system exec "$POD" -c cilium-agent -- cilium status
+  register: cilium_status
+  changed_when: false
+
+- name: Assert KubeProxyReplacement is True
+  ansible.builtin.assert:
+    that:
+      - "'KubeProxyReplacement:' in cilium_status.stdout"
+      - "'True' in (cilium_status.stdout | regex_search('KubeProxyReplacement:.*'))"
+    fail_msg: "Cilium kube-proxy replacement is not active."
+    success_msg: "Cilium KPR active."
+
+- name: Confirm control-plane node is Ready
+  ansible.builtin.command: k3s kubectl get node {{ inventory_hostname }} -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
+  register: node_ready
+  retries: 6
+  delay: 10
+  until: node_ready.stdout == "True"
+  changed_when: false

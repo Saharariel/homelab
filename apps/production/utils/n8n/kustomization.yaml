@@ -4,6 +4,3 @@ namespace: utils
 
 resources:
   - ../../../base/utils/n8n/
-
-patches:
-  - path: node-affinity-patch.yaml

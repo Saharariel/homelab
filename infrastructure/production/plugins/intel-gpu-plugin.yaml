@@ -12,9 +12,9 @@ spec:
       labels:
         name: intel-gpu-plugin
     spec:
-      # Target only worker-node-1
-      nodeSelector:
-        kubernetes.io/hostname: worker-node-1
+      # No nodeSelector: the DaemonSet runs on all nodes, but only nodes that
+      # actually have an Intel iGPU (/dev/dri) advertise gpu.intel.com/i915.
+      # Rebuild-safe (no hardcoded node name).
       containers:
       - name: intel-gpu-plugin
         image: intel/intel-gpu-plugin:0.36.0

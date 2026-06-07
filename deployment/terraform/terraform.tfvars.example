@@ -1,0 +1,22 @@
+# Copy to terraform.tfvars (gitignored) or inject as TF_VAR_* env vars.
+# Never commit real values.
+
+proxmox_endpoint  = "https://proxmox.example:8006/"
+proxmox_api_token = "terraform@pve!iac=REPLACE-WITH-TOKEN-SECRET"
+proxmox_insecure  = true
+
+# PVE node names (run `pvecm nodes`).
+pve_node_master = "pve-master"
+pve_node_worker = "pve-worker"
+
+datastore_master = "local-lvm"
+datastore_worker = "local-lvm"
+datastore_images = "local"
+
+# iGPU PCI id (lspci -nn | grep VGA); empty disables passthrough.
+worker_igpu_pci_id = "0000:00:02.0"
+
+vm_username = "ubuntu"
+ssh_public_keys = [
+  "ssh-ed25519 AAAA... user@host",
+]

@@ -1,0 +1,14 @@
+# Cilium with kube-proxy replacement on k3s (upstream defaults).
+
+kubeProxyReplacement: true
+k8sServiceHost: {{ k3s_apiserver_host }}
+k8sServicePort: {{ k3s_apiserver_port }}
+
+ipam:
+  mode: cluster-pool
+  operator:
+    clusterPoolIPv4PodCIDRList:
+      - {{ pod_cidr }}
+
+operator:
+  replicas: 1

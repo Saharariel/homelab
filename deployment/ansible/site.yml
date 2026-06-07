@@ -1,0 +1,32 @@
+---
+# ansible-playbook -i inventory.yml site.yml --ask-vault-pass
+
+- name: Base OS prep
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Install k3s control plane
+  hosts: k3s_servers
+  become: true
+  roles:
+    - k3s_server
+
+- name: Install Cilium CNI
+  hosts: k3s_servers[0]
+  become: true
+  roles:
+    - cilium
+
+- name: Join worker agents
+  hosts: k3s_agents
+  become: true
+  roles:
+    - k3s_agent
+
+- name: Bootstrap Flux
+  hosts: k3s_servers[0]
+  become: true
+  roles:
+    - flux_bootstrap

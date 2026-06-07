@@ -59,10 +59,7 @@ spec:
 
     server:
       enabled: true
-      # Pin to the worker because the library hostPath PV lives on /tank there.
-      defaultPodOptions:
-        nodeSelector:
-          kubernetes.io/hostname: worker-node-1
+      # No node pin: the library is an NFS PV now, reachable from any node.
       ingress:
         main:
           enabled: true

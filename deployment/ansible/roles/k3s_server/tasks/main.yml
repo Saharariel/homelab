@@ -1,0 +1,54 @@
+---
+- name: Install k3s server
+  ansible.builtin.shell:
+    cmd: |
+      curl -sfL https://get.k3s.io | \
+        INSTALL_K3S_VERSION="{{ k3s_version }}" \
+        K3S_TOKEN="{{ k3s_token }}" \
+        INSTALL_K3S_EXEC="server \
+          --flannel-backend=none \
+          --disable-network-policy \
+          --disable-kube-proxy \
+          --secrets-encryption \
+          --node-ip {{ k3s_apiserver_host }} \
+          --tls-san {{ k3s_apiserver_host }}" \
+        sh -
+    creates: /etc/rancher/k3s/k3s.yaml
+
+- name: Wait for k3s API to be up
+  ansible.builtin.command: k3s kubectl get --raw='/readyz'
+  register: k3s_ready
+  retries: 30
+  delay: 10
+  until: k3s_ready.rc == 0
+  changed_when: false
+
+- name: Confirm secrets encryption is active
+  ansible.builtin.command: k3s secrets-encrypt status
+  register: enc
+  changed_when: false
+- name: Assert encryption enabled
+  ansible.builtin.assert:
+    that: "'Encryption Status: Enabled' in enc.stdout"
+    fail_msg: "Secrets encryption is not enabled."
+
+- name: Fetch the admin kubeconfig to the controller
+  ansible.builtin.fetch:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: "/tmp/k3s-kubeconfig"
+    flat: true
+
+# k3s writes server: https://127.0.0.1:6443; rewrite it to the API server IP.
+- name: Point the kubeconfig at the API server IP
+  delegate_to: localhost
+  become: false
+  ansible.builtin.replace:
+    path: /tmp/k3s-kubeconfig
+    regexp: 'https://127\.0\.0\.1:6443'
+    replace: 'https://{{ k3s_apiserver_host }}:{{ k3s_apiserver_port }}'
+
+- name: Report kubeconfig location
+  delegate_to: localhost
+  become: false
+  ansible.builtin.debug:
+    msg: "kubeconfig ready at /tmp/k3s-kubeconfig (copy to ~/.kube/config)"
