@@ -9,9 +9,9 @@ spec:
   interval: 5m0s
   ref:
     branch: main
-  secretRef:
-    name: flux-system
-  url: ssh://git@github.com/Saharariel/homelab
+  # Public repo → https read-only, no deploy key. Makes the cattle rebuild
+  # bootstrap work with zero git auth (no secret-zero for git).
+  url: https://github.com/Saharariel/homelab.git
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

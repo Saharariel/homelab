@@ -32,11 +32,11 @@ variable "pve_node_worker" {
 # on each node (e.g. local-zfs on an encrypted pool) so VM disks are at-rest encrypted.
 variable "datastore_master" {
   type    = string
-  default = "local-zfs"
+  default = "local-lvm" # node SSD (NOT the tank HDD pool); master's is the laptop's encrypted NVMe
 }
 variable "datastore_worker" {
   type    = string
-  default = "local-zfs"
+  default = "local-lvm" # node SSD (NOT the tank HDD pool); master's is the laptop's encrypted NVMe
 }
 
 # Datastore that holds the downloaded cloud image / ISOs (snippets-capable).
@@ -69,12 +69,13 @@ variable "worker" {
   type = object({
     vmid    = number
     cores   = number
-    memory  = number
+    memory  = number # balloon ceiling (max), MB
+    balloon = number # balloon floor (min guaranteed), MB — frees idle RAM to the host
     disk_gb = number
     ip      = string
   })
   default = {
-    vmid = 111, cores = 8, memory = 12288, disk_gb = 60, ip = "192.168.50.18/24"
+    vmid = 111, cores = 8, memory = 12288, balloon = 8192, disk_gb = 60, ip = "192.168.50.18/24"
   }
 }
 

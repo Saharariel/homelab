@@ -66,7 +66,10 @@ resource "proxmox_virtual_environment_vm" "worker" {
     cores = var.worker.cores
     type  = "host" # host CPU type required to expose iGPU features for QSV
   }
-  memory { dedicated = var.worker.memory }
+  memory {
+    dedicated = var.worker.memory  # ceiling, 12G
+    floating  = var.worker.balloon # balloon floor, 8G (ballooning 8-12G like the current worker)
+  }
 
   disk {
     datastore_id = var.datastore_worker

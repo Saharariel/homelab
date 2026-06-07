@@ -66,3 +66,10 @@ spec:
     name: authentik-secret
     valuesKey: POSTGRES_PASSWORD
     targetPath: authentik.postgresql.password
+  # Pin the bitnami PG superuser password (else it's chart-generated → lost on
+  # rebuild → mismatch with the restored DB). Value is the CURRENT one, so live
+  # is unchanged.
+  - kind: Secret
+    name: authentik-secret
+    valuesKey: POSTGRES_SUPERUSER_PASSWORD
+    targetPath: postgresql.auth.postgresPassword
