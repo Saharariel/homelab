@@ -1,4 +1,4 @@
-resource "proxmox_virtual_environment_download_file" "ubuntu_master" {
+resource "proxmox_download_file" "ubuntu_master" {
   content_type = "iso"
   datastore_id = var.datastore_images
   node_name    = var.pve_node_master
@@ -6,12 +6,44 @@ resource "proxmox_virtual_environment_download_file" "ubuntu_master" {
   file_name    = "noble-cloudimg-amd64-master.img"
 }
 
-resource "proxmox_virtual_environment_download_file" "ubuntu_worker" {
+resource "proxmox_download_file" "ubuntu_worker" {
   content_type = "iso"
   datastore_id = var.datastore_images
   node_name    = var.pve_node_worker
   url          = var.ubuntu_cloud_image_url
   file_name    = "noble-cloudimg-amd64-worker.img"
+}
+
+# Cloud-init vendor-data installs the guest agent on first boot so the agent IP
+# poll on create succeeds. Requires the `snippets` content type on datastore_images.
+locals {
+  agent_cloud_init = <<-EOF
+    #cloud-config
+    packages:
+      - qemu-guest-agent
+    runcmd:
+      - systemctl enable --now qemu-guest-agent
+  EOF
+}
+
+resource "proxmox_virtual_environment_file" "agent_master" {
+  content_type = "snippets"
+  datastore_id = var.datastore_images
+  node_name    = var.pve_node_master
+  source_raw {
+    file_name = "k3s-master-agent.yaml"
+    data      = local.agent_cloud_init
+  }
+}
+
+resource "proxmox_virtual_environment_file" "agent_worker" {
+  content_type = "snippets"
+  datastore_id = var.datastore_images
+  node_name    = var.pve_node_worker
+  source_raw {
+    file_name = "k3s-worker-agent.yaml"
+    data      = local.agent_cloud_init
+  }
 }
 
 resource "proxmox_virtual_environment_vm" "master" {
@@ -31,11 +63,12 @@ resource "proxmox_virtual_environment_vm" "master" {
     datastore_id = var.datastore_master
     interface    = "scsi0"
     size         = var.master.disk_gb
-    import_from  = proxmox_virtual_environment_download_file.ubuntu_master.id
+    import_from  = proxmox_download_file.ubuntu_master.id
   }
 
   initialization {
-    datastore_id = var.datastore_master
+    datastore_id        = var.datastore_master
+    vendor_data_file_id = proxmox_virtual_environment_file.agent_master.id
     ip_config {
       ipv4 {
         address = var.master.ip
@@ -77,17 +110,18 @@ resource "proxmox_virtual_environment_vm" "worker" {
     datastore_id = var.datastore_worker
     interface    = "scsi0"
     size         = var.worker.disk_gb
-    import_from  = proxmox_virtual_environment_download_file.ubuntu_worker.id
+    import_from  = proxmox_download_file.ubuntu_worker.id
   }
 
   efi_disk {
     datastore_id      = var.datastore_worker
     type              = "4m"
-    pre_enrolled_keys = true
+    pre_enrolled_keys = false
   }
 
   initialization {
-    datastore_id = var.datastore_worker
+    datastore_id        = var.datastore_worker
+    vendor_data_file_id = proxmox_virtual_environment_file.agent_worker.id
     ip_config {
       ipv4 {
         address = var.worker.ip

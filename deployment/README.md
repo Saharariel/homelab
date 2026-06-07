@@ -33,7 +33,9 @@ Play order: base OS → k3s control plane → Cilium → workers → Flux.
 1. Both nodes installed as Proxmox 9 and joined into a cluster.
 2. A Proxmox API token for Terraform.
 3. iGPU bound for VFIO passthrough on the worker node; note its PCI id.
-4. `terraform.tfvars` and `ansible/group_vars/secrets.yml` (ansible-vault) populated.
+4. The image datastore allows the `snippets` content type
+   (`pvesm set local --content iso,vztmpl,backup,snippets`) for the cloud-init agent install.
+5. `terraform.tfvars` and `ansible/group_vars/secrets.yml` (ansible-vault) populated.
 
 ## Layout
 ```
