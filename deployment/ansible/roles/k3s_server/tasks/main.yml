@@ -36,8 +36,24 @@
     that: "'Encryption Status: Enabled' in enc.stdout"
     fail_msg: "etcd secrets encryption is NOT enabled — aborting."
 
-- name: Fetch the kubeconfig back to the controller (for cilium/flux steps)
+- name: Fetch the admin kubeconfig to the controller
   ansible.builtin.fetch:
     src: /etc/rancher/k3s/k3s.yaml
     dest: "/tmp/k3s-kubeconfig"
     flat: true
+
+# k3s writes server: https://127.0.0.1:6443 — rewrite it to the master IP so the
+# kubeconfig works from your laptop. Copy /tmp/k3s-kubeconfig -> ~/.kube/config.
+- name: Point the operator kubeconfig at the master IP
+  delegate_to: localhost
+  become: false
+  ansible.builtin.replace:
+    path: /tmp/k3s-kubeconfig
+    regexp: 'https://127\.0\.0\.1:6443'
+    replace: 'https://{{ k3s_apiserver_host }}:{{ k3s_apiserver_port }}'
+
+- name: Tell the operator where the kubeconfig is
+  delegate_to: localhost
+  become: false
+  ansible.builtin.debug:
+    msg: "kubeconfig ready at /tmp/k3s-kubeconfig — copy to ~/.kube/config (server: https://{{ k3s_apiserver_host }}:{{ k3s_apiserver_port }})"
