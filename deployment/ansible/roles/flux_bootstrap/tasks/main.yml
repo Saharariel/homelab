@@ -10,9 +10,7 @@
   environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
   changed_when: false
 
-# Bootstrap data that Flux needs before ESO can reconcile. Secret values come
-# from ansible-vault; non-secret cluster parameters come from group_vars/all.yml.
-- name: Inject ESO bootstrap credentials from ansible-vault
+- name: Inject ESO bootstrap credentials
   ansible.builtin.shell:
     cmd: >
       k3s kubectl -n flux-system create secret generic aws-eso-credentials
@@ -22,7 +20,7 @@
   environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
   no_log: true
 
-- name: Protect ESO bootstrap credentials from Flux pruning
+- name: Protect ESO credentials from Flux pruning
   ansible.builtin.command:
     cmd: >
       k3s kubectl -n flux-system annotate secret aws-eso-credentials
@@ -52,7 +50,7 @@
   changed_when: false
   no_log: true
 
-- name: Inject base path parameters for Flux substitutions
+- name: Inject base-path parameters for Flux substitutions
   ansible.builtin.shell:
     cmd: >
       k3s kubectl -n flux-system create secret generic base-path
@@ -62,9 +60,7 @@
       --dry-run=client -o yaml | k3s kubectl apply -f -
   environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
 
-# Public repo → Flux can pull read-only with no deploy key. This applies the
-# committed gotk manifests (GitRepository + root Kustomization) for clusters/production.
-- name: Bootstrap Flux against this repo (read-only, public)
+- name: Bootstrap Flux against the repo
   ansible.builtin.shell:
     cmd: |
       flux install
@@ -79,11 +75,11 @@
         --interval=10m
   environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
 
-- name: Wait for Flux to reconcile the cluster
+- name: Wait for Flux to reconcile
   ansible.builtin.command: flux get kustomizations --no-header
   environment: { KUBECONFIG: /etc/rancher/k3s/k3s.yaml }
   changed_when: false
   register: flux_ks
   retries: 30
   delay: 20
-  until: "'False' not in flux_ks.stdout"   # crude: wait until none are failing
+  until: "'False' not in flux_ks.stdout"

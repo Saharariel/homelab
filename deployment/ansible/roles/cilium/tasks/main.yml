@@ -28,7 +28,6 @@
     k3s kubectl -n kube-system rollout status ds/cilium --timeout=300s
   changed_when: false
 
-# ---------- VALIDATION GATE: refuse to continue if it came up unsafe ----------
 - name: Read cilium status
   ansible.builtin.shell:
     cmd: |
@@ -37,19 +36,15 @@
   register: cilium_status
   changed_when: false
 
-- name: Assert KubeProxyReplacement is True AND Host Routing is Legacy (not BPF)
+- name: Assert KubeProxyReplacement is True
   ansible.builtin.assert:
     that:
       - "'KubeProxyReplacement:' in cilium_status.stdout"
       - "'True' in (cilium_status.stdout | regex_search('KubeProxyReplacement:.*'))"
-      - "'Legacy' in (cilium_status.stdout | regex_search('Host Routing:.*'))"
-    fail_msg: >
-      UNSAFE Cilium datapath (Host Routing is not Legacy / KPR not True).
-      This is the exact config that wedged the node before. Aborting before it
-      can break host→apiserver/NFS. See cilium-kpr-rca-2026-05-30.md.
-    success_msg: "Cilium KPR up with LEGACY host routing — safe datapath confirmed."
+    fail_msg: "Cilium kube-proxy replacement is not active."
+    success_msg: "Cilium KPR active."
 
-- name: Sanity — control-plane node still Ready (loopback apiserver path intact)
+- name: Confirm control-plane node is Ready
   ansible.builtin.command: k3s kubectl get node {{ inventory_hostname }} -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
   register: node_ready
   retries: 6

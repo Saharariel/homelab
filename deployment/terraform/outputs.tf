@@ -6,7 +6,7 @@ output "worker_ip" {
   value = split("/", var.worker.ip)[0]
 }
 
-# Ready-to-use Ansible inventory (the orchestrator writes this to a file after apply).
+# Rendered Ansible inventory; write to a file after apply.
 output "ansible_inventory" {
   value = <<-EOT
     all:

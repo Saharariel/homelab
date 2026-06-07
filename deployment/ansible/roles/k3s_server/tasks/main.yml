@@ -1,8 +1,4 @@
 ---
-# k3s control plane, configured for Cilium kube-proxy-replacement:
-#   --flannel-backend=none --disable-network-policy  (Cilium is the CNI)
-#   --disable-kube-proxy                              (Cilium does service LB)
-#   --secrets-encryption                              (encrypt Secrets at rest in etcd)
 - name: Install k3s server
   ansible.builtin.shell:
     cmd: |
@@ -27,14 +23,14 @@
   until: k3s_ready.rc == 0
   changed_when: false
 
-- name: Confirm Secrets encryption is active
+- name: Confirm secrets encryption is active
   ansible.builtin.command: k3s secrets-encrypt status
   register: enc
   changed_when: false
 - name: Assert encryption enabled
   ansible.builtin.assert:
     that: "'Encryption Status: Enabled' in enc.stdout"
-    fail_msg: "etcd secrets encryption is NOT enabled — aborting."
+    fail_msg: "Secrets encryption is not enabled."
 
 - name: Fetch the admin kubeconfig to the controller
   ansible.builtin.fetch:
@@ -42,9 +38,8 @@
     dest: "/tmp/k3s-kubeconfig"
     flat: true
 
-# k3s writes server: https://127.0.0.1:6443 — rewrite it to the master IP so the
-# kubeconfig works from your laptop. Copy /tmp/k3s-kubeconfig -> ~/.kube/config.
-- name: Point the operator kubeconfig at the master IP
+# k3s writes server: https://127.0.0.1:6443; rewrite it to the API server IP.
+- name: Point the kubeconfig at the API server IP
   delegate_to: localhost
   become: false
   ansible.builtin.replace:
@@ -52,8 +47,8 @@
     regexp: 'https://127\.0\.0\.1:6443'
     replace: 'https://{{ k3s_apiserver_host }}:{{ k3s_apiserver_port }}'
 
-- name: Tell the operator where the kubeconfig is
+- name: Report kubeconfig location
   delegate_to: localhost
   become: false
   ansible.builtin.debug:
-    msg: "kubeconfig ready at /tmp/k3s-kubeconfig — copy to ~/.kube/config (server: https://{{ k3s_apiserver_host }}:{{ k3s_apiserver_port }})"
+    msg: "kubeconfig ready at /tmp/k3s-kubeconfig (copy to ~/.kube/config)"

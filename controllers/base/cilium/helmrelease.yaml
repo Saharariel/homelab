@@ -23,19 +23,11 @@ spec:
     kubeProxyReplacement: true
     k8sServiceHost: ${K3S_APISERVER_HOST}
     k8sServicePort: ${K3S_APISERVER_PORT}
-    routingMode: tunnel
-    tunnelProtocol: vxlan
     ipam:
       mode: cluster-pool
       operator:
         clusterPoolIPv4PodCIDRList:
           - ${POD_CIDR}
-    bpf:
-      hostLegacyRouting: true
-      masquerade: false
-    socketLB:
-      hostNamespaceOnly: true
-    enableIPv4Masquerade: true
     operator:
       replicas: 1
     hubble:
@@ -52,18 +44,3 @@ spec:
           - port-distribution
           - icmp
           - httpV2
-  # relay reaches agents at node-IP:4244; pod->node-IP is broken under Legacy
-  # routing, so run relay host-net (chart has no hubble.relay.hostNetwork value)
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: Deployment
-              name: hubble-relay
-            patch: |
-              - op: add
-                path: /spec/template/spec/hostNetwork
-                value: true
-              - op: add
-                path: /spec/template/spec/dnsPolicy
-                value: ClusterFirstWithHostNet

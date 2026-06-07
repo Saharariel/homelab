@@ -7,8 +7,8 @@
 - name: Install base packages
   ansible.builtin.apt:
     name:
-      - qemu-guest-agent   # so Proxmox/Terraform see the VM's IP + can manage it
-      - nfs-common         # REQUIRED: all PVs are NFS; kubelet mounts them per-pod
+      - qemu-guest-agent
+      - nfs-common
       - curl
       - open-iscsi
     state: present

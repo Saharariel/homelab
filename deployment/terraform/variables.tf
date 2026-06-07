@@ -1,13 +1,13 @@
 # ---------- Proxmox connection ----------
 variable "proxmox_endpoint" {
   type        = string
-  description = "PVE API endpoint, e.g. https://192.168.50.19:8006/"
+  description = "PVE API endpoint, e.g. https://<node>:8006/"
 }
 
 variable "proxmox_api_token" {
   type        = string
   sensitive   = true
-  description = "API token: user@realm!tokenid=secret (injected by the orchestrator)"
+  description = "API token in the form user@realm!tokenid=secret."
 }
 
 variable "proxmox_insecure" {
@@ -16,34 +16,30 @@ variable "proxmox_insecure" {
 }
 
 # ---------- Cluster node placement ----------
-# Two PVE nodes in one cluster. master on the (encrypted) laptop node,
-# worker on the desktop node that owns the tank ZFS pool + the GPU.
 variable "pve_node_master" {
   type        = string
-  description = "PVE node name hosting the control plane (the laptop)."
+  description = "PVE node name hosting the control plane."
 }
 
 variable "pve_node_worker" {
   type        = string
-  description = "PVE node name hosting the worker (the i7 desktop with tank + iGPU)."
+  description = "PVE node name hosting the worker (with the iGPU)."
 }
 
-# Datastore that backs each VM's disk = the host's NVMe SSD (local-lvm) for a
-# fast OS. Unencrypted by decision (D1 = no LUKS); VMs are cattle, no state on
-# them. NOT the tank HDD pool.
+# VM disks are placed on each node's local SSD datastore.
 variable "datastore_master" {
   type    = string
-  default = "local-lvm" # laptop NVMe SSD
+  default = "local-lvm"
 }
 variable "datastore_worker" {
   type    = string
-  default = "local-lvm" # desktop NVMe SSD
+  default = "local-lvm"
 }
 
-# Datastore that holds the downloaded cloud image / ISOs (snippets-capable).
 variable "datastore_images" {
-  type    = string
-  default = "local"
+  type        = string
+  default     = "local"
+  description = "Datastore holding the downloaded cloud image."
 }
 
 # ---------- VM image ----------
@@ -59,7 +55,7 @@ variable "master" {
     cores   = number
     memory  = number # MB
     disk_gb = number
-    ip      = string # CIDR, e.g. 192.168.50.19/24
+    ip      = string # CIDR
   })
   default = {
     vmid = 110, cores = 2, memory = 4096, disk_gb = 40, ip = "192.168.50.19/24"
@@ -70,10 +66,10 @@ variable "worker" {
   type = object({
     vmid    = number
     cores   = number
-    memory  = number # balloon ceiling (max), MB
-    balloon = number # balloon floor (min guaranteed), MB — frees idle RAM to the host
+    memory  = number # balloon ceiling, MB
+    balloon = number # balloon floor, MB
     disk_gb = number
-    ip      = string
+    ip      = string # CIDR
   })
   default = {
     vmid = 111, cores = 8, memory = 12288, balloon = 8192, disk_gb = 60, ip = "192.168.50.18/24"
@@ -89,12 +85,11 @@ variable "network_bridge" {
   default = "vmbr0"
 }
 
-# ---------- GPU passthrough (worker only, Intel QSV for Jellyfin) ----------
-# PCI id of the iGPU on the desktop, e.g. "0000:00:02.0". Find with `lspci -nn | grep VGA`.
+# ---------- GPU passthrough (worker) ----------
 variable "worker_igpu_pci_id" {
   type        = string
   default     = ""
-  description = "Leave empty to skip passthrough; set to the iGPU PCI id to enable QSV."
+  description = "iGPU PCI id (lspci -nn | grep VGA). Empty disables passthrough."
 }
 
 # ---------- Cloud-init access ----------

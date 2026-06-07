@@ -8,7 +8,5 @@ terraform {
     }
   }
 
-  # State lives OFF git. Start with local state on the Semaphore LXC's
-  # persistent volume; move to an S3/MinIO backend later if wanted.
-  # backend "s3" { ... }
+  # backend "s3" { ... }  # optional remote state
 }

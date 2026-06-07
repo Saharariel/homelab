@@ -1,4 +1,3 @@
-# Ubuntu cloud image, downloaded to each node (bpg imports the disk from it).
 resource "proxmox_virtual_environment_download_file" "ubuntu_master" {
   content_type = "iso"
   datastore_id = var.datastore_images
@@ -15,7 +14,6 @@ resource "proxmox_virtual_environment_download_file" "ubuntu_worker" {
   file_name    = "noble-cloudimg-amd64-worker.img"
 }
 
-# ---------------- master-01 (control plane, laptop PVE node) ----------------
 resource "proxmox_virtual_environment_vm" "master" {
   name      = "k3s-master-01"
   node_name = var.pve_node_master
@@ -54,7 +52,6 @@ resource "proxmox_virtual_environment_vm" "master" {
   operating_system { type = "l26" }
 }
 
-# ---------------- worker-01 (desktop PVE node, tank + iGPU) ----------------
 resource "proxmox_virtual_environment_vm" "worker" {
   name      = "k3s-worker-01"
   node_name = var.pve_node_worker
@@ -63,18 +60,17 @@ resource "proxmox_virtual_environment_vm" "worker" {
 
   agent { enabled = true }
 
-  # iGPU PCIe passthrough requires q35 + OVMF (UEFI). Mirrors the proven-working
-  # worker (VM 103): bios=ovmf, machine=q35, efidisk0 with pre-enrolled keys.
+  # q35 + OVMF are required for the iGPU PCIe passthrough below.
   bios    = "ovmf"
   machine = "q35"
 
   cpu {
     cores = var.worker.cores
-    type  = "host" # host CPU type required to expose iGPU features for QSV
+    type  = "host"
   }
   memory {
-    dedicated = var.worker.memory  # ceiling, 12G
-    floating  = var.worker.balloon # balloon floor, 8G (ballooning 8-12G like the current worker)
+    dedicated = var.worker.memory
+    floating  = var.worker.balloon
   }
 
   disk {
@@ -84,7 +80,6 @@ resource "proxmox_virtual_environment_vm" "worker" {
     import_from  = proxmox_virtual_environment_download_file.ubuntu_worker.id
   }
 
-  # OVMF needs an EFI vars disk (4 MB, secure-boot keys pre-enrolled like VM 103).
   efi_disk {
     datastore_id      = var.datastore_worker
     type              = "4m"
@@ -108,7 +103,6 @@ resource "proxmox_virtual_environment_vm" "worker" {
   network_device { bridge = var.network_bridge }
   operating_system { type = "l26" }
 
-  # Intel QSV passthrough (only when worker_igpu_pci_id is set).
   dynamic "hostpci" {
     for_each = var.worker_igpu_pci_id == "" ? [] : [1]
     content {

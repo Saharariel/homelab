@@ -1,28 +1,20 @@
 ---
-# Versions (pin these; bump deliberately)
 k3s_version: "v1.36.1+k3s1"
 cilium_version: "1.19.4"
 
-# Networking
-pod_cidr: "10.42.0.0/16" # k3s default; must match Cilium ipam pool
+pod_cidr: "10.42.0.0/16"
 service_cidr: "10.43.0.0/16"
 
-# Control-plane API endpoint (the master IP) — Cilium needs this with no kube-proxy.
 k3s_apiserver_host: "192.168.50.19"
 k3s_apiserver_port: 6443
 
-# Flux substitution parameters created during bootstrap.
 cluster_base_path: "/tank"
 cluster_nfs_server: "192.168.50.10"
 cluster_nfs_root: "/tank/k3s-pvcs"
 
-# Flux bootstrap target (this repo)
 flux_git_url: "https://github.com/Saharariel/homelab.git"
 flux_git_branch: "main"
 flux_git_path: "clusters/production"
 
-# ---- Secrets: keep in an ansible-vault'd group_vars/secrets.yml (gitignored) ----
-# k3s_token: "<cluster join token>"
-# eso_aws_access_key_id: "<external-secrets AWS access key>"
-# eso_aws_secret_access_key: "<external-secrets AWS secret key>"
-# base_domain: "<cluster base domain>"
+# Secrets live in an ansible-vault'd group_vars/secrets.yml (gitignored):
+# k3s_token, eso_aws_access_key_id, eso_aws_secret_access_key, base_domain

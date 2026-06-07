@@ -1,28 +1,22 @@
-# Copy to terraform.tfvars (gitignored) or inject these as TF_VAR_* env vars
-# from the Semaphore secret store. NEVER commit real values.
+# Copy to terraform.tfvars (gitignored) or inject as TF_VAR_* env vars.
+# Never commit real values.
 
-proxmox_endpoint  = "https://192.168.50.19:8006/"
+proxmox_endpoint  = "https://proxmox.example:8006/"
 proxmox_api_token = "terraform@pve!iac=REPLACE-WITH-TOKEN-SECRET"
 proxmox_insecure  = true
 
-# PVE cluster node names (run `pvecm nodes` on the cluster).
-# Desktop's PVE node name is "homelab"; name the reinstalled laptop whatever you
-# like and put it here.
-pve_node_master = "pve-laptop"   # the reinstalled laptop PVE node
-pve_node_worker = "homelab"      # the desktop PVE node (current hostname)
+# PVE node names (run `pvecm nodes`).
+pve_node_master = "pve-master"
+pve_node_worker = "pve-worker"
 
-# VM disks on the host SSD (local-lvm) for a fast OS. Unencrypted — the VMs are
-# cattle (no state on them; everything lives on tank/NFS). NOT the tank HDD pool.
-datastore_master = "local-lvm"   # laptop NVMe SSD
-datastore_worker = "local-lvm"   # desktop NVMe SSD
+datastore_master = "local-lvm"
+datastore_worker = "local-lvm"
 datastore_images = "local"
 
-# iGPU PCI id on the desktop (lspci -nn | grep VGA) — empty disables passthrough
+# iGPU PCI id (lspci -nn | grep VGA); empty disables passthrough.
 worker_igpu_pci_id = "0000:00:02.0"
 
 vm_username = "ubuntu"
 ssh_public_keys = [
-  "ssh-ed25519 AAAA... you@laptop",
+  "ssh-ed25519 AAAA... user@host",
 ]
-
-# Optionally override the master/worker objects here, else defaults in variables.tf apply.
