@@ -63,6 +63,18 @@ spec:
         # HTTPS only: bind the router to websecure (443), no port 80.
         traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
 
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+
+    securityContext:
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+
     service:
       type: ClusterIP
 
