@@ -17,8 +17,6 @@ spec:
         app: qbittorrent
     spec:
       securityContext:
-        runAsUser: 0
-        runAsNonRoot: false
         fsGroup: 911
 
       containers:
@@ -27,10 +25,10 @@ spec:
         image: qmcgaw/gluetun:v3.41.1
         imagePullPolicy: IfNotPresent
         securityContext:
-          privileged: true
           capabilities:
             add:
             - NET_ADMIN
+          allowPrivilegeEscalation: false
 
         env:
         - name: VPN_SERVICE_PROVIDER
@@ -95,9 +93,9 @@ spec:
 
         env:
         - name: PUID
-          value: "0"
+          value: "1000"
         - name: PGID
-          value: "0"
+          value: "1000"
         - name: TZ
           value: "UTC"
         - name: WEBUI_PORT
