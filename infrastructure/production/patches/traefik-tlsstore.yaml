@@ -1,0 +1,13 @@
+---
+# Sets homelab-wildcard-tls as Traefik's default TLS certificate.
+# Any websecure ingress without an explicit tls secretName will use this cert,
+# covering all *.homelab services without per-ingress cert-manager annotations.
+apiVersion: traefik.io/v1alpha1
+kind: TLSStore
+metadata:
+  name: default
+  namespace: kube-system
+spec:
+  defaultCertificate:
+    secretRef:
+      name: homelab-wildcard-tls
