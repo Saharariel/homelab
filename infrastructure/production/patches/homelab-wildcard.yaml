@@ -1,6 +1,7 @@
 ---
-# Wildcard cert for *.homelab — stored in kube-system so Traefik's TLSStore
-# can reference it as the default certificate for all internal ingresses.
+# SAN cert for all .homelab services — stored in kube-system so Traefik's
+# TLSStore can use it as the default certificate.
+# *.homelab (2-label wildcard) is rejected by Chromium; explicit SANs required.
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -12,8 +13,21 @@ spec:
     name: ca-issuer
     kind: ClusterIssuer
   dnsNames:
-    - "*.homelab"
-    - homelab
+    - bazarr.homelab
+    - grafana.homelab
+    - immich.homelab
+    - jellyfin.homelab
+    - jellyseer.homelab
+    - longhorn.homelab
+    - n8n.homelab
+    - notifiarr.homelab
+    - prowlarr.homelab
+    - qbittorrent.homelab
+    - radarr.homelab
+    - sabnzbd.homelab
+    - sonarr.homelab
+    - tracearr.homelab
+    - vault.homelab
   duration: 8760h
   renewBefore: 720h
   privateKey:
