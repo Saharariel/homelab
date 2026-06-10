@@ -7,8 +7,13 @@ metadata:
     kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: ca-issuer
 spec:
   ingressClassName: traefik
+  tls:
+  - hosts:
+    - jellyfin.homelab
+    secretName: jellyfin-homelab-tls
   rules:
   - host: jellyfin.homelab
     http:
