@@ -8,6 +8,6 @@ spec:
     additionalArguments:
       - "--entryPoints.web.forwardedHeaders.trustedIPs=10.42.0.0/16"
       - "--entryPoints.websecure.forwardedHeaders.trustedIPs=10.42.0.0/16"
-      - "--entryPoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entryPoints.web.http.redirections.entryPoint.to=:443"
       - "--entryPoints.web.http.redirections.entryPoint.scheme=https"
       - "--entryPoints.web.http.redirections.entryPoint.permanent=true"
