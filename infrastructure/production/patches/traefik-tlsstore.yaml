@@ -9,5 +9,4 @@ metadata:
   namespace: kube-system
 spec:
   defaultCertificate:
-    secretRef:
-      name: homelab-wildcard-tls
+    secretName: homelab-wildcard-tls
