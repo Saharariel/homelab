@@ -4,3 +4,4 @@ resources:
   - local-path.yaml
   - traefik-helmchartconfig.yaml
   - traefik-tlsstore.yaml
+  - homelab-wildcard.yaml
