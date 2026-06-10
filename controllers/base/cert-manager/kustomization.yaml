@@ -5,4 +5,3 @@ resources:
 - helmrepo.yaml
 - clusterissuer.yaml
 - ca-issuer.yaml
-- homelab-wildcard.yaml
