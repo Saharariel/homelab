@@ -1,0 +1,51 @@
+# Admin UI: LAN-only host, gated by the Traefik basic-auth middleware.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: server-hub-admin
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: ca-issuer
+    traefik.ingress.kubernetes.io/router.middlewares: utils-server-hub-basic-auth@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - serverhub.homelab
+      secretName: server-hub-homelab-tls
+  rules:
+    - host: serverhub.homelab
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: server-hub
+                port:
+                  number: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: server-hub-enroll
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: enroll.${BASE_DOMAIN}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: server-hub
+                port:
+                  number: 8000
+  tls:
+    - hosts:
+        - enroll.${BASE_DOMAIN}

@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-hub
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server-hub
+
+  template:
+    metadata:
+      labels:
+        app: server-hub
+
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+        - name: server-hub
+          image: ghcr.io/saharariel/server-hub:main
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+
+          env:
+            - name: DATABASE_PATH
+              value: /app/data/server_hub.db
+            - name: INSTANCE_KEY_PATH
+              value: /app/data/instance.key
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: tmp
+              mountPath: /tmp
+
+      restartPolicy: Always
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: server-hub-data-nfs
+        # readOnlyRootFilesystem makes / read-only; give the app a writable /tmp.
+        - name: tmp
+          emptyDir: {}
