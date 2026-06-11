@@ -30,9 +30,9 @@ spec:
           traefik.ingress.kubernetes.io/router.entrypoints: websecure
           traefik.ingress.kubernetes.io/router.tls: "true"
         hosts:
-        - auth.${BASE_DOMAIN}
+          - auth.homelab
 
-    # Bundle Postgres & Redis 
+    # Bundle Postgres & Redis
     postgresql:
       enabled: true
       auth:
@@ -54,15 +54,15 @@ spec:
           existingClaim: authentik-redis-nfs
 
   valuesFrom:
-  - kind: Secret
-    name: authentik-secret
-    valuesKey: AUTHENTIK_SECRET_KEY
-    targetPath: authentik.secret_key
-  - kind: Secret
-    name: authentik-secret
-    valuesKey: POSTGRES_PASSWORD
-    targetPath: postgresql.auth.password
-  - kind: Secret
-    name: authentik-secret
-    valuesKey: POSTGRES_PASSWORD
-    targetPath: authentik.postgresql.password
+    - kind: Secret
+      name: authentik-secret
+      valuesKey: AUTHENTIK_SECRET_KEY
+      targetPath: authentik.secret_key
+    - kind: Secret
+      name: authentik-secret
+      valuesKey: POSTGRES_PASSWORD
+      targetPath: postgresql.auth.password
+    - kind: Secret
+      name: authentik-secret
+      valuesKey: POSTGRES_PASSWORD
+      targetPath: authentik.postgresql.password
