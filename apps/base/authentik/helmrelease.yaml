@@ -29,8 +29,13 @@ spec:
         annotations:
           traefik.ingress.kubernetes.io/router.entrypoints: websecure
           traefik.ingress.kubernetes.io/router.tls: "true"
+          cert-manager.io/cluster-issuer: ca-issuer
         hosts:
           - auth.homelab
+        tls:
+          - hosts:
+              - auth.homelab
+            secretName: authentik-homelab-tls
 
     # Bundle Postgres & Redis
     postgresql:
