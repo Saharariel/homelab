@@ -41,6 +41,10 @@ spec:
               value: /app/data/instance.key
             - name: PYTHONDONTWRITEBYTECODE
               value: "1"
+            # Extends the OS trust store (picked up via OpenSSL's default verify
+            # paths) so the Proxmox adapter validates the PVE API's self-signed CA.
+            - name: SSL_CERT_FILE
+              value: /certs/pve-root-ca.pem
 
           resources:
             requests:
@@ -73,6 +77,9 @@ spec:
               mountPath: /app/data
             - name: tmp
               mountPath: /tmp
+            - name: pve-ca
+              mountPath: /certs
+              readOnly: true
 
       restartPolicy: Always
 
@@ -83,3 +90,6 @@ spec:
         # readOnlyRootFilesystem makes / read-only; give the app a writable /tmp.
         - name: tmp
           emptyDir: {}
+        - name: pve-ca
+          configMap:
+            name: server-hub-pve-ca

@@ -1,0 +1,43 @@
+# Public root CA of the Proxmox cluster (/etc/pve/pve-root-ca.pem on the PVE host).
+# Mounted into the Server Hub pod so its Proxmox adapter can validate the API's TLS
+# certificate; the app trusts the OS store, extended via SSL_CERT_FILE.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server-hub-pve-ca
+data:
+  pve-root-ca.pem: |
+    -----BEGIN CERTIFICATE-----
+    MIIFzTCCA7WgAwIBAgIULTB90iCq17YSrgaNpnH+Z7Ac/mQwDQYJKoZIhvcNAQEL
+    BQAwdjEkMCIGA1UEAwwbUHJveG1veCBWaXJ0dWFsIEVudmlyb25tZW50MS0wKwYD
+    VQQLDCQxNzJkZTE2Yi1mMWVhLTRiMjctOGRjZi00MGVmNjU1MjdkNmExHzAdBgNV
+    BAoMFlBWRSBDbHVzdGVyIE1hbmFnZXIgQ0EwHhcNMjUwMzIxMjIxOTE1WhcNMzUw
+    MzE5MjIxOTE1WjB2MSQwIgYDVQQDDBtQcm94bW94IFZpcnR1YWwgRW52aXJvbm1l
+    bnQxLTArBgNVBAsMJDE3MmRlMTZiLWYxZWEtNGIyNy04ZGNmLTQwZWY2NTUyN2Q2
+    YTEfMB0GA1UECgwWUFZFIENsdXN0ZXIgTWFuYWdlciBDQTCCAiIwDQYJKoZIhvcN
+    AQEBBQADggIPADCCAgoCggIBAIupgG7SZQDxLfQpbT/37wxzezgn9Wz52hn126nI
+    4JWNddhaycFjCg05NHImXLEhHod6MghSsat2MRkFwhiPuOX5om7/aOXGY1FHJxjw
+    LxTcR4J+3V92ZVB5G+MEe3fU367y/4RHSamIIh/w9U8GMRN6NQKEHA0x/AvcuOaG
+    Us97kINFTai4iE5RefA65JTy1pR++lrlXjPNpYxMVUwA1bz01IUgfh0CgVeJngVp
+    UoGsRng7djOBOHnPz7Bn6d1q5nLx/nMRB96VVw8ceyAlm82XgSqeUdEMcS1xWCXS
+    5TbVN568Laus63EwV7lWFY5OZwWKZVWj8lfTqos4QFrXBI4qUULngcHnMJEy+3yw
+    LIp6qOeJF0TQTbB7E028KrPYiVSOlChueedu7METm6Bee2B9hPqNeb8kLXp7a+Ba
+    Tp4N+A1v9cAilJWwtCnFgv+E8gyAXgH7X8+LIDiDhyyht1wPKoyv4zZIUd0Kabg6
+    gKwmWvkrXVY/sMTX6o215qujQaNElCFpp5YfINYNoj91Q8fgBMoN7MwXSLcaAGog
+    jzXhHjnDGW53D+qjGtsTE6iL+Qdn39j4CD7hDV4kCfMOIFtxitoKIlt2jb1Ottwr
+    ywI+eI00kFpmwy9ahxBJ/AxgIvMYEyY3xkXLTEQLouFCiQdAo7BxAxcmCTWixBYh
+    gxs1AgMBAAGjUzBRMB0GA1UdDgQWBBTlhSf6PEsIKk67xfp50p7sFaH7ozAfBgNV
+    HSMEGDAWgBTlhSf6PEsIKk67xfp50p7sFaH7ozAPBgNVHRMBAf8EBTADAQH/MA0G
+    CSqGSIb3DQEBCwUAA4ICAQAPtcrIJveOkSFjACVmLk/Eis11aaZnPD+oBaLO10vN
+    AYZ5t9FYhWW5GRr1aRoW8Shi0bg9ktECSPrLDjM4hDkgmPOUOk1ixQoM0OQPO/XW
+    dZhOHnTJGoi4oM448L/Ox1XLMnd6g+ZLB1L60WGgTECwAi68KRltgv56FTx7rTG9
+    cb8tN28VLuX3g1ftjpjKPiMXoezUR6zzyvYHSLG4ZQhz7kHoXyoSRwMxULiC6i0p
+    PzrNpBA6vYC4lV6zz8mSlfznjjkEpvn3GbtWuzwae9+pJI/+FOh7y0YUbYq56PbM
+    D7qX5Jln/E994LOFAelgVf5TCWy49azs8yhXSWuD/7nTUB27tTzJd5lwFfvZwaaU
+    l5Ug0V0zkMptYCyGE9k7rKTRtXJq7pYzxPvGYd7Nl1pcW+jnL19iGPniOUXm70o1
+    DcBT3sZVyoxvbGeRUHVAYwycx+7AFkxqcvDSEVByall2QOGL2qj6mOvqNMrb8k3k
+    ENN22vC8EAFo/mGxB5wD3RPbvqP+ufKPenZ3yM//qYs5VUOT2lrep+2nV48L7BbA
+    OnY06p4kVSb40dG3/Xq5WPXPHsOJl9q8ntkK1kiwZtVFlsakvTa9KFBZVDo5iLw4
+    SSfJcIUzkYM1gpBjBL7EbRpaAkWhAZwaopnoRgpiH4dRgCPIsMhk7jCFh9WFK+6w
+    Bw==
+    -----END CERTIFICATE-----

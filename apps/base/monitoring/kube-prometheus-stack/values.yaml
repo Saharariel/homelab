@@ -194,6 +194,14 @@ prometheus:
     # host-net so scrapes are host->host (pod->node-IP broken under Cilium Legacy)
     hostNetwork: true
     dnsPolicy: ClusterFirstWithHostNet
+    # zfs_exporter runs as a systemd unit on the Proxmox desktop host (port 9134);
+    # Server Hub reads these dataset metrics through its Prometheus adapter.
+    additionalScrapeConfigs:
+      - job_name: zfs-proxmox
+        static_configs:
+          - targets: ["192.168.50.10:9134"]
+            labels:
+              node: homelab
 
 thanosRuler:
   enabled: false
