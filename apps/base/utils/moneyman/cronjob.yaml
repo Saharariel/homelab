@@ -11,12 +11,32 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            app: moneyman
         spec:
           restartPolicy: OnFailure
+          serviceAccountName: moneyman
+          automountServiceAccountToken: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            seccompProfile:
+              type: RuntimeDefault
           containers:
             - name: moneyman
-              image: ghcr.io/daniel-hauser/moneyman:v2026.06.02.1
-              imagePullPolicy: Always
+              # Pinned by digest so a re-pushed tag can't swap the image.
+              image: ghcr.io/daniel-hauser/moneyman:v2026.06.02.1@sha256:2bf7841db6580a6ee0e57a52e1defe33a299aaca6113d59a36071abe292de8db
+              imagePullPolicy: IfNotPresent
+
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop:
+                    - ALL
 
               resources:
                 requests:
@@ -24,13 +44,29 @@ spec:
                   cpu: "200m"
                 limits:
                   memory: "1Gi"
-                  cpu: "1000m"
 
               env:
                 - name: TZ
                   value: Asia/Jerusalem
-                - name: MONEYMAN_CONFIG
-                  valueFrom:
-                    secretKeyRef:
-                      name: moneyman-secret
-                      key: MONEYMAN_CONFIG
+                - name: HOME
+                  value: /tmp
+                # Read config from a file, keeping the secret out of the env.
+                - name: MONEYMAN_CONFIG_PATH
+                  value: /secrets/config.json
+
+              volumeMounts:
+                - name: config
+                  mountPath: /secrets
+                  readOnly: true
+                - name: tmp
+                  mountPath: /tmp
+
+          volumes:
+            - name: config
+              secret:
+                secretName: moneyman-secret
+                items:
+                  - key: MONEYMAN_CONFIG
+                    path: config.json
+            - name: tmp
+              emptyDir: {}
