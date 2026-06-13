@@ -50,11 +50,17 @@ grafana:
   ingress:
     enabled: true
     annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: web
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      traefik.ingress.kubernetes.io/router.tls: "true"
+      cert-manager.io/cluster-issuer: ca-issuer
     hosts:
       - grafana.homelab
     path: /
     pathType: Prefix
+    tls:
+      - hosts:
+          - grafana.homelab
+        secretName: grafana-homelab-tls
   serviceMonitor:
     enabled: true
   admin:
