@@ -4,3 +4,6 @@ terraform/terraform.tfstate.backup
 terraform/.terraform
 terraform/.terraform.locl.hcl
 /.superset
+
+# Operational runbooks are kept local-only, off the public repo (see commit e233cc3)
+docs/runbooks/
