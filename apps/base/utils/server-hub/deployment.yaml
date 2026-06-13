@@ -26,6 +26,7 @@ spec:
       containers:
         - name: server-hub
           image: ghcr.io/saharariel/server-hub:main
+          imagePullPolicy: Always
 
           securityContext:
             allowPrivilegeEscalation: false
