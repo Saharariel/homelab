@@ -85,6 +85,9 @@ spec:
 
     machine-learning:
       enabled: true
+      defaultPodOptions:
+        nodeSelector:
+          kubernetes.io/hostname: worker-node-1
       persistence:
         # Persist downloaded ML models so they survive pod restarts.
         # Re-downloadable model files: replicated for availability but excluded

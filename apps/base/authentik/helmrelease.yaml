@@ -13,6 +13,9 @@ spec:
         name: goauthentik
         namespace: authentik
   values:
+    global:
+      nodeSelector:
+        kubernetes.io/hostname: worker-node-1
     authentik:
       # secret_key is injected via valuesFrom below
       error_reporting:
