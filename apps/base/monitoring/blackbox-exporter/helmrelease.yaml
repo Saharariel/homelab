@@ -1,0 +1,38 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: blackbox-exporter
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: prometheus-blackbox-exporter
+      version: "11.13.0"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: monitoring
+  values:
+    fullnameOverride: blackbox-exporter
+    # Co-locate with Prometheus on the control plane (worker is RAM-starved).
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: "true"
+    resources:
+      requests:
+        cpu: 10m
+        memory: 24Mi
+      limits:
+        memory: 64Mi
+    serviceMonitor:
+      enabled: false
+    config:
+      modules:
+        # A reachable web app may answer with a redirect to login or a 401/403
+        # behind forward-auth; all of those still mean "the service is up".
+        homelab_http:
+          prober: http
+          timeout: 5s
+          http:
+            valid_status_codes: [200, 301, 302, 401, 403]
+            follow_redirects: false
+            preferred_ip_protocol: ip4

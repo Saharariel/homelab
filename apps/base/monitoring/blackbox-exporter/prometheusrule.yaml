@@ -1,0 +1,26 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: blackbox-probes
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: blackbox.rules
+      rules:
+        - alert: BlackboxProbeFailed
+          expr: probe_success == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Endpoint down: {{ $labels.instance }}"
+            description: "Blackbox probe to {{ $labels.instance }} has been failing for more than 2 minutes."
+        - alert: BlackboxProbeSlow
+          expr: probe_duration_seconds > 5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Endpoint slow: {{ $labels.instance }}"
+            description: "Blackbox probe to {{ $labels.instance }} took over 5s for 5 minutes."

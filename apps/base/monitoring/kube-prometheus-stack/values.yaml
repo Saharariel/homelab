@@ -36,6 +36,54 @@ alertmanager:
     enabled: false
   nodeSelector:
     node-role.kubernetes.io/control-plane: "true"
+  alertmanagerSpec:
+    # Bump past the chart-default v0.25.0 for discord_configs webhook_url_file +
+    # title/message templating (added in v0.26).
+    image:
+      tag: v0.27.0
+    # Mounts secret alertmanager-discord at /etc/alertmanager/secrets/<name>/.
+    secrets:
+      - alertmanager-discord
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: ["alertname", "namespace"]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+      receiver: discord
+      routes:
+        # Watchdog always fires (it's the dead-man's-switch heartbeat) and
+        # InfoInhibitor is noise; keep both out of Discord.
+        - receiver: "null"
+          matchers:
+            - alertname = "Watchdog"
+        - receiver: "null"
+          matchers:
+            - alertname = "InfoInhibitor"
+    receivers:
+      - name: "null"
+      - name: discord
+        discord_configs:
+          - webhook_url_file: /etc/alertmanager/secrets/alertmanager-discord/address
+            send_resolved: true
+            title: >-
+              {{ if eq .Status "firing" }}🔥 FIRING{{ else }}✅ RESOLVED{{ end }} ·
+              {{ .CommonLabels.alertname }}
+            message: |-
+              {{ range .Alerts }}**{{ .Labels.alertname }}** ({{ .Labels.severity }})
+              {{ .Annotations.summary }}{{ if .Annotations.description }}
+              {{ .Annotations.description }}{{ end }}
+              {{ if .Labels.instance }}instance: `{{ .Labels.instance }}` {{ end }}{{ if .Labels.namespace }}· ns: `{{ .Labels.namespace }}`{{ end }}
+              {{ end }}
+    inhibit_rules:
+      # Don't page on a warning when the matching critical is already firing.
+      - source_matchers:
+          - severity = "critical"
+        target_matchers:
+          - severity = "warning"
+        equal: ["alertname", "namespace"]
 
 grafana:
   enabled: true

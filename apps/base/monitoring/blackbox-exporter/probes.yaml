@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: homelab-services
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: blackbox
+  interval: 30s
+  module: homelab_http
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      # Cluster-internal Service DNS, so a probe failure means the app itself is
+      # down (not Traefik/ingress/DNS). Add more lines as you add services.
+      static:
+        - http://jellyfin.media.svc.cluster.local:8096
+        - http://sonarr.media.svc.cluster.local:8989
+        - http://radarr.media.svc.cluster.local:7878
+        - http://prowlarr.media.svc.cluster.local:9696
+        - http://server-hub.utils.svc.cluster.local:8000
+      labels:
+        probe_group: homelab
