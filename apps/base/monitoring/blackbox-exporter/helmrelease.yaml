@@ -27,12 +27,13 @@ spec:
       enabled: false
     config:
       modules:
-        # A reachable web app may answer with a redirect to login or a 401/403
-        # behind forward-auth; all of those still mean "the service is up".
+        # A reachable web app may redirect to a login/web root (302/307) or sit
+        # behind forward-auth (401/403); following redirects lands most on a 200.
+        # All of these still mean "the service is up".
         homelab_http:
           prober: http
           timeout: 5s
           http:
-            valid_status_codes: [200, 301, 302, 401, 403]
-            follow_redirects: false
+            valid_status_codes: [200, 204, 301, 302, 307, 308, 401, 403]
+            follow_redirects: true
             preferred_ip_protocol: ip4

@@ -131,10 +131,9 @@ kubelet:
         targetLabel: instance
 
 kubeControllerManager:
-  enabled: true
-  endpoints:
-    # control-plane, binds 127.0.0.1:10257 (reached via hostNetwork Prometheus)
-    - 127.0.0.1
+  # Disabled: k3s binds this on 127.0.0.1 and k8s 1.33 rejects loopback IPs in
+  # the chart-managed Endpoints. Re-add via additionalScrapeConfigs if needed.
+  enabled: false
 
 coreDns:
   enabled: true
@@ -143,26 +142,16 @@ kubeDns:
   enabled: false
 
 kubeEtcd:
-  enabled: true
-  endpoints:
-    # control-plane localhost; needs k3s --etcd-expose-metrics=true to come up
-    - 127.0.0.1
-  service:
-    enabled: true
-    port: 2381
-    targetPort: 2381
+  # Disabled: see kubeControllerManager note (loopback Endpoints rejected by 1.33).
+  enabled: false
 
 kubeScheduler:
-  enabled: true
-  endpoints:
-    # control-plane, binds 127.0.0.1:10259 (reached via hostNetwork Prometheus)
-    - 127.0.0.1
+  # Disabled: see kubeControllerManager note (loopback Endpoints rejected by 1.33).
+  enabled: false
 
 kubeProxy:
-  enabled: true
-  endpoints:
-    # control-plane, binds 127.0.0.1:10249 (reached via hostNetwork Prometheus)
-    - 127.0.0.1
+  # Disabled: see kubeControllerManager note (loopback Endpoints rejected by 1.33).
+  enabled: false
 
 kubeStateMetrics:
   enabled: true
