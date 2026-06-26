@@ -107,8 +107,9 @@ spec:
           persistentVolumeClaim:
             claimName: media-data
         - name: config
-          persistentVolumeClaim:
-            claimName: jellyfin-config-nfs
+          hostPath:
+            path: /var/lib/jellyfin-config
+            type: Directory
         - name: cache
           emptyDir: {}
         - name: transcodes
