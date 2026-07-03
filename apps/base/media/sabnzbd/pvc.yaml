@@ -1,32 +1,37 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: sabnzbd-config-nfs
+  name: sabnzbd-config
 spec:
   capacity:
     storage: 5Gi
-  accessModes: ["ReadWriteMany"]
+  accessModes: ["ReadWriteOnce"]
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
-  mountOptions:
-    - nfsvers=4.1
-    - hard
-    - noatime
-  nfs:
-    server: ${NFS_SERVER}
-    path: ${NFS_ROOT}/sabnzbd
+  # Local SSD on the worker (/var/lib/appconfig). nodeAffinity pins any pod
+  # using this PVC to the worker — no per-deployment nodeSelector needed.
+  local:
+    path: /var/lib/appconfig/sabnzbd
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - worker-node-1
   claimRef:
     namespace: media
-    name: sabnzbd-config-nfs
+    name: sabnzbd-config
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: sabnzbd-config-nfs
+  name: sabnzbd-config
 spec:
-  accessModes: ["ReadWriteMany"]
+  accessModes: ["ReadWriteOnce"]
   storageClassName: ""
-  volumeName: sabnzbd-config-nfs
+  volumeName: sabnzbd-config
   resources:
     requests:
       storage: 5Gi

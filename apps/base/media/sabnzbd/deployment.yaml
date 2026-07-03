@@ -49,4 +49,4 @@ spec:
           claimName: media-data
       - name: config
         persistentVolumeClaim:
-          claimName: sabnzbd-config-nfs
+          claimName: sabnzbd-config

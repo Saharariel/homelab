@@ -5,7 +5,7 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: Recreate   # single SQLite writer over NFS — never run two pods at once
+    type: Recreate   # single SQLite writer on local SSD — never run two pods at once
   selector:
     matchLabels:
       app: sonarr
@@ -49,4 +49,4 @@ spec:
             claimName: media-data
         - name: config
           persistentVolumeClaim:
-            claimName: sonarr-config-nfs
+            claimName: sonarr-config

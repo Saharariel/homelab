@@ -1,32 +1,37 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: radarr-config-nfs
+  name: radarr-config
 spec:
   capacity:
     storage: 5Gi
-  accessModes: ["ReadWriteMany"]
+  accessModes: ["ReadWriteOnce"]
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
-  mountOptions:
-    - nfsvers=4.1
-    - hard
-    - noatime
-  nfs:
-    server: ${NFS_SERVER}
-    path: ${NFS_ROOT}/radarr
+  # Local SSD on the worker (/var/lib/appconfig). nodeAffinity pins any pod
+  # using this PVC to the worker — no per-deployment nodeSelector needed.
+  local:
+    path: /var/lib/appconfig/radarr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - worker-node-1
   claimRef:
     namespace: media
-    name: radarr-config-nfs
+    name: radarr-config
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: radarr-config-nfs
+  name: radarr-config
 spec:
-  accessModes: ["ReadWriteMany"]
+  accessModes: ["ReadWriteOnce"]
   storageClassName: ""
-  volumeName: radarr-config-nfs
+  volumeName: radarr-config
   resources:
     requests:
       storage: 5Gi

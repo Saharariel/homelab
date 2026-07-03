@@ -43,7 +43,7 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: notifiarr-config-nfs
+            claimName: notifiarr-config
         - name: machine-id
           hostPath:
             path: /etc/machine-id

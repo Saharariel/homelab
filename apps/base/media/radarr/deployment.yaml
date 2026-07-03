@@ -5,7 +5,7 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: Recreate   # single SQLite writer over NFS — never run two pods at once
+    type: Recreate   # single SQLite writer on local SSD — never run two pods at once
   selector:
     matchLabels:
       app: radarr
@@ -48,4 +48,4 @@ spec:
             claimName: media-data
         - name: config
           persistentVolumeClaim:
-            claimName: radarr-config-nfs
+            claimName: radarr-config
