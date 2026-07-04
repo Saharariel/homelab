@@ -1,35 +1,38 @@
-# TimescaleDB data lives on a static NFS PV (tank/k3s-pvcs/tracearr-timescale),
-# migrated off Longhorn via pg_dump + timescaledb pre/post_restore. Regular
-# volume (not volumeClaimTemplate) for a deterministic, rebuild-safe data path.
+# TimescaleDB data on the worker's local SSD (/var/lib/appconfig/tracearr-timescale;
+# PGDATA=<mount>/data). Regular volume (not volumeClaimTemplate) for a
+# deterministic, rebuild-safe data path. nodeAffinity pins the pod to the worker.
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: tracearr-timescale-data-nfs
+  name: tracearr-timescale-data
 spec:
   capacity:
     storage: 10Gi
   accessModes: ["ReadWriteOnce"]
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
-  mountOptions:
-    - nfsvers=4.1
-    - hard
-    - noatime
-  nfs:
-    server: ${NFS_SERVER}
-    path: ${NFS_ROOT}/tracearr-timescale
+  local:
+    path: /var/lib/appconfig/tracearr-timescale
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - worker-node-1
   claimRef:
     namespace: media
-    name: tracearr-timescale-data-nfs
+    name: tracearr-timescale-data
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: tracearr-timescale-data-nfs
+  name: tracearr-timescale-data
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: ""
-  volumeName: tracearr-timescale-data-nfs
+  volumeName: tracearr-timescale-data
   resources:
     requests:
       storage: 10Gi
@@ -115,4 +118,4 @@ spec:
             sizeLimit: 512Mi
         - name: timescale-data
           persistentVolumeClaim:
-            claimName: tracearr-timescale-data-nfs
+            claimName: tracearr-timescale-data
