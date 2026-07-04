@@ -87,7 +87,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: server-hub-data-nfs
+            claimName: server-hub-data
         # readOnlyRootFilesystem makes / read-only; give the app a writable /tmp.
         - name: tmp
           emptyDir: {}

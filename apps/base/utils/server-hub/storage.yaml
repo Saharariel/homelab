@@ -1,32 +1,38 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: server-hub-data-nfs
+  name: server-hub-data
 spec:
   capacity:
     storage: 1Gi
   accessModes: ["ReadWriteOnce"]
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
-  mountOptions:
-    - nfsvers=4.1
-    - hard
-    - noatime
-  nfs:
-    server: ${NFS_SERVER}
-    path: ${NFS_ROOT}/server-hub
+  # Local SSD on the worker (/var/lib/appconfig). nodeAffinity pins any pod
+  # using this PVC to the worker — no per-deployment nodeSelector needed.
+  local:
+    path: /var/lib/appconfig/server-hub
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - worker-node-1
   claimRef:
     namespace: utils
-    name: server-hub-data-nfs
+    name: server-hub-data
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: server-hub-data-nfs
+  name: server-hub-data
+  namespace: utils
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: ""
-  volumeName: server-hub-data-nfs
+  volumeName: server-hub-data
   resources:
     requests:
       storage: 1Gi
