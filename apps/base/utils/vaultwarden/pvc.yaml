@@ -1,32 +1,37 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: vaultwarden-data-nfs
+  name: vaultwarden-data
 spec:
   capacity:
     storage: 1Gi
   accessModes: ["ReadWriteOnce"]
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
-  mountOptions:
-    - nfsvers=4.1
-    - hard
-    - noatime
-  nfs:
-    server: ${NFS_SERVER}
-    path: ${NFS_ROOT}/vaultwarden
+  # Local SSD on the worker (/var/lib/appconfig). nodeAffinity pins the pod
+  # to the worker — no per-workload nodeSelector needed.
+  local:
+    path: /var/lib/appconfig/vaultwarden
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - worker-node-1
   claimRef:
     namespace: utils
-    name: vaultwarden-data-nfs
+    name: vaultwarden-data
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: vaultwarden-data-nfs
+  name: vaultwarden-data
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: ""
-  volumeName: vaultwarden-data-nfs
+  volumeName: vaultwarden-data
   resources:
     requests:
       storage: 1Gi

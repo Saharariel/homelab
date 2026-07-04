@@ -40,7 +40,7 @@ spec:
 
     storage:
       existingVolumeClaim:
-        claimName: "vaultwarden-data-nfs"
+        claimName: "vaultwarden-data"
         dataPath: "/data"
 
     resources:
