@@ -1,32 +1,37 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: authentik-postgresql-nfs
+  name: authentik-postgresql
 spec:
   capacity:
     storage: 8Gi
   accessModes: ["ReadWriteOnce"]
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
-  mountOptions:
-    - nfsvers=4.1
-    - hard
-    - noatime
-  nfs:
-    server: ${NFS_SERVER}
-    path: ${NFS_ROOT}/authentik-postgresql
+  # Postgres data on the worker's local SSD (/var/lib/appconfig/authentik-postgresql;
+  # bitnami PGDATA=<mount>/data). nodeAffinity pins the pod to the worker.
+  local:
+    path: /var/lib/appconfig/authentik-postgresql
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - worker-node-1
   claimRef:
     namespace: authentik
-    name: authentik-postgresql-nfs
+    name: authentik-postgresql
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: authentik-postgresql-nfs
+  name: authentik-postgresql
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: ""
-  volumeName: authentik-postgresql-nfs
+  volumeName: authentik-postgresql
   resources:
     requests:
       storage: 8Gi
@@ -34,32 +39,37 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: authentik-redis-nfs
+  name: authentik-redis
 spec:
   capacity:
     storage: 8Gi
   accessModes: ["ReadWriteOnce"]
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
-  mountOptions:
-    - nfsvers=4.1
-    - hard
-    - noatime
-  nfs:
-    server: ${NFS_SERVER}
-    path: ${NFS_ROOT}/authentik-redis
+  # Local SSD on the worker. Redis is cache/broker only (sessions live in PG),
+  # so this starts empty.
+  local:
+    path: /var/lib/appconfig/authentik-redis
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - worker-node-1
   claimRef:
     namespace: authentik
-    name: authentik-redis-nfs
+    name: authentik-redis
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: authentik-redis-nfs
+  name: authentik-redis
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: ""
-  volumeName: authentik-redis-nfs
+  volumeName: authentik-redis
   resources:
     requests:
       storage: 8Gi

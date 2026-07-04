@@ -49,17 +49,16 @@ spec:
       primary:
         persistence:
           enabled: true
-          # Data on a static NFS PV (tank/k3s-pvcs/authentik-postgresql),
-          # migrated off Longhorn via PGDATA file copy.
-          existingClaim: authentik-postgresql-nfs
+          # Data on the worker's local SSD (/var/lib/appconfig/authentik-postgresql).
+          existingClaim: authentik-postgresql
 
     redis:
       enabled: true
       master:
         persistence:
           enabled: true
-          # Fresh NFS volume (redis is cache/broker only; sessions live in PG).
-          existingClaim: authentik-redis-nfs
+          # Fresh local SSD volume (redis is cache/broker only; sessions live in PG).
+          existingClaim: authentik-redis
 
   valuesFrom:
     - kind: Secret
