@@ -5,6 +5,8 @@ resources:
   - helmrepo.yaml
   - externalsecret.yaml
   - discord-externalsecret.yaml
+  - homelab-platform-monitors.yaml
+  - homelab-prometheusrule.yaml
 configMapGenerator:
   - files:
       - values.yaml=values.yaml
