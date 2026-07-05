@@ -6,10 +6,11 @@ spec:
   schedule: "0 7 * * *" # 7am daily
   timeZone: Asia/Jerusalem
   concurrencyPolicy: Forbid
-  successfulJobsHistoryLimit: 3
-  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
+      ttlSecondsAfterFinished: 3600
       template:
         metadata:
           labels:
@@ -63,10 +64,10 @@ spec:
 
           volumes:
             - name: config
-              secret:
-                secretName: moneyman-secret
-                items:
-                  - key: MONEYMAN_CONFIG
-                    path: config.json
+              csi:
+                driver: secrets-store.csi.k8s.io
+                readOnly: true
+                volumeAttributes:
+                  secretProviderClass: moneyman-config
             - name: tmp
               emptyDir: {}
