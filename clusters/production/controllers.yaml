@@ -23,10 +23,6 @@ spec:
       kind: HelmRelease
       name: cilium
       namespace: kube-system
-    - apiVersion: helm.toolkit.fluxcd.io/v2
-      kind: HelmRelease
-      name: secrets-store-csi-driver-provider-aws
-      namespace: kube-system
   postBuild:
     substituteFrom:
       - kind: Secret
