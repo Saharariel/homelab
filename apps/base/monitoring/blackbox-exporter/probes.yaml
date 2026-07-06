@@ -37,41 +37,6 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
 metadata:
-  name: homelab-lan-ingresses
-  labels:
-    release: kube-prometheus-stack
-spec:
-  jobName: blackbox-lan-ingresses
-  interval: 1m
-  module: homelab_https_insecure
-  prober:
-    url: blackbox-exporter.monitoring.svc.cluster.local:9115
-  targets:
-    staticConfig:
-      # LAN-facing ingress + Pi-hole/external-dns path. Uses insecure TLS because
-      # homelab hosts use the local CA; availability is the signal here.
-      static:
-        - https://auth.homelab
-        - https://vault.homelab
-        - https://jellyfin.homelab
-        - https://jellyseer.homelab
-        - https://sonarr.homelab
-        - https://radarr.homelab
-        - https://prowlarr.homelab
-        - https://bazarr.homelab
-        - https://qbittorrent.homelab
-        - https://sabnzbd.homelab
-        - https://notifiarr.homelab
-        - https://tracearr.homelab
-        - https://grafana.homelab
-        - https://serverhub.homelab
-        - http://longhorn.homelab
-      labels:
-        probe_group: lan-ingress
----
-apiVersion: monitoring.coreos.com/v1
-kind: Probe
-metadata:
   name: homelab-public-endpoints
   labels:
     release: kube-prometheus-stack
@@ -117,23 +82,4 @@ spec:
         - 192.168.50.19:6443  # k3s API server
       labels:
         probe_group: infra-tcp
----
-apiVersion: monitoring.coreos.com/v1
-kind: Probe
-metadata:
-  name: homelab-dns
-  labels:
-    release: kube-prometheus-stack
-spec:
-  jobName: blackbox-dns
-  interval: 1m
-  module: homelab_dns
-  prober:
-    url: blackbox-exporter.monitoring.svc.cluster.local:9115
-  targets:
-    staticConfig:
-      # Validates that Pi-hole can resolve a representative homelab name.
-      static:
-        - 192.168.50.20
-      labels:
-        probe_group: dns
+

@@ -37,29 +37,8 @@ spec:
             valid_status_codes: [200, 204, 301, 302, 307, 308, 401, 403]
             follow_redirects: true
             preferred_ip_protocol: ip4
-        homelab_https_insecure:
-          prober: http
-          timeout: 5s
-          http:
-            valid_status_codes: [200, 204, 301, 302, 307, 308, 401, 403]
-            follow_redirects: true
-            preferred_ip_protocol: ip4
-            tls_config:
-              insecure_skip_verify: true
         homelab_tcp:
           prober: tcp
           timeout: 5s
           tcp:
             preferred_ip_protocol: ip4
-        homelab_dns:
-          prober: dns
-          timeout: 5s
-          dns:
-            # Single DNS sanity check: Pi-hole must resolve a representative
-            # external-dns-managed homelab name.
-            query_name: jellyfin.homelab
-            query_type: A
-            valid_rcodes:
-              - NOERROR
-            preferred_ip_protocol: ip4
-            transport_protocol: udp
