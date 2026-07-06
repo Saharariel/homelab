@@ -1,0 +1,110 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: homelab-platform-alerts
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: homelab.platform.rules
+      rules:
+        - alert: HomelabNodeNotReady
+          expr: kube_node_status_condition{condition="Ready",status="true"} == 0
+          for: 5m
+          labels:
+            severity: critical
+            component: kubernetes
+            hermes_triage: "true"
+          annotations:
+            summary: "Kubernetes node is not Ready: {{ $labels.node }}"
+            description: "Node {{ $labels.node }} has reported Ready=false for more than 5 minutes. Hermes should check node conditions, recent events, kubelet status, and Proxmox/host reachability."
+        - alert: HomelabNodeDiskPressure
+          expr: kube_node_status_condition{condition="DiskPressure",status="true"} == 1
+          for: 5m
+          labels:
+            severity: critical
+            component: kubernetes
+            hermes_triage: "true"
+          annotations:
+            summary: "Kubernetes node has disk pressure: {{ $labels.node }}"
+            description: "Node {{ $labels.node }} is reporting DiskPressure. Hermes should inspect node filesystem usage, image GC, pod eviction events, and high-use mounts."
+        - alert: HomelabCronJobMissedSchedule
+          expr: (time() - kube_cronjob_status_last_schedule_time) > 90000
+          for: 15m
+          labels:
+            severity: warning
+            component: kubernetes
+            hermes_triage: "true"
+          annotations:
+            summary: "CronJob has not run in over 25 hours: {{ $labels.namespace }}/{{ $labels.cronjob }}"
+            description: "CronJob {{ $labels.namespace }}/{{ $labels.cronjob }} may have missed its expected daily/hourly schedule. Hermes should check cronjob schedule, recent jobs, events, and controller status."
+        - alert: HomelabFluxReconciliationNotReady
+          expr: gotk_reconcile_condition{type="Ready",status="False"} == 1
+          for: 10m
+          labels:
+            severity: critical
+            component: flux
+            hermes_triage: "true"
+          annotations:
+            summary: "Flux resource is not Ready: {{ $labels.namespace }}/{{ $labels.name }}"
+            description: "Flux reconciliation has been NotReady for {{ $labels.kind }} {{ $labels.namespace }}/{{ $labels.name }}. Hermes should inspect Flux events, source/helm/kustomize controller logs, and the latest Git revision."
+        - alert: HomelabFluxReconciliationStalled
+          expr: gotk_reconcile_condition{type="Stalled",status="True"} == 1
+          for: 10m
+          labels:
+            severity: critical
+            component: flux
+            hermes_triage: "true"
+          annotations:
+            summary: "Flux resource is stalled: {{ $labels.namespace }}/{{ $labels.name }}"
+            description: "Flux reports a stalled reconciliation for {{ $labels.kind }} {{ $labels.namespace }}/{{ $labels.name }}. Hermes should collect describe output and controller logs before recommending a fix."
+        - alert: HomelabExternalSecretNotReady
+          expr: externalsecret_status_condition{condition="Ready",status="False"} == 1
+          for: 10m
+          labels:
+            severity: critical
+            component: external-secrets
+            hermes_triage: "true"
+          annotations:
+            summary: "ExternalSecret is not Ready: {{ $labels.namespace }}/{{ $labels.name }}"
+            description: "ExternalSecret {{ $labels.namespace }}/{{ $labels.name }} is not Ready. Hermes should inspect ExternalSecret status, ClusterSecretStore readiness, AWS SSM/IAM errors, and affected pods."
+        - alert: HomelabCertificateExpiresSoon
+          expr: (certmanager_certificate_expiration_timestamp_seconds - time()) < 1209600
+          for: 1h
+          labels:
+            severity: warning
+            component: cert-manager
+            hermes_triage: "true"
+          annotations:
+            summary: "Certificate expires within 14 days: {{ $labels.namespace }}/{{ $labels.name }}"
+            description: "Certificate {{ $labels.namespace }}/{{ $labels.name }} expires within 14 days. Hermes should inspect Certificate/CertificateRequest/Order status and cert-manager logs."
+        - alert: HomelabProxmoxZFSScrapeDown
+          expr: up{job="zfs-proxmox"} == 0
+          for: 5m
+          labels:
+            severity: critical
+            component: proxmox-storage
+            hermes_triage: "true"
+          annotations:
+            summary: "Prometheus cannot scrape Proxmox ZFS exporter"
+            description: "The zfs-proxmox scrape target is down. Hermes should check 192.168.50.10 reachability, zfs_exporter systemd status, and ZFS pool health over SSH."
+        - alert: HomelabZFSUnhealthy
+          expr: zfs_pool_health != 0
+          for: 5m
+          labels:
+            severity: critical
+            component: proxmox-storage
+            hermes_triage: "true"
+          annotations:
+            summary: "ZFS pool is unhealthy: {{ $labels.pool }}"
+            description: "ZFS exporter reports pool {{ $labels.pool }} is not healthy. Hermes should run zpool status on Proxmox and check disk SMART health before suggesting remediation."
+        - alert: HomelabZFSHighUsage
+          expr: 100 * zfs_dataset_used_bytes / (zfs_dataset_used_bytes + zfs_dataset_available_bytes) > 85
+          for: 30m
+          labels:
+            severity: warning
+            component: proxmox-storage
+            hermes_triage: "true"
+          annotations:
+            summary: "ZFS dataset usage is high: {{ $labels.name }}"
+            description: "ZFS dataset {{ $labels.name }} is above 85% used for 30 minutes. Hermes should identify top consumers and suggest cleanup/expansion options."

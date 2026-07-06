@@ -13,14 +13,18 @@ spec:
           for: 2m
           labels:
             severity: critical
+            component: synthetic-probe
+            hermes_triage: "true"
           annotations:
             summary: "Endpoint down: {{ $labels.instance }}"
-            description: "Blackbox probe to {{ $labels.instance }} has been failing for more than 2 minutes."
+            description: "Blackbox probe to {{ $labels.instance }} in group {{ $labels.probe_group }} has been failing for more than 2 minutes."
         - alert: BlackboxProbeSlow
           expr: probe_duration_seconds > 5
           for: 5m
           labels:
             severity: warning
+            component: synthetic-probe
+            hermes_triage: "true"
           annotations:
             summary: "Endpoint slow: {{ $labels.instance }}"
-            description: "Blackbox probe to {{ $labels.instance }} took over 5s for 5 minutes."
+            description: "Blackbox probe to {{ $labels.instance }} in group {{ $labels.probe_group }} took over 5s for 5 minutes."

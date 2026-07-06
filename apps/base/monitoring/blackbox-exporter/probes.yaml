@@ -1,24 +1,139 @@
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
 metadata:
-  name: homelab-services
+  name: homelab-internal-services
   labels:
     release: kube-prometheus-stack
 spec:
-  jobName: blackbox
+  jobName: blackbox-internal-services
   interval: 30s
   module: homelab_http
   prober:
     url: blackbox-exporter.monitoring.svc.cluster.local:9115
   targets:
     staticConfig:
-      # Cluster-internal Service DNS, so a probe failure means the app itself is
-      # down (not Traefik/ingress/DNS). Add more lines as you add services.
+      # Cluster-internal Service DNS. A failure here means the app/service itself
+      # is unhealthy, independent of Traefik, Pi-hole, or Cloudflare.
       static:
         - http://jellyfin.media.svc.cluster.local:8096
+        - http://jellyseer.media.svc.cluster.local:5055
         - http://sonarr.media.svc.cluster.local:8989
         - http://radarr.media.svc.cluster.local:7878
         - http://prowlarr.media.svc.cluster.local:9696
+        - http://bazarr.media.svc.cluster.local:6767
+        - http://qbittorrent.media.svc.cluster.local:8081
+        - http://sabnzbd.media.svc.cluster.local:8080
+        - http://notifiarr.media.svc.cluster.local:5454
+        - http://tracearr.media.svc.cluster.local:3000
         - http://server-hub.utils.svc.cluster.local:8000
+        - http://vaultwarden.utils.svc.cluster.local
+        - http://authentik-server.authentik.svc.cluster.local
+        - http://grafana.monitoring.svc.cluster.local
+        - http://prometheus-prometheus.monitoring.svc.cluster.local:9090/-/ready
+        - http://prometheus-alertmanager.monitoring.svc.cluster.local:9093/-/ready
       labels:
-        probe_group: homelab
+        probe_group: internal
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: homelab-lan-ingresses
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: blackbox-lan-ingresses
+  interval: 1m
+  module: homelab_https_insecure
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      # LAN-facing ingress + Pi-hole/external-dns path. Uses insecure TLS because
+      # homelab hosts use the local CA; availability is the signal here.
+      static:
+        - https://auth.homelab
+        - https://vault.homelab
+        - https://jellyfin.homelab
+        - https://jellyseer.homelab
+        - https://sonarr.homelab
+        - https://radarr.homelab
+        - https://prowlarr.homelab
+        - https://bazarr.homelab
+        - https://qbittorrent.homelab
+        - https://sabnzbd.homelab
+        - https://notifiarr.homelab
+        - https://tracearr.homelab
+        - https://grafana.homelab
+        - https://serverhub.homelab
+        - http://longhorn.homelab
+      labels:
+        probe_group: lan-ingress
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: homelab-public-endpoints
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: blackbox-public-endpoints
+  interval: 1m
+  module: homelab_http
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      # Public Cloudflare/Tunnel-facing entrypoints. These validate that the
+      # public hostname, tunnel, and backend ingress path are alive from inside
+      # the cluster. Add an outside-the-LAN checker later for true external view.
+      static:
+        - https://watch.saharserver.com
+        - https://tv.saharserver.com
+        - https://requests.saharserver.com
+        - https://enroll.saharserver.com
+      labels:
+        probe_group: public
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: homelab-infra-tcp
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: blackbox-infra-tcp
+  interval: 1m
+  module: homelab_tcp
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      # Critical non-Kubernetes infrastructure reachability.
+      static:
+        - 192.168.50.10:8006 # Proxmox API/UI
+        - 192.168.50.10:2049 # Proxmox NFS exports for PVs/media
+        - 192.168.50.20:53   # Pi-hole DNS TCP
+        - 192.168.50.18:10250 # worker kubelet
+        - 192.168.50.19:6443  # k3s API server
+      labels:
+        probe_group: infra-tcp
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: homelab-dns
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: blackbox-dns
+  interval: 1m
+  module: homelab_dns
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      # Validates that Pi-hole can resolve a representative homelab name.
+      static:
+        - 192.168.50.20
+      labels:
+        probe_group: dns
