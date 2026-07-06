@@ -18,7 +18,6 @@ spec:
           annotations:
             summary: "Endpoint down: {{ $labels.instance }}"
             description: "Blackbox probe to {{ $labels.instance }} in group {{ $labels.probe_group }} has been failing for more than 2 minutes."
-            runbook_url: "sahar-notes/docs/runbooks/homelab-alert-triage.md#blackbox-probe-failed"
         - alert: BlackboxProbeSlow
           expr: probe_duration_seconds > 5
           for: 5m
@@ -29,4 +28,3 @@ spec:
           annotations:
             summary: "Endpoint slow: {{ $labels.instance }}"
             description: "Blackbox probe to {{ $labels.instance }} in group {{ $labels.probe_group }} took over 5s for 5 minutes."
-            runbook_url: "sahar-notes/docs/runbooks/homelab-alert-triage.md#blackbox-probe-failed"
