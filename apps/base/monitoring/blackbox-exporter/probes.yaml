@@ -78,7 +78,6 @@ spec:
         - 192.168.50.10:8006 # Proxmox API/UI
         - 192.168.50.10:2049 # Proxmox NFS exports for PVs/media
         - 192.168.50.20:53   # Pi-hole DNS TCP
-        - 192.168.50.18:10250 # worker kubelet
         - 192.168.50.19:6443  # k3s API server
       labels:
         probe_group: infra-tcp
