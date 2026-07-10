@@ -43,7 +43,7 @@ metadata:
 spec:
   jobName: blackbox-public-endpoints
   interval: 1m
-  module: homelab_http
+  module: homelab_public_http
   prober:
     url: blackbox-exporter.monitoring.svc.cluster.local:9115
   targets:

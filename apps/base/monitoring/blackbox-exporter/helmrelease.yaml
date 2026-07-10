@@ -37,6 +37,17 @@ spec:
             valid_status_codes: [200, 204, 301, 302, 307, 308, 401, 403]
             follow_redirects: true
             preferred_ip_protocol: ip4
+        # Public Cloudflare Access/Tunnel entrypoints can spend multiple seconds
+        # on external DNS and redirect/login-page handling. Keep the normal 5s
+        # timeout for internal app checks, but allow public probes more headroom
+        # so transient Cloudflare Access slowness does not page as an app outage.
+        homelab_public_http:
+          prober: http
+          timeout: 15s
+          http:
+            valid_status_codes: [200, 204, 301, 302, 307, 308, 401, 403]
+            follow_redirects: true
+            preferred_ip_protocol: ip4
         homelab_tcp:
           prober: tcp
           timeout: 5s
