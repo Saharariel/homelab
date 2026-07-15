@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: cert-manager
-      version: "v1.17.x"
+      version: "1.21.x"
       sourceRef:
         kind: HelmRepository
         name: jetstack
