@@ -28,6 +28,7 @@ spec:
         containers:
           main:
             image:
+              # renovate: datasource=docker depName=ghcr.io/immich-app/immich-server
               tag: v2.7.5
             env:
               # Database connection to the self-managed Postgres StatefulSet.
