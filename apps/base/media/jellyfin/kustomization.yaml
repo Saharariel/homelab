@@ -4,4 +4,5 @@ resources:
   - deployment.yaml
   - ingress.yaml
   - service.yaml
+  - service-lan-nodeport.yaml
   - pvc.yaml
