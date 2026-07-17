@@ -193,9 +193,6 @@ prometheus:
     evaluationInterval: 30s
     nodeSelector:
       node-role.kubernetes.io/control-plane: "true"
-    # host-net so scrapes are host->host (pod->node-IP broken under Cilium Legacy)
-    hostNetwork: true
-    dnsPolicy: ClusterFirstWithHostNet
     # zfs_exporter runs as a systemd unit on the Proxmox desktop host (port 9134);
     # Server Hub reads these dataset metrics through its Prometheus adapter.
     additionalScrapeConfigs:

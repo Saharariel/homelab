@@ -21,6 +21,10 @@ spec:
       retries: 3
   values:
     kubeProxyReplacement: false
+    enableIPv4Masquerade: true
+    enableRemoteNodeMasquerade: true
+    bpf:
+      masquerade: true
     ipam:
       operator:
         clusterPoolIPv4PodCIDRList: "10.42.0.0/16"
@@ -38,18 +42,3 @@ spec:
           - port-distribution
           - icmp
           - httpV2
-  # relay reaches agents at node-IP:4244; pod->node-IP is broken under Legacy
-  # routing, so run relay host-net (chart has no hubble.relay.hostNetwork value)
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: Deployment
-              name: hubble-relay
-            patch: |
-              - op: add
-                path: /spec/template/spec/hostNetwork
-                value: true
-              - op: add
-                path: /spec/template/spec/dnsPolicy
-                value: ClusterFirstWithHostNet
