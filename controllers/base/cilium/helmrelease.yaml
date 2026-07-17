@@ -22,9 +22,10 @@ spec:
   values:
     kubeProxyReplacement: false
     enableIPv4Masquerade: true
-    enableRemoteNodeMasquerade: true
     bpf:
       masquerade: true
+    extraConfig:
+      enable-remote-node-masquerade: "true"
     ipam:
       operator:
         clusterPoolIPv4PodCIDRList: "10.42.0.0/16"
