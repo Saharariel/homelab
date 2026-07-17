@@ -29,7 +29,7 @@ spec:
                   name: tunnel-token
                   key: token
             - name: TUNNEL_TRANSPORT_PROTOCOL
-              value: "http2"
+              value: "auto"
           command:
             [
               "cloudflared",
