@@ -1,0 +1,95 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: splitwise-ynab-sync
+spec:
+  schedule: "0 * * * *" # hourly
+  timeZone: Asia/Jerusalem
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: splitwise-ynab-sync
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: splitwise-ynab-sync
+          automountServiceAccountToken: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: splitwise-ynab-sync
+              # Self-authored, actively developed: floating tag + always pull,
+              # like server-hub, rather than moneyman's pinned-digest pattern.
+              image: ghcr.io/saharariel/splitwise-ynab-sync:main
+              imagePullPolicy: Always
+
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop:
+                    - ALL
+
+              resources:
+                requests:
+                  memory: "128Mi"
+                  cpu: "50m"
+                limits:
+                  memory: "512Mi"
+                  cpu: "500m"
+
+              env:
+                - name: TZ
+                  value: Asia/Jerusalem
+                - name: HOME
+                  value: /tmp
+                # The CronJob schedule is what drives repetition; the app
+                # should sync once per invocation and exit.
+                - name: RUN_ONCE
+                  value: "true"
+                - name: SYNC_START_DATE
+                  value: "2026-07-14"
+                - name: SHARE_FLAG
+                  value: "blue"
+                - name: SPLITWISE_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: splitwise-ynab-sync-secret
+                      key: SPLITWISE_API_KEY
+                - name: YNAB_ACCESS_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: splitwise-ynab-sync-secret
+                      key: YNAB_ACCESS_TOKEN
+                - name: SPLITWISE_GROUP_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: splitwise-ynab-sync-secret
+                      key: SPLITWISE_GROUP_ID
+                - name: YNAB_BUDGET_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: splitwise-ynab-sync-secret
+                      key: YNAB_BUDGET_ID
+                - name: YNAB_ACCOUNT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: splitwise-ynab-sync-secret
+                      key: YNAB_ACCOUNT_ID
+
+              volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+
+          volumes:
+            - name: tmp
+              emptyDir: {}
