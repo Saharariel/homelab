@@ -22,7 +22,7 @@ spec:
       containers:
       # Gluetun VPN container
       - name: gluetun
-        image: qmcgaw/gluetun:v3.41.1
+        image: qmcgaw/gluetun:v3.41.3
         imagePullPolicy: IfNotPresent
         securityContext:
           capabilities:
