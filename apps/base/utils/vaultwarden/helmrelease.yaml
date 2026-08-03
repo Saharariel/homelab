@@ -27,7 +27,7 @@ spec:
     image:
       registry: docker.io
       repository: vaultwarden/server
-      tag: "1.37.0"
+      tag: "1.37.1"
       pullPolicy: IfNotPresent
 
     signupsAllowed: false
