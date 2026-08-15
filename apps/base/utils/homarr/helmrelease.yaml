@@ -1,0 +1,72 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: homarr
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: homarr
+      version: "8.27.0"
+      sourceRef:
+        kind: HelmRepository
+        name: homarr
+        namespace: utils
+  install:
+    createNamespace: false
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    strategyType: Recreate
+
+    env:
+      TZ: Asia/Jerusalem
+
+    envSecrets:
+      dbEncryption:
+        existingSecret: homarr-db-encryption
+        key: db-encryption-key
+
+    persistence:
+      homarrDatabase:
+        enabled: true
+        storageClassName: local-path
+        accessMode: ReadWriteOnce
+        size: 1Gi
+
+    service:
+      enabled: true
+      type: ClusterIP
+
+    ingress:
+      enabled: true
+      ingressClassName: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: ca-issuer
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        traefik.ingress.kubernetes.io/router.tls: "true"
+      hosts:
+        - host: homarr.homelab
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: homarr-homelab-tls
+          hosts:
+            - homarr.homelab
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+
+    rbac:
+      enabled: false
