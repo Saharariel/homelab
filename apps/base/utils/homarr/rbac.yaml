@@ -1,0 +1,60 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: homarr-kubernetes
+  namespace: utils
+# Homarr reads the projected token and CA from the standard in-cluster paths.
+automountServiceAccountToken: true
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: homarr-kubernetes-readonly
+rules:
+  # Homarr lists these resources across namespaces for its dashboard pages and counts.
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - namespaces
+      - nodes
+      - persistentvolumeclaims
+      - pods
+      - secrets
+      - services
+    verbs:
+      - list
+  # Homarr reads ReplicaSet ownership to identify the workload behind a Pod.
+  - apiGroups:
+      - apps
+    resources:
+      - replicasets
+    verbs:
+      - get
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses
+    verbs:
+      - list
+  # Homarr uses node metrics for cluster CPU and memory gauges.
+  - apiGroups:
+      - metrics.k8s.io
+    resources:
+      - nodes
+    verbs:
+      - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: homarr-kubernetes-readonly
+subjects:
+  - kind: ServiceAccount
+    name: homarr-kubernetes
+    namespace: utils
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: homarr-kubernetes-readonly
