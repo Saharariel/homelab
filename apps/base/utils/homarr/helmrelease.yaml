@@ -21,11 +21,36 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: homarr
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: homarr
+              spec:
+                template:
+                  spec:
+                    serviceAccountName: homarr-kubernetes
+                    dnsPolicy: None
+                    dnsConfig:
+                      nameservers:
+                        - 192.168.50.20
+                      options:
+                        - name: ndots
+                          value: "1"
   values:
     strategyType: Recreate
 
     env:
       TZ: Asia/Jerusalem
+      KUBERNETES_SERVICE_ACCOUNT_NAME: homarr-kubernetes
 
     envSecrets:
       dbEncryption:
@@ -68,5 +93,6 @@ spec:
         cpu: "1"
         memory: 1Gi
 
+    # Custom RBAC in rbac.yaml grants only the API calls Homarr currently makes.
     rbac:
       enabled: false
