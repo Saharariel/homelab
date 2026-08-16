@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+root="$(git rev-parse --show-toplevel)"
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: gitleaks not installed, refusing to commit." >&2
+  echo "pre-commit: run 'mise install', or commit with --no-verify." >&2
+  exit 1
+fi
+
+gitleaks git "${root}" --staged --config "${root}/.gitleaks.toml" --redact=100 --no-banner

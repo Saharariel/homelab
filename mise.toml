@@ -1,3 +1,13 @@
 [tools]
 k9s = "latest"
-kubectl= "latest"
+kubectl = "latest"
+helm = "4.2.4"
+flux2 = "2.7.5"
+kubeconform = "0.7.0"
+gitleaks = "8.30.0"
+actionlint = "1.7.7"
+shellcheck = "0.11.0"
+
+[env]
+KUBERNETES_VERSION = "1.33.4"
+CRDS_CATALOG_REF = "52b0261318acc7dd0b66e032759b1f218216b980"

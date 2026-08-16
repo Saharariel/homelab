@@ -12,6 +12,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import subprocess
 import sys
@@ -20,23 +21,6 @@ import time
 from pathlib import Path
 
 import yaml
-
-REPO_ROOT = Path(
-    subprocess.run(
-        ["git", "rev-parse", "--show-toplevel"],
-        check=True, capture_output=True, text=True,
-    ).stdout.strip()
-)
-
-
-def load_versions() -> dict[str, str]:
-    env = {}
-    for line in (REPO_ROOT / ".github/ci/versions.env").read_text().splitlines():
-        line = line.strip()
-        if line and not line.startswith("#") and "=" in line:
-            k, v = line.split("=", 1)
-            env[k] = v
-    return env
 
 
 def run(cmd: list[str], **kw) -> subprocess.CompletedProcess:
@@ -145,7 +129,7 @@ def apply_post_renderers(rendered: str, post_renderers: list, workdir: Path) -> 
     return result.stdout
 
 
-def process(release: dict, repos: dict, out_dir: Path, versions: dict) -> list[str]:
+def process(release: dict, repos: dict, out_dir: Path, kube_version: str) -> list[str]:
     meta = release["metadata"]
     spec = release["spec"]
     name = meta["name"]
@@ -199,7 +183,7 @@ def process(release: dict, repos: dict, out_dir: Path, versions: dict) -> list[s
             "helm", "template", release_name, str(unpacked),
             "--namespace", namespace,
             "-f", str(values_file),
-            "--kube-version", versions.get("KUBERNETES_VERSION", "1.33.4"),
+            "--kube-version", kube_version,
         ])
         if template.returncode != 0:
             errors.append(
@@ -234,7 +218,15 @@ def main() -> int:
             print(f"render-helmreleases: {tool} not found", file=sys.stderr)
             return 1
 
-    versions = load_versions()
+    kube_version = os.environ.get("KUBERNETES_VERSION")
+    if not kube_version:
+        print(
+            "render-helmreleases: KUBERNETES_VERSION must be set; it comes from "
+            "[env] in mise.toml - run via 'mise exec --' or activate mise.",
+            file=sys.stderr,
+        )
+        return 1
+
     repos, releases = index_documents(args.manifests)
 
     if not releases:
@@ -246,7 +238,7 @@ def main() -> int:
 
     errors: list[str] = []
     for release in releases:
-        errors.extend(process(release, repos, args.out, versions))
+        errors.extend(process(release, repos, args.out, kube_version))
 
     if errors:
         print(f"::error::{len(errors)} HelmRelease failure(s)", file=sys.stderr)

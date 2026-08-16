@@ -29,21 +29,23 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/^\\.github/ci/versions\\.env$/"
+        "/^mise\\.toml$/"
       ],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+) currentValue=(?<currentValue>\\S+)\\n\\w+=(?<currentDigest>[0-9a-f]{40})"
-      ]
+        "CRDS_CATALOG_REF = \"(?<currentDigest>[0-9a-f]{40})\""
+      ],
+      "depNameTemplate": "https://github.com/datreeio/CRDs-catalog",
+      "currentValueTemplate": "main",
+      "datasourceTemplate": "git-refs"
     },
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/^\\.github/ci/versions\\.env$/"
+        "/^\\.github/workflows/.+\\.yaml$/"
       ],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n\\w+=(?<currentValue>\\S+)"
-      ],
-      "versioningTemplate": "semver"
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)[\\s\\S]*?--package \\S+@(?<currentValue>[0-9][^\\s]*)"
+      ]
     }
   ]
 }
