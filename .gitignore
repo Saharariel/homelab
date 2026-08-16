@@ -7,3 +7,6 @@ terraform/.terraform.locl.hcl
 
 # Operational runbooks are kept local-only, off the public repo (see commit e233cc3)
 docs/runbooks/
+
+/build
+/.ci-bin
