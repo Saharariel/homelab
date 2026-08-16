@@ -150,7 +150,10 @@ def process(release: dict, repos: dict, out_dir: Path, versions: dict) -> list[s
                 f"      {result.stderr.strip()}"
             ]
 
-        unpacked = next(chart_dir.iterdir())
+        manifests = sorted(chart_dir.rglob("Chart.yaml"), key=lambda p: len(p.parts))
+        if not manifests:
+            return [f"{namespace}/{name}: no Chart.yaml after unpacking {chart}"]
+        unpacked = manifests[0].parent
 
         values_file = workdir / "values.yaml"
         values_file.write_text(yaml.safe_dump(spec.get("values") or {}))
