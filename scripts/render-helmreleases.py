@@ -12,12 +12,11 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import json
-import os
 import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 import yaml
@@ -42,6 +41,38 @@ def load_versions() -> dict[str, str]:
 
 def run(cmd: list[str], **kw) -> subprocess.CompletedProcess:
     return subprocess.run(cmd, capture_output=True, text=True, **kw)
+
+
+PERMANENT_PULL_ERRORS = (
+    "not found in",
+    "no chart version found",
+    "improper constraint",
+    "404",
+)
+
+PULL_ATTEMPTS = 3
+
+
+def pull_with_retries(cmd: list[str]) -> subprocess.CompletedProcess:
+    result = run(cmd)
+    for attempt in range(2, PULL_ATTEMPTS + 1):
+        if result.returncode == 0:
+            return result
+
+        message = (result.stderr + result.stdout).lower()
+        if any(marker in message for marker in PERMANENT_PULL_ERRORS):
+            return result
+
+        detail = result.stderr.strip().splitlines()
+        delay = 2 ** (attempt - 1)
+        print(
+            f"    pull failed ({detail[-1] if detail else 'unknown error'}); "
+            f"retry {attempt}/{PULL_ATTEMPTS} in {delay}s"
+        )
+        time.sleep(delay)
+        result = run(cmd)
+
+    return result
 
 
 def index_documents(paths: list[Path]):
@@ -84,7 +115,6 @@ def resolve_chart(release: dict, repos: dict) -> tuple[str, str, str, str]:
 
 
 def apply_post_renderers(rendered: str, post_renderers: list, workdir: Path) -> str:
-    """Replay Flux spec.postRenderers through kustomize."""
     build = workdir / "postrender"
     build.mkdir(parents=True, exist_ok=True)
     (build / "resources.yaml").write_text(rendered)
@@ -143,7 +173,7 @@ def process(release: dict, repos: dict, out_dir: Path, versions: dict) -> list[s
         if version:
             pull.extend(["--version", version])
 
-        result = run(pull)
+        result = pull_with_retries(pull)
         if result.returncode != 0:
             return [
                 f"{namespace}/{name}: cannot pull {chart}@{version} from {url}\n"
