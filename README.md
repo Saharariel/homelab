@@ -10,18 +10,6 @@ Originally, I ran everything with Docker and Docker Compose. But as my setup gre
 
 Admittedly, this is overkill for a homelab - but that's kind of the point. This project is my playground for learning Kubernetes through hands-on experience, while also powering the self-hosted services I use every day.
 
-## Working on this repo
-
-This repository is public, so secret scanning is installed locally, not just in
-CI. Run this once per clone before committing anything:
-
-```bash
-./scripts/install-hooks.sh
-```
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow, the SOPS rules for
-Secrets, and how to run each CI check locally.
-
 ## Cluster Architecture
 <p align="center">
   <img src="./docs/storage_strecture.png" width="800" alt="Lab Architecture">
