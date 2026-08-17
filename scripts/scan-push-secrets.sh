@@ -13,25 +13,19 @@ die() {
 
 remote_name="${1:-origin}"
 
-require_scanner() {
-  if ! command -v gitleaks >/dev/null 2>&1; then
-    die "gitleaks is not installed, refusing to push.
-  Install it and re-run scripts/install-hooks.sh, or bypass once with
-  'git push --no-verify' if you are certain this push carries no secrets."
-  fi
+# shellcheck source=scripts/resolve-mise.sh
+. "${REPO_ROOT}/scripts/resolve-mise.sh"
 
-  [ -f "${CONFIG}" ] || die "missing ${CONFIG}, refusing to push."
-}
+MISE="$(resolve_mise)" || die "mise is not installed, refusing to push.
+  Install it from https://mise.jdx.dev, or bypass once with
+  'git push --no-verify' if you are certain this push carries no secrets."
+
+[ -f "${CONFIG}" ] || die "missing ${CONFIG}, refusing to push."
 
 scan() {
   local label="$1" log_opts="$2"
-  require_scanner
   echo "pre-push: scanning ${label}"
-  if ! gitleaks git "${REPO_ROOT}" \
-      --config "${CONFIG}" \
-      --log-opts "${log_opts}" \
-      --redact=100 \
-      --no-banner; then
+  if ! RANGE="${log_opts}" "${MISE}" run scan-range; then
     cat >&2 <<EOF
 
 pre-push: BLOCKED - gitleaks found a potential secret in the commits above.
