@@ -37,7 +37,7 @@ jobs:
             mise run scan-history
           else
             echo "Scanning ${BASE_SHA}..${HEAD_SHA}"
-            RANGE="${BASE_SHA}..${HEAD_SHA}" mise run scan-range
+            mise run scan-range "${BASE_SHA}..${HEAD_SHA}"
           fi
 
       - name: Scan working tree

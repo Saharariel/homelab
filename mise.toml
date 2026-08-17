@@ -22,8 +22,9 @@ description = "gitleaks: scan the working tree"
 run = "gitleaks dir \"$MISE_CONFIG_ROOT\" --config \"$MISE_CONFIG_ROOT/.gitleaks.toml\" --redact=100 --no-banner"
 
 [tasks.scan-range]
-description = "gitleaks: scan the commit range in RANGE"
-run = "gitleaks git \"$MISE_CONFIG_ROOT\" --config \"$MISE_CONFIG_ROOT/.gitleaks.toml\" --log-opts \"$RANGE\" --redact=100 --no-banner"
+description = "gitleaks: scan a commit range"
+usage = 'arg "<range>" help="git log range, e.g. abc123..def456"'
+run = "gitleaks git \"$MISE_CONFIG_ROOT\" --config \"$MISE_CONFIG_ROOT/.gitleaks.toml\" --log-opts \"$usage_range\" --redact=100 --no-banner"
 
 [tasks.scan-history]
 description = "gitleaks: scan all reachable history"
