@@ -1,0 +1,16 @@
+[extend]
+useDefault = true
+
+[allowlist]
+title = "homelab repository allowlist"
+
+paths = [
+  '''clusters/production/flux-system/gotk-components\.yaml''',
+]
+
+regexes = [
+  '''ENC\[AES256_GCM,data:[^\]]+\]''',
+  '''-----BEGIN AGE ENCRYPTED FILE-----[\s\S]*?-----END AGE ENCRYPTED FILE-----''',
+  '''age1[0-9a-z]{58}''',
+  '''mac:\s*ENC\[[^\]]+\]''',
+]

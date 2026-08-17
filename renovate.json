@@ -1,30 +1,51 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "kubernetes": {
-    "fileMatch": [
-      "\\.yaml$"
+    "managerFilePatterns": [
+      "/\\.yaml$/"
     ]
   },
   "flux": {
-    "fileMatch": [
-      "\\.yaml$"
+    "managerFilePatterns": [
+      "/\\.yaml$/"
     ]
   },
   "helm-values": {
-    "fileMatch": [
-      "(^|/)helmrelease\\.yaml$"
+    "managerFilePatterns": [
+      "/(^|/)helmrelease\\.yaml$/"
     ]
   },
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [
-        "(^|/)helmrelease\\.yaml$"
+      "managerFilePatterns": [
+        "/(^|/)helmrelease\\.yaml$/"
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?: versioning=(?<versioning>\\S+))?\\s+tag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}docker{{/if}}"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^mise\\.toml$/"
+      ],
+      "matchStrings": [
+        "CRDS_CATALOG_REF = \"(?<currentDigest>[0-9a-f]{40})\""
+      ],
+      "depNameTemplate": "https://github.com/datreeio/CRDs-catalog",
+      "currentValueTemplate": "main",
+      "datasourceTemplate": "git-refs"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^\\.github/workflows/.+\\.yaml$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)[\\s\\S]*?--package \\S+@(?<currentValue>[0-9][^\\s]*)"
+      ]
     }
   ]
 }

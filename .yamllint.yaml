@@ -1,0 +1,29 @@
+extends: default
+
+ignore: |
+  clusters/production/flux-system/gotk-components.yaml
+
+rules:
+  truthy:
+    allowed-values: ["true", "false"]
+    check-keys: false
+  octal-values:
+    forbid-implicit-octal: true
+    forbid-explicit-octal: true
+
+  braces: disable
+  brackets: disable
+  colons: disable
+  commas: disable
+  comments: disable
+  comments-indentation: disable
+  document-start: disable
+  empty-lines: disable
+  empty-values: disable
+  hyphens: disable
+  indentation: disable
+  key-ordering: disable
+  line-length: disable
+  new-line-at-end-of-file: disable
+  quoted-strings: disable
+  trailing-spaces: disable
