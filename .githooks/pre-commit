@@ -13,4 +13,4 @@ if ! mise_bin="$(resolve_mise)"; then
   exit 1
 fi
 
-exec "${mise_bin}" run scan-staged
+exec "${mise_bin}" run scan:staged

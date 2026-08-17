@@ -1,3 +1,6 @@
+[settings]
+lockfile = true
+
 [tools]
 k9s = "latest"
 kubectl = "latest"
@@ -13,19 +16,73 @@ shellcheck = "0.11.0"
 KUBERNETES_VERSION = "1.33.4"
 CRDS_CATALOG_REF = "52b0261318acc7dd0b66e032759b1f218216b980"
 
-[tasks.scan-staged]
+# Tasks always run from the config root, so paths here are repo-relative.
+
+[tasks."scan:staged"]
 description = "gitleaks: scan staged changes"
-run = "gitleaks git \"$MISE_CONFIG_ROOT\" --staged --config \"$MISE_CONFIG_ROOT/.gitleaks.toml\" --redact=100 --no-banner"
+run = "gitleaks git . --staged --config .gitleaks.toml --redact=100 --no-banner"
 
-[tasks.scan-tree]
+[tasks."scan:tree"]
 description = "gitleaks: scan the working tree"
-run = "gitleaks dir \"$MISE_CONFIG_ROOT\" --config \"$MISE_CONFIG_ROOT/.gitleaks.toml\" --redact=100 --no-banner"
+run = "gitleaks dir . --config .gitleaks.toml --redact=100 --no-banner"
 
-[tasks.scan-range]
+[tasks."scan:range"]
 description = "gitleaks: scan a commit range"
 usage = 'arg "<range>" help="git log range, e.g. abc123..def456"'
-run = "gitleaks git \"$MISE_CONFIG_ROOT\" --config \"$MISE_CONFIG_ROOT/.gitleaks.toml\" --log-opts \"$usage_range\" --redact=100 --no-banner"
+run = "gitleaks git . --config .gitleaks.toml --log-opts \"$usage_range\" --redact=100 --no-banner"
 
-[tasks.scan-history]
+[tasks."scan:history"]
 description = "gitleaks: scan all reachable history"
-run = "gitleaks git \"$MISE_CONFIG_ROOT\" --config \"$MISE_CONFIG_ROOT/.gitleaks.toml\" --redact=100 --no-banner"
+run = "gitleaks git . --config .gitleaks.toml --redact=100 --no-banner"
+
+[tasks."lint:yaml"]
+description = "yamllint every tracked YAML file"
+run = "git ls-files '*.yaml' '*.yml' | xargs yamllint -c .yamllint.yaml --strict"
+
+[tasks."lint:actions"]
+description = "actionlint on the workflows"
+run = "actionlint -color"
+
+[tasks."lint:shell"]
+description = "shellcheck the scripts and hooks"
+run = "shellcheck -e SC1091,SC2016 scripts/*.sh .githooks/*"
+
+# npx rather than a mise npm: tool because mise's npm backend refuses to install
+# renovate: a transitive dep (@yarnpkg/libzip@3.2.2) dropped the provenance
+# attestation its predecessor had, and bypassing that needs a human review.
+# renovate: datasource=npm depName=renovate
+[tasks."lint:renovate"]
+description = "validate renovate.json"
+run = "npx --yes --package renovate@44.30.4 renovate-config-validator --strict"
+
+[tasks.lint]
+description = "every lint"
+depends = ["lint:*"]
+
+[tasks."diff-check"]
+description = "git whitespace errors in a commit range"
+usage = 'arg "<range>" help="git diff range, e.g. main..HEAD"'
+run = "git diff --check $usage_range"
+
+[tasks.gitops]
+description = "build kustomizations, render Flux roots, validate manifests"
+run = [
+  "./scripts/build-kustomizations.sh",
+  "./scripts/flux-build.sh build",
+  "./scripts/kubeconform.sh build/*.yaml",
+]
+
+[tasks.helm]
+description = "render every HelmRelease and validate the output"
+# Shares the build/ directory with gitops, so never render alongside it.
+wait_for = ["gitops"]
+env = { KUBECONFORM_SKIP = "CustomResourceDefinition" }
+run = [
+  "./scripts/flux-build.sh build",
+  "./scripts/render-helmreleases.py build/*.yaml --out build/helm",
+  "./scripts/kubeconform.sh build/helm/*.yaml",
+]
+
+[tasks.ci]
+description = "everything CI runs that does not need PR context"
+depends = ["scan:tree", "lint", "gitops", "helm"]

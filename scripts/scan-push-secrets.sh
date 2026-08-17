@@ -25,7 +25,7 @@ MISE="$(resolve_mise)" || die "mise is not installed, refusing to push.
 scan() {
   local label="$1" log_opts="$2"
   echo "pre-push: scanning ${label}"
-  if ! "${MISE}" run scan-range "${log_opts}"; then
+  if ! "${MISE}" run scan:range "${log_opts}"; then
     cat >&2 <<EOF
 
 pre-push: BLOCKED - gitleaks found a potential secret in the commits above.
