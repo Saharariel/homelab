@@ -4,10 +4,13 @@ set -euo pipefail
 
 root="$(git rev-parse --show-toplevel)"
 
-if ! command -v gitleaks >/dev/null 2>&1; then
-  echo "pre-commit: gitleaks not installed, refusing to commit." >&2
-  echo "pre-commit: run 'mise install', or commit with --no-verify." >&2
+# shellcheck source=scripts/resolve-mise.sh
+. "${root}/scripts/resolve-mise.sh"
+
+if ! mise_bin="$(resolve_mise)"; then
+  echo "pre-commit: mise is not installed, refusing to commit." >&2
+  echo "pre-commit: install it from https://mise.jdx.dev, or commit with --no-verify." >&2
   exit 1
 fi
 
-gitleaks git "${root}" --staged --config "${root}/.gitleaks.toml" --redact=100 --no-banner
+exec "${mise_bin}" run scan:staged

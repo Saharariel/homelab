@@ -41,7 +41,8 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/^\\.github/workflows/.+\\.yaml$/"
+        "/^\\.github/workflows/.+\\.yaml$/",
+        "/^mise\\.toml$/"
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)[\\s\\S]*?--package \\S+@(?<currentValue>[0-9][^\\s]*)"

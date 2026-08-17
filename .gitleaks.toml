@@ -6,6 +6,10 @@ title = "homelab repository allowlist"
 
 paths = [
   '''clusters/production/flux-system/gotk-components\.yaml''',
+  # Generated render output. Gitignored, so it can never be committed, and CI's
+  # fresh checkout never has it - but a local `mise run ci` would otherwise scan
+  # chart defaults that look like secrets.
+  '''^build/''',
 ]
 
 regexes = [

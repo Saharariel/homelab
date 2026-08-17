@@ -34,15 +34,14 @@ jobs:
           if [ -z "${BASE_SHA}" ] || [ "${BASE_SHA}" = "${zero}" ] \
              || ! git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
             echo "No usable base commit; scanning full history."
-            gitleaks git . --config .gitleaks.toml --redact=100 --no-banner
+            mise run scan:history
           else
             echo "Scanning ${BASE_SHA}..${HEAD_SHA}"
-            gitleaks git . --config .gitleaks.toml \
-              --log-opts "${BASE_SHA}..${HEAD_SHA}" --redact=100 --no-banner
+            mise run scan:range "${BASE_SHA}..${HEAD_SHA}"
           fi
 
       - name: Scan working tree
-        run: gitleaks dir . --config .gitleaks.toml --redact=100 --no-banner
+        run: mise run scan:tree
 
       - name: Manifest and Secret policy
         run: |
@@ -59,14 +58,8 @@ jobs:
 
       - uses: jdx/mise-action@3c2e0cf82a5b2e5249f0d3635a4d83d0ae861518 # v4.2.5
 
-      - name: Build every kustomization
-        run: ./scripts/build-kustomizations.sh
-
-      - name: Render Flux roots
-        run: ./scripts/flux-build.sh build
-
-      - name: Validate rendered manifests
-        run: ./scripts/kubeconform.sh build/*.yaml
+      - name: Build, render and validate
+        run: mise run gitops
 
   helm:
     name: helm render
@@ -78,18 +71,11 @@ jobs:
 
       - uses: jdx/mise-action@3c2e0cf82a5b2e5249f0d3635a4d83d0ae861518 # v4.2.5
 
-      - name: Render Flux roots
-        run: ./scripts/flux-build.sh build
+      - name: Install render dependencies
+        run: python3 -m pip install --quiet pyyaml
 
-      - name: Render every HelmRelease
-        run: |
-          python3 -m pip install --quiet pyyaml
-          ./scripts/render-helmreleases.py build/*.yaml --out build/helm
-
-      - name: Validate rendered charts
-        env:
-          KUBECONFORM_SKIP: CustomResourceDefinition
-        run: ./scripts/kubeconform.sh build/helm/*.yaml
+      - name: Render and validate every HelmRelease
+        run: mise run helm
 
   lint:
     name: lint
@@ -102,22 +88,12 @@ jobs:
 
       - uses: jdx/mise-action@3c2e0cf82a5b2e5249f0d3635a4d83d0ae861518 # v4.2.5
 
-      - name: Lint YAML
-        run: git ls-files '*.yaml' '*.yml' | xargs yamllint -c .yamllint.yaml --strict
-
-      - name: Lint workflows
-        run: actionlint -color
-
-      - name: Lint shell scripts
-        run: shellcheck -e SC1091,SC2016 scripts/*.sh .githooks/*
-
-      # renovate: datasource=npm depName=renovate
-      - name: Validate renovate config
-        run: npx --yes --package renovate@44.30.4 renovate-config-validator --strict
+      - name: Lint
+        run: mise run lint
 
       - name: Check whitespace errors in changed lines
         if: github.event_name == 'pull_request'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: git diff --check "${BASE_SHA}" "${HEAD_SHA}"
+        run: mise run diff-check "${BASE_SHA}..${HEAD_SHA}"
