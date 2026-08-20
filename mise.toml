@@ -53,7 +53,7 @@ run = "shellcheck -e SC1091,SC2016 scripts/*.sh .githooks/*"
 # renovate: datasource=npm depName=renovate
 [tasks."lint:renovate"]
 description = "validate renovate.json"
-run = "npx --yes --package renovate@44.36.0 renovate-config-validator --strict"
+run = "npx --yes --package renovate@44.37.0 renovate-config-validator --strict"
 
 [tasks.lint]
 description = "every lint"
