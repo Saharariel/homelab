@@ -28,7 +28,7 @@ spec:
           containers:
             - name: moneyman
               # Pinned by digest so a re-pushed tag can't swap the image.
-              image: ghcr.io/daniel-hauser/moneyman:v2026.07.18.1@sha256:b3c8579de2879a1ac00d00d3168c214cc0157f8b75b3d98204bfa7ebe073359e
+              image: ghcr.io/daniel-hauser/moneyman:v2026.08.19.1@sha256:a82ba745ef02b6599d1ddba7765511d30a2797542fe04f1bc5c9a341cd99e8e4
               imagePullPolicy: IfNotPresent
 
               securityContext:
