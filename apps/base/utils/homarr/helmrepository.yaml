@@ -6,4 +6,5 @@ metadata:
   namespace: utils
 spec:
   interval: 24h
-  url: https://homarr-labs.github.io/charts/
+  type: oci
+  url: oci://ghcr.io/homarr-labs/charts
