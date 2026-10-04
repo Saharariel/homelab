@@ -15,6 +15,13 @@
       "/(^|/)helmrelease\\.yaml$/"
     ]
   },
+  "packageRules": [
+    {
+      "description": "Keep kubectl on the API server's 1.33 line until the cluster is upgraded",
+      "matchPackageNames": ["kubectl"],
+      "allowedVersions": "<1.34.0"
+    }
+  ],
   "customManagers": [
     {
       "customType": "regex",

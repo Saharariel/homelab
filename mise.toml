@@ -3,7 +3,7 @@ lockfile = true
 
 [tools]
 k9s = "latest"
-kubectl = "latest"
+kubectl = "1.33.13"
 helm = "4.3.0"
 flux2 = "2.9.6"
 kubeconform = "0.8.0"
@@ -53,7 +53,7 @@ run = "shellcheck -e SC1091,SC2016 scripts/*.sh .githooks/*"
 # renovate: datasource=npm depName=renovate
 [tasks."lint:renovate"]
 description = "validate renovate.json"
-run = "npx --yes --package renovate@44.132.5 renovate-config-validator --strict"
+run = "npx --yes --package renovate@44.133.0 renovate-config-validator --strict"
 
 [tasks.lint]
 description = "every lint"

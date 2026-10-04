@@ -6,6 +6,8 @@ metadata:
     app: tracearr
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: tracearr
@@ -16,9 +18,21 @@ spec:
     spec:
       containers:
         - name: tracearr
-          image: ghcr.io/connorgallopo/tracearr:2.1.0
+          image: ghcr.io/connorgallopo/tracearr:2.6.2
           ports:
             - containerPort: 3000
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            periodSeconds: 5
+            failureThreshold: 120
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            periodSeconds: 10
+            timeoutSeconds: 3
           env:
             - name: NODE_ENV
               value: "production"

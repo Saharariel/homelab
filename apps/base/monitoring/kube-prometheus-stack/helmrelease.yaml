@@ -4,10 +4,12 @@ metadata:
   name: kube-prometheus-stack
 spec:
   interval: 5m
+  upgrade:
+    crds: CreateReplace
   chart:
     spec:
       chart: kube-prometheus-stack
-      version: "88.6.5"
+      version: "91.9.0"
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
