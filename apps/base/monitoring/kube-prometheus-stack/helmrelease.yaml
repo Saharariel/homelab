@@ -4,6 +4,8 @@ metadata:
   name: kube-prometheus-stack
 spec:
   interval: 5m
+  upgrade:
+    crds: CreateReplace
   chart:
     spec:
       chart: kube-prometheus-stack
