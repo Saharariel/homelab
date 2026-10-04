@@ -1,0 +1,22 @@
+name: jellyfin preflight tests
+
+on:
+  pull_request:
+    paths:
+      - scripts/jellyfin-preflight.py
+      - scripts/tests/test_jellyfin_preflight.py
+      - .github/workflows/jellyfin-preflight-tests.yaml
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: read-only safety tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Run mocked safety tests (no cluster credentials)
+        run: python3 -B -m unittest discover -s scripts/tests -p 'test_jellyfin_preflight.py' -v
