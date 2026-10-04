@@ -131,7 +131,7 @@ def make_api(base_url, token=''):
             raise ValueError('endpoint not allowlisted')
         headers = {'Accept': 'application/json'}
         if token and path != '/System/Info/Public':
-            headers['X-Emby-Token'] = token
+            headers['Authorization'] = 'MediaBrowser Token="' + urllib.parse.quote(token, safe='') + '"'
         request = urllib.request.Request(base_url.rstrip('/') + path, headers=headers, method='GET')
         with opener.open(request, timeout=10) as response:
             return json.load(response)

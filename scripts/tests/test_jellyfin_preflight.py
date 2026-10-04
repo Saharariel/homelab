@@ -163,6 +163,23 @@ class PreflightTests(unittest.TestCase):
         with self.assertRaises(urllib.error.HTTPError):
             module.NoRedirect().redirect_request(None, None, 302, 'SECRET', {}, 'https://other')
 
+    def test_authenticated_api_uses_modern_escaped_header(self):
+        module = load()
+        import urllib.error
+        from email.message import Message
+        for token, encoded in [('TOKEN', 'TOKEN'), ('test"\r\n+', 'test%22%0D%0A%2B')]:
+            api = module.make_api('http://127.0.0.1:30096', token)
+            with patch.object(module.urllib.request.OpenerDirector, 'open',
+                              side_effect=urllib.error.HTTPError('redacted', 401, 'denied', Message(), None)) as opened:
+                with self.assertRaises(urllib.error.HTTPError):
+                    api('/Plugins')
+                request = opened.call_args.args[0]
+                self.assertEqual(request.get_header('Authorization'),
+                                 f'MediaBrowser Token="{encoded}"')
+                self.assertFalse(any(k.lower().startswith('x-emby')
+                                     for k, _ in request.header_items()))
+                self.assertNotIn(token, request.full_url)
+
     def test_public_version_no_credentials(self):
         module = load()
         calls = []
