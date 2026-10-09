@@ -14,6 +14,8 @@ spec:
       labels:
         app: jellyfin
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: worker-node-1
       # Security context at pod level
       securityContext:
         fsGroup: 993
@@ -28,7 +30,7 @@ spec:
 
       containers:
         - name: jellyfin
-          image: ghcr.io/jellyfin/jellyfin:10.11.11
+          image: ghcr.io/jellyfin/jellyfin:12.2@sha256:c3efa69a22f2691fc88d6bb035e87a8560e395a6047f062fb381c61c3185e8f5
           ports:
             - containerPort: 8096
               name: http-web
@@ -85,22 +87,20 @@ spec:
               mountPath: /cache
             - name: transcodes
               mountPath: /config/transcodes
-          # # Health checks
-          # livenessProbe:
-          #   httpGet:
-          #     path: /health
-          #     port: 8096
-          #   initialDelaySeconds: 30
-          #   periodSeconds: 30
-          #   timeoutSeconds: 10
-          #
-          # readinessProbe:
-          #   httpGet:
-          #     path: /health
-          #     port: 8096
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 5
-          #   timeoutSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8096
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 360
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8096
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
 
       volumes:
         - name: media
