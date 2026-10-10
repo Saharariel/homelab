@@ -16,7 +16,14 @@ if [ -z "${KUBERNETES_VERSION:-}" ] || [ -z "${CRDS_CATALOG_REF:-}" ]; then
   exit 1
 fi
 
-CATALOG="https://raw.githubusercontent.com/datreeio/CRDs-catalog/${CRDS_CATALOG_REF}"
+# Catalog 63669a5 corrupts the CRD provider whitelist's field named "properties"
+# in ClusterSecretStore v1: a boolean is placed inside the schema's properties
+# map, which fails the Draft 4 metaschema. Pin only this GVK to its last known
+# good schema; all other schemas still use the Renovate-managed catalog ref.
+ESO_STORE_SCHEMA_REF="fd90051867733c60d32d16450556e9cd18459aef"
+CATALOG="https://raw.githubusercontent.com/datreeio/CRDs-catalog"
+CATALOG+='/{{if and (eq .Group "external-secrets.io") (eq .ResourceKind "clustersecretstore") (eq .ResourceAPIVersion "v1")}}'
+CATALOG+="${ESO_STORE_SCHEMA_REF}{{else}}${CRDS_CATALOG_REF}{{end}}"
 
 args=(
   -strict
