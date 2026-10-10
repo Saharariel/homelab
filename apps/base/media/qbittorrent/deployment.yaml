@@ -19,6 +19,27 @@ spec:
       securityContext:
         fsGroup: 911
 
+      # Refresh provider metadata before starting the VPN; image data can age out.
+      initContainers:
+        - name: update-vpn-servers
+          image: qmcgaw/gluetun:v3.41.3
+          imagePullPolicy: IfNotPresent
+          command: ["/gluetun-entrypoint"]
+          args: ["update", "-enduser", "-providers", "nordvpn"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: vpn-server-data
+              mountPath: /gluetun
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+
       containers:
         # Gluetun VPN container
         - name: gluetun
@@ -41,6 +62,8 @@ spec:
               value: "true"
             - name: OPENVPN_PROTOCOL
               value: "udp"
+            - name: UPDATER_PERIOD
+              value: "480h"
             - name: OPENVPN_USER
               valueFrom:
                 secretKeyRef:
@@ -67,6 +90,17 @@ spec:
           volumeMounts:
             - name: tun
               mountPath: /dev/net/tun
+            - name: vpn-server-data
+              mountPath: /gluetun
+
+          # The health endpoint is loopback-only: probe inside this container.
+          readinessProbe:
+            exec:
+              command: ["/gluetun-entrypoint", "healthcheck"]
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
 
           resources:
             limits:
@@ -134,6 +168,11 @@ spec:
               memory: 512Mi
 
       volumes:
+        # Rebuilt from current NordVPN metadata on every pod creation.
+        - name: vpn-server-data
+          emptyDir:
+            sizeLimit: 64Mi
+
         # TUN device for VPN
         - name: tun
           hostPath:
