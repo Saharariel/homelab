@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - helmrelease.yaml
   - helmrepo.yaml
+  - grafana-pvc.yaml
   - externalsecret.yaml
   - discord-externalsecret.yaml
   - homelab-platform-monitors.yaml

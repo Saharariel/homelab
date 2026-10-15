@@ -47,6 +47,11 @@ alertmanager:
 grafana:
   enabled: true
   fullnameOverride: grafana
+  deploymentStrategy:
+    type: Recreate
+  persistence:
+    enabled: true
+    existingClaim: grafana-state
   forceDeployDatasources: false
   forceDeployDashboards: false
   defaultDashboardsEnabled: true
