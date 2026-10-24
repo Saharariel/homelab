@@ -58,6 +58,8 @@ spec:
               value: "openvpn"
             - name: SERVER_COUNTRIES
               value: "Israel"
+            - name: SERVER_CATEGORIES
+              value: "Standard VPN servers"
             - name: SERVER_HOSTNAMES_RANDOMIZED
               value: "true"
             - name: OPENVPN_PROTOCOL
