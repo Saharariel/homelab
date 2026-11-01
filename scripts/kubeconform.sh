@@ -21,9 +21,15 @@ fi
 # map, which fails the Draft 4 metaschema. Pin only this GVK to its last known
 # good schema; all other schemas still use the Renovate-managed catalog ref.
 ESO_STORE_SCHEMA_REF="fd90051867733c60d32d16450556e9cd18459aef"
+# Catalog 27233a5 uses \\u escapes in CiliumNetworkPolicy v2 log.value patterns,
+# which kubeconform's Go regexp compiler rejects. Keep this exact GVK on the
+# prior compiling schema until the upstream pattern is Go-compatible again.
+CILIUM_POLICY_SCHEMA_REF="3eb90d47aba8d61919d4419dd38301536e32a94b"
 CATALOG="https://raw.githubusercontent.com/datreeio/CRDs-catalog"
 CATALOG+='/{{if and (eq .Group "external-secrets.io") (eq .ResourceKind "clustersecretstore") (eq .ResourceAPIVersion "v1")}}'
-CATALOG+="${ESO_STORE_SCHEMA_REF}{{else}}${CRDS_CATALOG_REF}{{end}}"
+CATALOG+="${ESO_STORE_SCHEMA_REF}"
+CATALOG+='{{else if and (eq .Group "cilium.io") (eq .ResourceKind "ciliumnetworkpolicy") (eq .ResourceAPIVersion "v2")}}'
+CATALOG+="${CILIUM_POLICY_SCHEMA_REF}{{else}}${CRDS_CATALOG_REF}{{end}}"
 
 args=(
   -strict
