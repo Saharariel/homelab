@@ -8,7 +8,7 @@ spec:
   accessModes: ["ReadWriteOnce"]
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
-  # Local SSD on the worker. Redis here is a regenerable cache — starts empty.
+  # Local SSD on the worker. Persist BullMQ queues, job payloads and dead-letter state.
   local:
     path: /var/lib/appconfig/tracearr-redis
   nodeAffinity:

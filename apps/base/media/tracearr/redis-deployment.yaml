@@ -6,6 +6,8 @@ metadata:
     app: tracearr-redis
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: tracearr-redis
