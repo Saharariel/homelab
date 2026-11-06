@@ -36,6 +36,9 @@ args=(
   -summary
   -kubernetes-version "${KUBERNETES_VERSION}"
   -schema-location default
+  # The default registry omits the recursive CustomResourceDefinition schema.
+  # Keep validation enabled via this pinned schema and its relative references.
+  -schema-location 'https://raw.githubusercontent.com/nlamirault/schema-hub/8966067d7d83e7544576df7880427f54996ea562/schemas/{{if and (eq .Group "apiextensions.k8s.io") (eq .ResourceKind "customresourcedefinition")}}apiextensions.api.k8s.io/CustomResourceDefinition_v1{{else}}not-used{{end}}.json'
   -schema-location "${CATALOG}/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
 )
 
