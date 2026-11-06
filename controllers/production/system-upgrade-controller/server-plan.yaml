@@ -1,7 +1,7 @@
 apiVersion: upgrade.cattle.io/v1
 kind: Plan
 metadata:
-  name: k3s-server-1-34
+  name: k3s-server-1-35
   namespace: system-upgrade
 spec:
   concurrency: 1
@@ -12,7 +12,7 @@ spec:
       node-role.kubernetes.io/control-plane: "true"
       kubernetes.io/hostname: saharlinux
   serviceAccountName: system-upgrade
-  version: v1.34.13+k3s1
+  version: v1.35.10+k3s1
   upgrade:
     # SUC preserves digest references; index includes linux/amd64.
-    image: rancher/k3s-upgrade:v1.34.13-k3s1@sha256:cdad2301b3070ea6c8a3f23eee523578a7a43a1060925262453ee97fc1728d56
+    image: rancher/k3s-upgrade:v1.35.10-k3s1@sha256:df1815be259ebe5411909d6747a3456064cea4e4f99b2fa5fbbe33653c316fe3
