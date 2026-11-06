@@ -36,6 +36,8 @@ args=(
   -summary
   -kubernetes-version "${KUBERNETES_VERSION}"
   -schema-location default
+  # Only Plan upgrade.cattle.io/v1 uses the installed SUC v0.21.0 schema.
+  -schema-location '.github/schemas/system-upgrade-controller-v0.21.0/{{if and (eq .Group "upgrade.cattle.io") (eq .ResourceKind "plan") (eq .ResourceAPIVersion "v1")}}plan_v1{{else}}not-used{{end}}.json'
   # The default registry omits the recursive CustomResourceDefinition schema.
   # Keep validation enabled via this pinned schema and its relative references.
   -schema-location 'https://raw.githubusercontent.com/nlamirault/schema-hub/8966067d7d83e7544576df7880427f54996ea562/schemas/{{if and (eq .Group "apiextensions.k8s.io") (eq .ResourceKind "customresourcedefinition")}}apiextensions.api.k8s.io/CustomResourceDefinition_v1{{else}}not-used{{end}}.json'
