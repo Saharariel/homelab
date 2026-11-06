@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: system-upgrade
 resources:
   - ../../base/system-upgrade-controller/
+  - server-plan.yaml
 patches:
   - target:
       group: apps
