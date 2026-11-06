@@ -3,3 +3,23 @@ kind: Kustomization
 namespace: system-upgrade
 resources:
   - ../../base/system-upgrade-controller/
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: system-upgrade-controller
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: system-upgrade-controller
+      spec:
+        template:
+          spec:
+            containers:
+              - name: system-upgrade-controller
+                env:
+                  # First 1.33 -> 1.34 hop only; explicit env overrides envFrom.
+                  - name: SYSTEM_UPGRADE_JOB_KUBECTL_IMAGE
+                    value: rancher/kubectl:v1.34.9@sha256:caffc74e47cf962edef931bc3c5eff73032a19d0487253b261c3c75cb3cf8e9e
