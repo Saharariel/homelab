@@ -34,3 +34,40 @@ spec:
   resources:
     requests:
       storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tracearr-backup
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes: ["ReadWriteOnce"]
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  # Local SSD on the worker. Keeps Tracearr's built-in backups (/data/backup) across pod restarts.
+  local:
+    path: /var/lib/appconfig/tracearr-backup
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - worker-node-1
+  claimRef:
+    namespace: media
+    name: tracearr-backup
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tracearr-backup
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: ""
+  volumeName: tracearr-backup
+  resources:
+    requests:
+      storage: 2Gi

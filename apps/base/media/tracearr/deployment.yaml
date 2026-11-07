@@ -16,6 +16,9 @@ spec:
       labels:
         app: tracearr
     spec:
+      securityContext:
+        # Group-writable access to the backup volume; the image user (1001) is unchanged.
+        fsGroup: 1000
       containers:
         - name: tracearr
           image: ghcr.io/connorgallopo/tracearr:3.1.5
@@ -69,4 +72,11 @@ spec:
               cpu: "100m"
             limits:
               memory: "1Gi"
+          volumeMounts:
+            - name: backup
+              mountPath: /data/backup
+      volumes:
+        - name: backup
+          persistentVolumeClaim:
+            claimName: tracearr-backup
       restartPolicy: Always
