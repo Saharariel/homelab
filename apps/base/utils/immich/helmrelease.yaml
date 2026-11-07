@@ -2,6 +2,9 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
+  annotations:
+    # Data migrations: server-hub never merges image updates for this workload unattended.
+    homelab.dev/upgrade: manual
   name: immich
 spec:
   interval: 30m

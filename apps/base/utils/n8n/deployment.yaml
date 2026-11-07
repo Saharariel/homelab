@@ -1,6 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    # Data migrations: server-hub never merges image updates for this workload unattended.
+    homelab.dev/upgrade: manual
   name: n8n
 spec:
   replicas: 1
