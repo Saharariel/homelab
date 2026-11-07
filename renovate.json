@@ -75,6 +75,13 @@
         "kubectl"
       ],
       "allowedVersions": "<1.37.0"
+    },
+    {
+      "description": "hotio images tag releases as release-X.Y.Z",
+      "matchPackageNames": [
+        "/^ghcr\\.io\\/hotio\\//"
+      ],
+      "versioning": "regex:^release-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
     }
   ],
   "customManagers": [
