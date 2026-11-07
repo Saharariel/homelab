@@ -14,7 +14,9 @@ spec:
         app: server-hub
 
     spec:
-      automountServiceAccountToken: false
+      # Token powers the read-only cluster view (rbac.yaml).
+      serviceAccountName: server-hub
+      automountServiceAccountToken: true
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
