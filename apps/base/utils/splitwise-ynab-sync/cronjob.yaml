@@ -32,7 +32,7 @@ spec:
             - name: splitwise-ynab-sync
               # Self-authored, actively developed: floating tag + always pull,
               # like server-hub, rather than moneyman's pinned-digest pattern.
-              image: ghcr.io/saharariel/splitwise-ynab-sync:main
+              image: ghcr.io/saharariel/splitwise-ynab-sync:main@sha256:203971de98cb886be7348a67535215e4c57d186df76fc7ca8d57a356eacb9e6c
               imagePullPolicy: Always
 
               securityContext:
