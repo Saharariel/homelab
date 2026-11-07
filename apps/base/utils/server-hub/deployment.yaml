@@ -27,7 +27,7 @@ spec:
 
       containers:
         - name: server-hub
-          image: ghcr.io/saharariel/server-hub:main@sha256:c12ee2f0701756cc9b87186e01cf2ed24c927c581458c8ba79b68e48d67bbc85
+          image: ghcr.io/saharariel/server-hub:main@sha256:d7c3a818d483fbad31a9a3070f5141afe48896923c6aa6bfd1f80f3fcb890bac
           imagePullPolicy: Always
 
           securityContext:
