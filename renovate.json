@@ -19,7 +19,7 @@
   "minimumReleaseAgeBehaviour": "timestamp-optional",
   "packageRules": [
     {
-      "description": "Routine: non-major updates. server-hub merges these in the maintenance window unless the app opts out (homelab.dev/upgrade: manual)",
+      "description": "Routine: non-major updates. server-hub merges these in the maintenance window unless the workload holding the image is annotated homelab.dev/upgrade: manual",
       "matchUpdateTypes": [
         "minor",
         "patch",

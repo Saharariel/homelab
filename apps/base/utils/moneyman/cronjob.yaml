@@ -1,6 +1,9 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
+  annotations:
+    # Data migrations: server-hub never merges image updates for this workload unattended.
+    homelab.dev/upgrade: manual
   name: moneyman
 spec:
   schedule: "0 7 * * *" # 7am daily
