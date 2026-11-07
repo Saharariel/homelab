@@ -15,18 +15,11 @@
       "/(^|/)helmrelease\\.yaml$/"
     ]
   },
-  "timezone": "Asia/Jerusalem",
-  "automergeType": "pr",
-  "automergeStrategy": "squash",
-  "platformAutomerge": false,
-  "automergeSchedule": [
-    "* 4-6 * * 6"
-  ],
   "minimumReleaseAge": "3 days",
   "minimumReleaseAgeBehaviour": "timestamp-optional",
   "packageRules": [
     {
-      "description": "Routine lane: non-major updates automerge in the Saturday 04:00 window after required checks pass",
+      "description": "Routine: non-major updates. server-hub merges these in the maintenance window unless the app opts out (homelab.dev/upgrade: manual)",
       "matchUpdateTypes": [
         "minor",
         "patch",
@@ -34,69 +27,44 @@
         "pin",
         "pinDigest"
       ],
-      "automerge": true,
       "labels": [
         "risk/routine"
       ]
     },
     {
-      "description": "Review lane: every major update needs a human click in server-hub",
+      "description": "Review: every major update",
       "matchUpdateTypes": [
         "major"
       ],
-      "automerge": false,
       "labels": [
         "risk/review"
       ]
     },
     {
-      "description": "Review lane: stateful, migration-prone or financial apps, regardless of semver (charts can hide app majors)",
-      "matchPackageNames": [
-        "authentik",
-        "/homarr/",
-        "/vaultwarden/",
-        "/tracearr/",
-        "redis",
-        "/timescaledb/",
-        "/immich/",
-        "/n8n/",
-        "/jellyfin/",
-        "/seerr/",
-        "/jellyseerr/",
-        "/moneyman/",
-        "/splitwise-ynab-sync/",
-        "longhorn"
+      "description": "Review: Helm charts (can hide app majors and ship CRDs)",
+      "matchDatasources": [
+        "helm"
       ],
-      "automerge": false,
       "labels": [
         "risk/review"
       ]
     },
     {
-      "description": "Platform lane: cluster version, GitOps engine, networking and CRD-bearing charts",
-      "matchPackageNames": [
-        "rancher/k3s-upgrade",
-        "/fluxcd/",
-        "flux2",
-        "cilium",
-        "cert-manager",
-        "external-secrets",
-        "kube-prometheus-stack",
-        "intel/intel-gpu-plugin",
-        "/external-dns/",
-        "/system-upgrade-controller/"
+      "description": "Platform: cluster-level manifests (k3s, Flux, CNI, controllers)",
+      "matchFileNames": [
+        "clusters/**",
+        "controllers/**",
+        "infrastructure/**"
       ],
-      "automerge": false,
       "labels": [
         "risk/platform"
       ]
     },
     {
-      "description": "Platform lane: Kubernetes apiVersion migrations change how controllers read objects",
+      "description": "Platform: Kubernetes apiVersion migrations",
       "matchDatasources": [
         "kubernetes-api"
       ],
-      "automerge": false,
       "labels": [
         "risk/platform"
       ]
