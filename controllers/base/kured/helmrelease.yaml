@@ -1,8 +1,8 @@
 ---
 # Reboots a node after unattended-upgrades leaves /var/run/reboot-required, one
-# node at a time, only in the Saturday maintenance window and only while no
-# alert is firing. Cordon-only (no drain), matching the k3s SUC plans: local PVs
-# cannot move and eviction would discard emptyDir data.
+# node at a time, only Saturday 05:00-07:00 (after the daily 03:00 auto-merge
+# window) and only while no alert is firing. Cordon-only (no drain), matching
+# the k3s SUC plans: local PVs cannot move and eviction would discard emptyDir.
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -28,7 +28,7 @@ spec:
     configuration:
       period: 10m
       rebootDays: [sa]
-      startTime: "04:00"
+      startTime: "05:00"
       endTime: "07:00"
       timeZone: Asia/Jerusalem
       concurrency: 1
