@@ -14,7 +14,7 @@ shellcheck = "0.11.0"
 
 [env]
 KUBERNETES_VERSION = "1.33.4"
-CRDS_CATALOG_REF = "27233a506de0085e71c7f9702597806a7f95eb24"
+CRDS_CATALOG_REF = "c86448cbf1a840ca62d119259864863897c8748a"
 
 # Tasks always run from the config root, so paths here are repo-relative.
 
