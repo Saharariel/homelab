@@ -15,4 +15,4 @@ spec:
   version: v1.36.6+k3s1
   upgrade:
     # SUC preserves digest references; index includes linux/amd64.
-    image: rancher/k3s-upgrade:v1.36.6-k3s1@sha256:b6d95da5331cb7f34750cc17d56d1e16cfcf2baeecd634a56719de5fdb61c87c
+    image: rancher/k3s-upgrade:v1.37.2-k3s1@sha256:69b48cf32cf51ed23ed86348fc913db1e00d1ddc00369ded18953dcad859a6e1
