@@ -7,8 +7,8 @@ spec:
   chart:
     spec:
       chart: external-secrets
-      # Pin the minor so Renovate proposes the next one as a reviewed PR.
-      version: "2.14.x"
+      # Exact pin so every release lands as a reviewed PR.
+      version: "2.14.0"
       sourceRef:
         kind: HelmRepository
         name: external-secrets

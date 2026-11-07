@@ -8,9 +8,9 @@ spec:
   chart:
     spec:
       chart: cilium
-      # Pin the minor: Renovate opens a reviewed platform PR for the next one
-      # (Cilium minors change CNI defaults and must match the k8s version).
-      version: "1.20.x"
+      # Exact pin: every Cilium release (CNI) lands as a reviewed platform PR;
+      # minors change defaults and must match the Kubernetes version.
+      version: "1.20.4"
       sourceRef:
         kind: HelmRepository
         name: cilium

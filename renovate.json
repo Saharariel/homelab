@@ -90,6 +90,27 @@
       ],
       "groupName": "k3s",
       "draftPR": true
+    },
+    {
+      "description": "timescaledb-ha tags are pg<major>.<minor>-ts<version>; stay on the same Postgres major (a major needs dump/restore)",
+      "matchPackageNames": [
+        "timescale/timescaledb-ha"
+      ],
+      "versioning": "regex:^pg(?<compatibility>\\d+)\\.(?<build>\\d+)-ts(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
+    },
+    {
+      "description": "linuxserver/qbittorrent on Docker Hub also carries legacy 14.x/20.x tags; ignore them",
+      "matchPackageNames": [
+        "linuxserver/qbittorrent"
+      ],
+      "allowedVersions": "<10.0.0"
+    },
+    {
+      "description": "SUC kubectl helper must stay within one minor of the API server",
+      "matchDepNames": [
+        "rancher/kubectl"
+      ],
+      "allowedVersions": "<1.37.0"
     }
   ],
   "customManagers": [
@@ -137,6 +158,29 @@
       "depNameTemplate": "rancher/k3s-upgrade",
       "datasourceTemplate": "docker",
       "versioningTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "system-upgrade-controller is installed from release URLs",
+      "managerFilePatterns": [
+        "/^controllers/base/system-upgrade-controller/kustomization\\.yaml$/"
+      ],
+      "matchStrings": [
+        "https://github\\.com/rancher/system-upgrade-controller/releases/download/(?<currentValue>v\\d+\\.\\d+\\.\\d+)/"
+      ],
+      "depNameTemplate": "rancher/system-upgrade-controller",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "description": "SUC's kubectl helper image is an env value, not an image: field",
+      "managerFilePatterns": [
+        "/^controllers/production/system-upgrade-controller/kustomization\\.yaml$/"
+      ],
+      "matchStrings": [
+        "value: (?<depName>rancher/kubectl):(?<currentValue>v\\d+\\.\\d+\\.\\d+)@(?<currentDigest>sha256:[a-f0-9]{64})"
+      ],
+      "datasourceTemplate": "docker"
     }
   ]
 }
