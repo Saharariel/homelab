@@ -82,6 +82,14 @@
         "/^ghcr\\.io\\/hotio\\//"
       ],
       "versioning": "regex:^release-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
+    },
+    {
+      "description": "k3s: plan version and image land together in one draft PR (draft = held until server-hub's preflighted upgrade)",
+      "matchDepNames": [
+        "rancher/k3s-upgrade"
+      ],
+      "groupName": "k3s",
+      "draftPR": true
     }
   ],
   "customManagers": [
@@ -116,6 +124,19 @@
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)[\\s\\S]*?--package \\S+@(?<currentValue>[0-9][^\\s]*)"
       ]
+    },
+    {
+      "customType": "regex",
+      "description": "SUC Plan version: only a version change triggers upgrade Jobs, so it must move with the image",
+      "managerFilePatterns": [
+        "/^controllers/production/system-upgrade-controller/.+-plan\\.yaml$/"
+      ],
+      "matchStrings": [
+        "\\n  version: (?<currentValue>v\\d+\\.\\d+\\.\\d+-k3s\\d+)\\n"
+      ],
+      "depNameTemplate": "rancher/k3s-upgrade",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
     }
   ]
 }
