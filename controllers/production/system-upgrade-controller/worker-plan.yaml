@@ -14,7 +14,9 @@ spec:
       - key: node-role.kubernetes.io/control-plane
         operator: DoesNotExist
   serviceAccountName: system-upgrade
-  version: v1.36.6+k3s1
+  # Tag form (SUC normalizes + to -, so the hash is unchanged). Renovate bumps
+  # this with the image in one PR: only a version change triggers new Jobs.
+  version: v1.36.6-k3s1
   upgrade:
     # SUC preserves digest references; index includes linux/amd64.
     image: rancher/k3s-upgrade:v1.36.6-k3s1@sha256:b6d95da5331cb7f34750cc17d56d1e16cfcf2baeecd634a56719de5fdb61c87c
