@@ -7,7 +7,8 @@ spec:
   chart:
     spec:
       chart: external-secrets
-      version: "2.x"
+      # Pin the minor so Renovate proposes the next one as a reviewed PR.
+      version: "2.14.x"
       sourceRef:
         kind: HelmRepository
         name: external-secrets
