@@ -1,6 +1,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+# Vendored by scripts/vendor-suc.sh from
+# https://github.com/rancher/system-upgrade-controller/releases/download/v0.21.0/
+# (CRD, namespace, RBAC and the pinned controller image). Renovate bumps the
+# version above and re-runs the script; never edit the two files by hand.
 resources:
-  # Release assets include the CRD, namespace, RBAC and pinned controller image.
-  - https://github.com/rancher/system-upgrade-controller/releases/download/v0.21.0/crd.yaml
-  - https://github.com/rancher/system-upgrade-controller/releases/download/v0.21.0/system-upgrade-controller.yaml
+  - crd.yaml
+  - system-upgrade-controller.yaml
