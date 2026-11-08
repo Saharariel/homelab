@@ -1,5 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "controllers/base/system-upgrade-controller/crd.yaml",
+    "controllers/base/system-upgrade-controller/system-upgrade-controller.yaml"
+  ],
   "kubernetes": {
     "managerFilePatterns": [
       "/\\.yaml$/"
@@ -92,6 +98,24 @@
       "draftPR": true
     },
     {
+      "description": "system-upgrade-controller manifests are vendored: re-download them for the new version in the same commit",
+      "matchDepNames": [
+        "rancher/system-upgrade-controller"
+      ],
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "postUpgradeTasks": {
+        "commands": [
+          "scripts/vendor-suc.sh {{{newValue}}}"
+        ],
+        "fileFilters": [
+          "controllers/base/system-upgrade-controller/**"
+        ],
+        "executionMode": "update"
+      }
+    },
+    {
       "description": "timescaledb-ha tags are pg<major>.<minor>-ts<version>; stay on the same Postgres major (a major needs dump/restore)",
       "matchPackageNames": [
         "timescale/timescaledb-ha"
@@ -161,7 +185,7 @@
     },
     {
       "customType": "regex",
-      "description": "system-upgrade-controller is installed from release URLs",
+      "description": "system-upgrade-controller version, in the vendoring comment (scripts/vendor-suc.sh)",
       "managerFilePatterns": [
         "/^controllers/base/system-upgrade-controller/kustomization\\.yaml$/"
       ],
