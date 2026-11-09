@@ -13,7 +13,7 @@ spec:
         spec:
           containers:
             - name: renovate
-              image: renovate/renovate:44.222.1@sha256:11492804bf7b54707c658c02f6b0f25fcf8448b5e13d4b549d4df7af04e285e4
+              image: renovate/renovate:44.224.2@sha256:7df5d8d1ebbaa61a875ae34a1a4625c41fc1c29fad70a76ca5d670794672b344
               args:
                 - Saharariel/homelab
 
