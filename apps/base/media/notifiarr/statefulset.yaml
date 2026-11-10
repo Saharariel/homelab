@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: notifiarr
-          image: golift/notifiarr:v0.9.7
+          image: golift/notifiarr:v0.10.0
 
           env:
             - name: PUID
