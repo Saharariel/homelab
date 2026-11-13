@@ -25,4 +25,4 @@ patches:
                   # kubectl must stay within one minor of the API server; explicit env
                   # overrides envFrom.
                   - name: SYSTEM_UPGRADE_JOB_KUBECTL_IMAGE
-                    value: rancher/kubectl:v1.35.6@sha256:4f097593e791b1b5e4a67f74cef838034975384789ac87defa3aff50c1c8061f
+                    value: rancher/kubectl:v1.36.2@sha256:06c7a7a9772737494ae1e0c3af90f1b5385630c147e47c1c7cea92f4bed55fbe
