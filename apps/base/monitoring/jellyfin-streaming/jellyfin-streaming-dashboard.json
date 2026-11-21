@@ -613,7 +613,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "max(probe_success{job=\"jellyfin-device-access\",device=\"xbox\"})",
+          "expr": "max(last_over_time(probe_success{job=\"jellyfin-device-access\",device=\"xbox\"}[35m]))",
           "legendFormat": "xbox",
           "refId": "A",
           "instant": true,
@@ -702,7 +702,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "max(probe_success{job=\"jellyfin-device-access\",device=\"androidtv\"})",
+          "expr": "max(last_over_time(probe_success{job=\"jellyfin-device-access\",device=\"androidtv\"}[35m]))",
           "legendFormat": "androidtv",
           "refId": "A",
           "instant": true,
@@ -791,7 +791,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "max(probe_success{job=\"jellyfin-device-access\",device=\"webos\"})",
+          "expr": "max(last_over_time(probe_success{job=\"jellyfin-device-access\",device=\"webos\"}[35m]))",
           "legendFormat": "webos",
           "refId": "A",
           "instant": true,
@@ -880,7 +880,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "max(probe_success{job=\"jellyfin-device-access\",device=\"desktop_blocked\"})",
+          "expr": "max(last_over_time(probe_success{job=\"jellyfin-device-access\",device=\"desktop_blocked\"}[35m]))",
           "legendFormat": "desktop_blocked",
           "refId": "A",
           "instant": true,
@@ -969,7 +969,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "max(probe_success{job=\"jellyfin-device-access\",device=\"watch_access\"})",
+          "expr": "max(last_over_time(probe_success{job=\"jellyfin-device-access\",device=\"watch_access\"}[35m]))",
           "legendFormat": "watch_access",
           "refId": "A",
           "instant": true,
@@ -1058,7 +1058,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "max by (device) (probe_http_status_code{job=\"jellyfin-device-access\"})",
+          "expr": "max by (device) (last_over_time(probe_http_status_code{job=\"jellyfin-device-access\"}[35m]))",
           "legendFormat": "{{device}}",
           "refId": "A"
         }
@@ -1116,7 +1116,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "max by (device) (probe_duration_seconds{job=\"jellyfin-device-access\"})",
+          "expr": "max by (device) (last_over_time(probe_duration_seconds{job=\"jellyfin-device-access\"}[35m]))",
           "legendFormat": "{{device}}",
           "refId": "A"
         }
