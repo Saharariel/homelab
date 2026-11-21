@@ -3,6 +3,9 @@
 # node at a time, only Saturday 05:00-07:00 (after the daily 03:00 auto-merge
 # window) and only while no alert is firing. Cordon-only (no drain), matching
 # the k3s SUC plans: local PVs cannot move and eviction would discard emptyDir.
+# Worker nodes only: the single control plane (saharlinux) is rebooted by hand.
+# An automatic reboot of it on 2026-11-21 stopped in the emergency shell and
+# left the API down for ~8h until someone reached the console.
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -41,3 +44,10 @@ spec:
       annotateNodes: true
     metrics:
       create: true
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: node-role.kubernetes.io/control-plane
+                  operator: DoesNotExist
