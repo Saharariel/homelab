@@ -33,12 +33,7 @@ spec:
               device fails, check the Cloudflare WAF custom rules / firewall events for its
               User-Agent; if all fail, check cloudflared and Jellyfin.
         - alert: JellyfinTvSecurityRuleMissing
-          # Only meaningful while tv.* serves TV apps; a full tv.* outage is
-          # covered by JellyfinDeviceAccessBlocked and the public probes.
-          expr: |
-            probe_success{probe_group="device_access",device="desktop_blocked"} == 0
-            and on ()
-            max(probe_success{probe_group="device_access",device=~"androidtv|webos"}) == 1
+          expr: probe_success{device="desktop_blocked"} == 0
           for: 10m
           labels:
             severity: warning
@@ -50,10 +45,11 @@ spec:
               A desktop Chrome-on-Windows request to {{ $labels.instance }} was not refused
               with 403 for 10 minutes (last status
               {{ with query "probe_http_status_code{job=\"jellyfin-device-access\",device=\"desktop_blocked\"}" }}{{ . | first | value | printf "%.0f" }}{{ else }}unknown{{ end }}).
-              Anyone with a browser can now reach the Jellyfin login on the TV-only hostname
-              without Cloudflare Access. Likely cause: the Cloudflare WAF user-agent rule for
-              tv.* was disabled, deleted or edited. Check the WAF custom rules and recent
-              CloudflareRuleChanged alerts.
+              HTTP 200 means anyone with a browser can reach the Jellyfin login on the TV-only
+              hostname without Cloudflare Access; a 5xx/0 means the edge, tunnel or backend is
+              unavailable instead. Likely cause of HTTP 200: the Cloudflare WAF user-agent rule
+              for tv.* was disabled, deleted or edited. Compare the TV app probes, then check
+              the WAF custom rules and recent CloudflareRuleChanged alerts.
         - alert: WatchAccessProtectionMissing
           expr: probe_success{probe_group="device_access",device="watch_access"} == 0
           for: 10m

@@ -4,7 +4,7 @@ resources:
   - prometheusrule.yaml
 configMapGenerator:
   # Picked up by the Grafana dashboard sidecar (label grafana_dashboard=1).
-  - name: jellyfin-streaming-dashboard
+  - name: jellyfin-streaming
     files:
       - jellyfin-streaming.json=jellyfin-streaming-dashboard.json
     options:

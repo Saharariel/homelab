@@ -58,7 +58,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(serverhub_jellyfin_streams) or vector(0)",
+          "expr": "sum(serverhub_jellyfin_streams) or (0 * (max(serverhub_jellyfin_up) == 1))",
           "legendFormat": "streams",
           "refId": "A",
           "instant": true,
@@ -1720,7 +1720,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(serverhub_jellyfin_streams) or vector(0)",
+          "expr": "sum(serverhub_jellyfin_streams) or (0 * (max(serverhub_jellyfin_up) == 1))",
           "legendFormat": "streams",
           "refId": "B"
         }
@@ -1818,7 +1818,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(serverhub_jellyfin_streams) or vector(0)",
+          "expr": "sum(serverhub_jellyfin_streams) or (0 * (max(serverhub_jellyfin_up) == 1))",
           "legendFormat": "streams",
           "refId": "B"
         }
