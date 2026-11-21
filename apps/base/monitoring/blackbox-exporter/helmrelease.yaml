@@ -53,3 +53,80 @@ spec:
           timeout: 5s
           tcp:
             preferred_ip_protocol: ip4
+
+        # Jellyfin device-access checks (device-access-probes.yaml). Unlike
+        # homelab_public_http, these do NOT accept 403: they send a real client
+        # User-Agent to tv.saharserver.com/System/Info/Public and require the
+        # unauthenticated Jellyfin JSON, so a Cloudflare WAF/Access rule that
+        # blocks a device type turns the probe red.
+        # Jellyfin Xbox app (jellyfin-uwp) is an EdgeHTML WebView on Xbox.
+        jellyfin_app_xbox:
+          prober: http
+          timeout: 15s
+          http:
+            method: GET
+            headers:
+              User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19041"
+            valid_status_codes: [200]
+            fail_if_body_not_matches_regexp: ['"ServerName"']
+            follow_redirects: false
+            preferred_ip_protocol: ip4
+            ip_protocol_fallback: false
+        # Jellyfin for Android TV v0.20.0 talks to the server through
+        # jellyfin-sdk-kotlin 1.8.12, whose OkHttp client sets
+        # "User-Agent: <clientInfo.name>/<clientInfo.version> via
+        # jellyfin-sdk-kotlin (OkHttp/<OkHttp.VERSION>)" (OkHttpClient.kt);
+        # the app's ClientInfo name is "Jellyfin for Android TV" (di/AppModule.kt)
+        # and the SDK pins OkHttp 5.3.2. Bump the versions when the app updates.
+        jellyfin_app_androidtv:
+          prober: http
+          timeout: 15s
+          http:
+            method: GET
+            headers:
+              User-Agent: "Jellyfin for Android TV/0.20.0 via jellyfin-sdk-kotlin (OkHttp/5.3.2)"
+            valid_status_codes: [200]
+            fail_if_body_not_matches_regexp: ['"ServerName"']
+            follow_redirects: false
+            preferred_ip_protocol: ip4
+            ip_protocol_fallback: false
+        # Jellyfin webOS app runs jellyfin-web inside the LG webOS WebAppManager.
+        jellyfin_app_webos:
+          prober: http
+          timeout: 15s
+          http:
+            method: GET
+            headers:
+              User-Agent: "Mozilla/5.0 (Web0S; Linux/SmartTV) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36 WebAppManager"
+            valid_status_codes: [200]
+            fail_if_body_not_matches_regexp: ['"ServerName"']
+            follow_redirects: false
+            preferred_ip_protocol: ip4
+            ip_protocol_fallback: false
+        # Negative security check: tv.* is the TV-client door, so a desktop
+        # Chrome browser on Windows must still be refused by the Cloudflare WAF.
+        jellyfin_tv_blocks_desktop:
+          prober: http
+          timeout: 15s
+          http:
+            method: GET
+            headers:
+              User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+            valid_status_codes: [403]
+            follow_redirects: false
+            preferred_ip_protocol: ip4
+            ip_protocol_fallback: false
+        # Negative security check: watch.* must still redirect anonymous
+        # requests to the Cloudflare Access login.
+        watch_requires_access:
+          prober: http
+          timeout: 15s
+          http:
+            method: GET
+            valid_status_codes: [302]
+            follow_redirects: false
+            fail_if_header_not_matches:
+              - header: Location
+                regexp: 'cloudflareaccess\.com'
+            preferred_ip_protocol: ip4
+            ip_protocol_fallback: false

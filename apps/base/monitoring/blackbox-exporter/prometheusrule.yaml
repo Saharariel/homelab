@@ -9,7 +9,8 @@ spec:
     - name: blackbox.rules
       rules:
         - alert: BlackboxProbeFailed
-          expr: probe_success{probe_group!="public"} == 0
+          # device_access probes have their own Jellyfin-specific alerts.
+          expr: probe_success{probe_group!~"public|device_access"} == 0
           for: 2m
           labels:
             severity: critical
@@ -19,7 +20,7 @@ spec:
             summary: "Endpoint down: {{ $labels.instance }}"
             description: "Blackbox probe to {{ $labels.instance }} in group {{ $labels.probe_group }} has been failing for more than 2 minutes."
         - alert: BlackboxProbeSlow
-          expr: probe_duration_seconds{probe_group!="public"} > 5
+          expr: probe_duration_seconds{probe_group!~"public|device_access"} > 5
           for: 5m
           labels:
             severity: warning
