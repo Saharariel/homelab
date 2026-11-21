@@ -1,0 +1,174 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: proxmox-and-disks
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: proxmox.host
+      rules:
+        - alert: ProxmoxNodeExporterDown
+          expr: up{job="proxmox-node"} == 0
+          for: 10m
+          labels:
+            severity: warning
+            component: proxmox
+            hermes_triage: "true"
+          annotations:
+            summary: "Prometheus cannot read the Proxmox host metrics"
+            description: "node_exporter on the Proxmox host (192.168.50.10:9100) is not answering, so host, disk and backup monitoring is blind. Check host reachability and `systemctl status prometheus-node-exporter` over SSH."
+        - alert: ProxmoxHostMemoryLow
+          expr: node_memory_MemAvailable_bytes{job="proxmox-node"} / node_memory_MemTotal_bytes{job="proxmox-node"} < 0.06
+          for: 15m
+          labels:
+            severity: warning
+            component: proxmox
+            hermes_triage: "true"
+          annotations:
+            summary: "Proxmox host is almost out of memory ({{ $value | humanizePercentage }} available)"
+            description: "The host that runs the worker VM and Pi-hole has under 6% memory available for 15 minutes. If it runs out, the kernel may kill a VM. Check VM memory allocations, ZFS ARC size and host processes."
+        - alert: ProxmoxGuestDown
+          expr: homelab_pve_guest_up == 0
+          for: 5m
+          labels:
+            severity: critical
+            component: proxmox
+            hermes_triage: "true"
+          annotations:
+            summary: "Proxmox {{ $labels.type }} {{ $labels.vmid }} ({{ $labels.name }}) is not running"
+            description: "Guest {{ $labels.name }} has been stopped for 5 minutes. VM 103 is the K3s worker (all media and app pods); LXC 105 is Pi-hole (LAN DNS). Check `qm status`/`pct status` and the task log on Proxmox before starting it."
+        - alert: ProxmoxStorageFilling
+          expr: homelab_pve_storage_used_ratio > 0.85
+          for: 30m
+          labels:
+            severity: warning
+            component: proxmox
+            hermes_triage: "true"
+          annotations:
+            summary: "Proxmox storage {{ $labels.storage }} is {{ $value | humanizePercentage }} full"
+            description: "Storage {{ $labels.storage }} ({{ $labels.type }}) is above 85%. local-lvm holds the worker VM disk on the single NVMe; if the thin pool fills, the VM pauses or corrupts writes. Find what grew (VM disks, snapshots) before it reaches 100%."
+        - alert: ProxmoxThinPoolMetadataFilling
+          expr: homelab_pve_thinpool_metadata_used_ratio > 0.8
+          for: 30m
+          labels:
+            severity: critical
+            component: proxmox
+            hermes_triage: "true"
+          annotations:
+            summary: "LVM-thin metadata {{ $labels.pool }} is {{ $value | humanizePercentage }} full"
+            description: "When thin-pool metadata is full, every VM on it stops writing. Extend the metadata volume (`lvextend --poolmetadatasize`) before it fills."
+        - alert: ProxmoxHostRebooted
+          expr: changes(node_boot_time_seconds{job="proxmox-node"}[30m]) > 0
+          labels:
+            severity: info
+            component: proxmox
+          annotations:
+            summary: "The Proxmox host rebooted"
+            description: "The Proxmox host boot time changed in the last 30 minutes. The worker VM and Pi-hole restarted with it."
+        - alert: ProxmoxMetricsStale
+          expr: time() - node_textfile_mtime_seconds{job="proxmox-node",file=~".*(homelab_pve|smartmon|nvme)[.]prom"} > 7200
+          for: 15m
+          labels:
+            severity: warning
+            component: proxmox
+            hermes_triage: "true"
+          annotations:
+            summary: "Proxmox metrics file {{ $labels.file }} is stale"
+            description: "{{ $labels.file }} has not been refreshed for over 2 hours, so guest/storage or disk-health alerts may be silent. Check the matching systemd timer on Proxmox (homelab-pve-textfile, prometheus-node-exporter-smartmon or -nvme)."
+    - name: disks.health
+      rules:
+        - alert: DiskSmartUnhealthy
+          expr: smartmon_device_smart_healthy == 0
+          for: 5m
+          labels:
+            severity: critical
+            component: disks
+            hermes_triage: "true"
+          annotations:
+            summary: "Disk {{ $labels.disk }} on {{ $labels.instance }} fails its SMART health check"
+            description: "The drive reports it is failing. If it is part of the tank mirror, the pool is one disk away from data loss. Order a replacement and verify backups now."
+        - alert: DiskHasBadSectors
+          expr: (smartmon_reallocated_sector_ct_raw_value + on(disk, instance) smartmon_current_pending_sector_raw_value + on(disk, instance) smartmon_offline_uncorrectable_raw_value) > 0
+          for: 1h
+          labels:
+            severity: warning
+            component: disks
+            hermes_triage: "true"
+          annotations:
+            summary: "Disk {{ $labels.disk }} has {{ $value }} bad/pending sectors"
+            description: "Reallocated, pending or uncorrectable sectors are early signs of a failing drive. Watch whether the number grows; plan a replacement."
+        - alert: DiskBadSectorsGrowing
+          expr: delta((smartmon_reallocated_sector_ct_raw_value + on(disk, instance) smartmon_current_pending_sector_raw_value)[24h:15m]) > 0
+          labels:
+            severity: critical
+            component: disks
+            hermes_triage: "true"
+          annotations:
+            summary: "Bad sectors on {{ $labels.disk }} increased in the last 24 hours"
+            description: "A growing bad-sector count usually means the drive is dying. Replace it soon; check the other mirror disk and backups."
+        - alert: DiskCableErrors
+          expr: increase(smartmon_udma_crc_error_count_raw_value[1h]) > 0
+          labels:
+            severity: warning
+            component: disks
+            hermes_triage: "true"
+          annotations:
+            summary: "Disk {{ $labels.disk }} is logging cable (CRC) errors"
+            description: "UDMA CRC errors increased. This is usually a loose or bad SATA cable, not the disk. Reseat or replace the cable."
+        - alert: DiskTooHot
+          expr: smartmon_temperature_celsius_raw_value{type="sat"} > 55
+          for: 30m
+          labels:
+            severity: warning
+            component: disks
+            hermes_triage: "true"
+          annotations:
+            summary: "Disk {{ $labels.disk }} is {{ $value }}°C"
+            description: "Hard drives should stay under ~45°C; above 55°C for 30 minutes shortens their life, and both tank mirror disks share the same airflow. Check the case fans and drive-bay airflow."
+        - alert: DiskCriticallyHot
+          expr: smartmon_temperature_celsius_raw_value{type="sat"} > 60
+          for: 10m
+          labels:
+            severity: critical
+            component: disks
+            hermes_triage: "true"
+          annotations:
+            summary: "Disk {{ $labels.disk }} is {{ $value }}°C"
+            description: "Above 60°C the drive is near its rated limit. Improve airflow immediately; consider pausing heavy I/O (scrub) until it cools."
+        - alert: NvmeWearHigh
+          expr: nvme_percentage_used_ratio > 0.8
+          labels:
+            severity: warning
+            component: disks
+            hermes_triage: "true"
+          annotations:
+            summary: "NVMe {{ $labels.device }} is {{ $value | humanizePercentage }} worn"
+            description: "The NVMe holds the worker VM disk. Plan a replacement before it reaches 100% rated wear."
+        - alert: NvmeCriticalWarning
+          expr: nvme_critical_warning > 0 or nvme_available_spare_ratio < nvme_available_spare_threshold_ratio
+          labels:
+            severity: critical
+            component: disks
+            hermes_triage: "true"
+          annotations:
+            summary: "NVMe {{ $labels.device }} reports a critical warning"
+            description: "The NVMe controller raised a critical warning (spare exhausted, overheating or read-only). The worker VM disk is at risk; verify backups."
+        - alert: ZfsScrubOverdue
+          expr: time() - homelab_zfs_last_scrub_end_timestamp_seconds > 40 * 86400
+          labels:
+            severity: warning
+            component: disks
+            hermes_triage: "true"
+          annotations:
+            summary: "ZFS pool {{ $labels.pool }} has not been scrubbed for 40 days"
+            description: "Scrubs find silent corruption while the mirror can still repair it. Debian schedules one monthly; check `zpool status` and the zfsutils-linux cron."
+        - alert: ZfsScrubFoundErrors
+          expr: homelab_zfs_last_scrub_errors > 0
+          labels:
+            severity: critical
+            component: disks
+            hermes_triage: "true"
+          annotations:
+            summary: "The last ZFS scrub on {{ $labels.pool }} found {{ $value }} errors"
+            description: "Run `zpool status -v` to see affected files and devices; check SMART for the disks involved."

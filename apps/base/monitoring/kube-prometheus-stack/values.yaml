@@ -206,6 +206,14 @@ prometheus:
           - targets: ["192.168.50.10:9134"]
             labels:
               node: homelab
+      # node_exporter on the Proxmox host: host metrics plus textfile collectors for
+      # SMART (smartmon), NVMe wear and guest/storage/scrub facts (homelab-pve-textfile).
+      - job_name: proxmox-node
+        scrape_interval: 60s
+        static_configs:
+          - targets: ["192.168.50.10:9100"]
+            labels:
+              node: proxmox
 
 thanosRuler:
   enabled: false

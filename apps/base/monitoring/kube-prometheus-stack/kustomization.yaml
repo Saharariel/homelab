@@ -8,6 +8,7 @@ resources:
   - discord-externalsecret.yaml
   - homelab-platform-monitors.yaml
   - homelab-prometheusrule.yaml
+  - proxmox-disks-prometheusrule.yaml
 configMapGenerator:
   - files:
       - values.yaml=values.yaml
