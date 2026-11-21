@@ -36,7 +36,7 @@ spec:
           expr: probe_success{device="desktop_blocked"} == 0
           for: 10m
           labels:
-            severity: warning
+            severity: critical
             component: jellyfin
             hermes_triage: "true"
           annotations:
