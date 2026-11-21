@@ -1,0 +1,264 @@
+# Jellyfin playback quality, device access and Cloudflare/tunnel path alerts.
+# Inputs:
+#   - probe_* from the jellyfin-device-access Probes (blackbox-exporter),
+#   - serverhub_* from the Server Hub ServiceMonitor (utils/server-hub),
+#   - cloudflared_* from the cloudflared PodMonitor (utils/cloudflared).
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: jellyfin-streaming
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: jellyfin.device-access
+      rules:
+        - alert: JellyfinDeviceAccessBlocked
+          expr: probe_success{probe_group="device_access",device=~"xbox|androidtv|webos"} == 0
+          for: 5m
+          labels:
+            severity: warning
+            component: jellyfin
+            hermes_triage: "true"
+          annotations:
+            summary: "Jellyfin {{ $labels.device }} app cannot reach tv.saharserver.com"
+            description: >-
+              A request with the Jellyfin {{ $labels.device }} app's User-Agent to
+              {{ $labels.instance }} has not returned the Jellyfin server info (HTTP 200
+              with "ServerName") for 5 minutes; last status
+              {{ with printf "probe_http_status_code{job=\"jellyfin-device-access\",device=\"%s\"}" $labels.device | query }}{{ . | first | value | printf "%.0f" }}{{ else }}unknown{{ end }}.
+              Users on that device type cannot sign in or play. Likely cause: a Cloudflare
+              WAF/Access rule (403) or the tunnel (5xx/timeout) is stopping that device type
+              from reaching Jellyfin. Compare with the other device probes: if only this
+              device fails, check the Cloudflare WAF custom rules / firewall events for its
+              User-Agent; if all fail, check cloudflared and Jellyfin.
+        - alert: JellyfinTvSecurityRuleMissing
+          # Only meaningful while tv.* serves TV apps; a full tv.* outage is
+          # covered by JellyfinDeviceAccessBlocked and the public probes.
+          expr: |
+            probe_success{probe_group="device_access",device="desktop_blocked"} == 0
+            and on ()
+            max(probe_success{probe_group="device_access",device=~"androidtv|webos"}) == 1
+          for: 10m
+          labels:
+            severity: warning
+            component: jellyfin
+            hermes_triage: "true"
+          annotations:
+            summary: "tv.saharserver.com no longer blocks desktop browsers"
+            description: >-
+              A desktop Chrome-on-Windows request to {{ $labels.instance }} was not refused
+              with 403 for 10 minutes (last status
+              {{ with query "probe_http_status_code{job=\"jellyfin-device-access\",device=\"desktop_blocked\"}" }}{{ . | first | value | printf "%.0f" }}{{ else }}unknown{{ end }}).
+              Anyone with a browser can now reach the Jellyfin login on the TV-only hostname
+              without Cloudflare Access. Likely cause: the Cloudflare WAF user-agent rule for
+              tv.* was disabled, deleted or edited. Check the WAF custom rules and recent
+              CloudflareRuleChanged alerts.
+        - alert: WatchAccessProtectionMissing
+          expr: probe_success{probe_group="device_access",device="watch_access"} == 0
+          for: 10m
+          labels:
+            severity: critical
+            component: cloudflare-access
+            hermes_triage: "true"
+          annotations:
+            summary: "watch.saharserver.com is not protected by Cloudflare Access"
+            description: >-
+              An anonymous request to {{ $labels.instance }} did not get a 302 redirect to
+              *.cloudflareaccess.com for 10 minutes (last status
+              {{ with query "probe_http_status_code{job=\"jellyfin-device-access\",device=\"watch_access\"}" }}{{ . | first | value | printf "%.0f" }}{{ else }}unknown{{ end }}).
+              If the status is 200 the browser hostname is publicly exposed without the
+              approved-email login (security exposure); a 5xx/0 means Cloudflare or the
+              tunnel is failing instead. Check the Cloudflare Access application and policy
+              for watch.saharserver.com.
+
+    - name: jellyfin.playback
+      rules:
+        - alert: JellyfinStreamStalled
+          expr: serverhub_jellyfin_stream_stalled_seconds > 60
+          for: 1m
+          labels:
+            severity: warning
+            component: jellyfin
+            hermes_triage: "true"
+          annotations:
+            summary: "Jellyfin stream frozen for {{ $labels.user }} on {{ $labels.device }}"
+            description: >-
+              {{ $labels.user }}'s {{ $labels.client }} stream on {{ $labels.device }} has been
+              playing without its position advancing for {{ $value | humanizeDuration }}: the
+              viewer sees a frozen/buffering picture. Likely causes: the transcode cannot keep
+              up (see JellyfinTranscodeSlowerThanRealtime), the Cloudflare tunnel is resetting
+              long video requests (cloudflared_tunnel_request_errors), or the client's own
+              network.
+        - alert: JellyfinTranscodeSlowerThanRealtime
+          expr: serverhub_jellyfin_stream_transcode_speed_ratio < 0.95
+          for: 3m
+          labels:
+            severity: warning
+            component: jellyfin
+            hermes_triage: "true"
+          annotations:
+            summary: "Jellyfin transcode is slower than real time for {{ $labels.user }}"
+            description: >-
+              The transcode for {{ $labels.user }}'s {{ $labels.client }} stream on
+              {{ $labels.device }} runs at {{ $value | printf "%.2f" }}x real time, so playback
+              will keep pausing to buffer. Likely causes: software (CPU) transcoding instead of
+              hardware acceleration, too many concurrent transcodes, or worker-node CPU
+              saturation. Check the transcode reasons and worker-node-1 CPU on the Jellyfin
+              streaming dashboard.
+        - alert: JellyfinTranscodeWithoutHardwareAcceleration
+          expr: serverhub_jellyfin_stream_transcode_hw{hw="none"} == 1
+          for: 2m
+          labels:
+            severity: warning
+            component: jellyfin
+            hermes_triage: "true"
+          annotations:
+            summary: "Jellyfin is transcoding on the CPU for {{ $labels.user }}"
+            description: >-
+              {{ $labels.user }}'s {{ $labels.client }} stream on {{ $labels.device }} is being
+              transcoded without hardware acceleration, which loads worker-node-1's CPU and
+              often cannot keep real time for 4K/HEVC. Likely causes: the GPU device is not
+              available to the Jellyfin pod, hardware acceleration is disabled in Jellyfin's
+              playback settings, or the codec/filter is unsupported by the GPU.
+        - alert: JellyfinFrequentStalls
+          expr: increase(serverhub_jellyfin_stall_events_total[30m]) >= 3
+          labels:
+            severity: warning
+            component: jellyfin
+            hermes_triage: "true"
+          annotations:
+            summary: "Repeated Jellyfin playback stalls on {{ $labels.client }}"
+            description: >-
+              {{ $labels.client }} clients froze {{ $value | printf "%.0f" }} times in the last
+              30 minutes. Viewers are repeatedly hitting buffering. Compare the stall timing
+              with transcode speed, cloudflared request errors and worker-node network
+              transmit on the Jellyfin streaming dashboard.
+
+    - name: jellyfin.cloudflare
+      rules:
+        - alert: CloudflareBlockingJellyfinDevices
+          expr: |
+            sum by (host, device_class, rule_id) (
+              serverhub_cloudflare_firewall_events{action=~"block|managed_challenge|challenge|jschallenge",device_class!~"desktop_browser|other"}
+            ) > 0
+          for: 10m
+          labels:
+            severity: warning
+            component: cloudflare
+            hermes_triage: "true"
+          annotations:
+            summary: "Cloudflare rule {{ $labels.rule_id }} is blocking {{ $labels.device_class }} clients on {{ $labels.host }}"
+            description: >-
+              Cloudflare blocked or challenged {{ $value | printf "%.0f" }} requests from
+              {{ $labels.device_class }} clients on {{ $labels.host }} in the last 5 minutes,
+              continuously for 10 minutes. TV/console apps cannot solve challenges, so those
+              users cannot sign in or play. Likely cause: WAF/bot rule {{ $labels.rule_id }}
+              matches their User-Agent; narrow the rule rather than moving the device to the
+              Access-protected watch hostname.
+        - alert: CloudflareJellyfinEdgeErrors
+          expr: |
+            (
+              sum by (host) (serverhub_cloudflare_http_requests{status_class="5xx"})
+              /
+              sum by (host) (serverhub_cloudflare_http_requests)
+            ) > 0.05
+            and
+            sum by (host) (serverhub_cloudflare_http_requests) > 20
+          for: 10m
+          labels:
+            severity: warning
+            component: cloudflare
+            hermes_triage: "true"
+          annotations:
+            summary: "Cloudflare is returning 5xx errors for {{ $labels.host }}"
+            description: >-
+              {{ $value | humanizePercentage }} of requests to {{ $labels.host }} ended in a 5xx
+              at the Cloudflare edge over the last 5 minutes, for 10 minutes. Users see error
+              pages or failed playback. Likely causes: cloudflared cannot reach Traefik/Jellyfin
+              (502/504), tunnel connections dropping (530/1033), or Jellyfin itself erroring.
+        - alert: CloudflareRuleChanged
+          expr: changes(serverhub_cloudflare_rules_last_change_timestamp_seconds[30m]) > 0
+          labels:
+            severity: info
+            component: cloudflare
+          annotations:
+            summary: "Cloudflare WAF/Access rules changed"
+            description: >-
+              Server Hub saw the Cloudflare rules for the zone change in the last 30 minutes.
+              If device-access or security probes change state around now, this change is the
+              first suspect.
+        - alert: ServerHubCloudflarePollingDown
+          expr: serverhub_cloudflare_configured == 1 and serverhub_cloudflare_up == 0
+          for: 15m
+          labels:
+            severity: warning
+            component: server-hub
+            hermes_triage: "true"
+          annotations:
+            summary: "Server Hub cannot read Cloudflare analytics"
+            description: >-
+              Server Hub is configured for Cloudflare but its API polls have failed for 15
+              minutes, so CloudflareBlockingJellyfinDevices and CloudflareJellyfinEdgeErrors
+              are blind. Likely causes: expired/revoked API token or missing analytics/WAF read
+              permission; check Server Hub logs.
+        - alert: ServerHubMonitoringDown
+          expr: |
+            absent(serverhub_jellyfin_up)
+            or
+            (time() - serverhub_poll_last_success_timestamp_seconds{source="jellyfin"}) > 300
+          for: 10m
+          labels:
+            severity: warning
+            component: server-hub
+            hermes_triage: "true"
+          annotations:
+            summary: "Jellyfin playback monitoring is not reporting"
+            description: >-
+              Prometheus has no fresh Jellyfin data from Server Hub (metrics missing, or the
+              last successful Jellyfin poll is older than 5 minutes) for 10 minutes. Stall,
+              transcode and stream alerts cannot fire while this is true. Check the Server Hub
+              pod, its /metrics endpoint and its Jellyfin API key.
+
+    - name: jellyfin.cloudflared
+      rules:
+        - alert: CloudflaredTunnelErrors
+          # Minimum traffic guard (0.05 req/s = 15 requests per 5m) so a single
+          # failed request on an idle tunnel does not page.
+          expr: |
+            (
+              sum by (namespace, pod) (rate(cloudflared_tunnel_request_errors[5m]))
+              /
+              sum by (namespace, pod) (rate(cloudflared_tunnel_total_requests[5m]))
+            ) > 0.05
+            and
+            sum by (namespace, pod) (rate(cloudflared_tunnel_total_requests[5m])) > 0.05
+          for: 10m
+          labels:
+            severity: warning
+            component: cloudflared
+            hermes_triage: "true"
+          annotations:
+            summary: "cloudflared {{ $labels.pod }} fails to proxy {{ $value | humanizePercentage }} of requests"
+            description: >-
+              More than 5% of requests through tunnel replica {{ $labels.namespace }}/{{ $labels.pod }}
+              failed to reach the origin for 10 minutes. Public users (tv/watch/requests) see
+              errors or video that freezes and resets. Likely causes: Traefik or the backend
+              service unreachable from the pod, or long video streams being reset
+              ("timeout: no recent network activity"). cloudflared runs at --loglevel fatal,
+              so use metrics and Traefik/Jellyfin logs rather than cloudflared logs.
+        - alert: CloudflaredTunnelHAConnectionsLow
+          expr: cloudflared_tunnel_ha_connections < 2
+          for: 10m
+          labels:
+            severity: warning
+            component: cloudflared
+            hermes_triage: "true"
+          annotations:
+            summary: "cloudflared {{ $labels.pod }} has only {{ $value }} edge connections"
+            description: >-
+              Tunnel replica {{ $labels.namespace }}/{{ $labels.pod }} holds fewer than 2
+              (normally 4) connections to the Cloudflare edge for 10 minutes, so public traffic
+              has little redundancy and reconnects interrupt streams. Likely causes: outbound
+              UDP/QUIC (7844) problems from the node, DNS/egress issues, or Cloudflare edge
+              incidents.

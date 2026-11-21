@@ -4,3 +4,4 @@ resources:
   - deployment.yaml
   - externalsecret.yaml
   - podpolicy.yaml
+  - podmonitor.yaml

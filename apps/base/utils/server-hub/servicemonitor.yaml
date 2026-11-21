@@ -1,0 +1,17 @@
+# Server Hub /metrics: Jellyfin session/transcode/stall gauges and Cloudflare
+# firewall/edge analytics (serverhub_* series). Alerts and the dashboard live
+# in apps/base/monitoring/jellyfin-streaming/.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: server-hub
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app: server-hub
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s

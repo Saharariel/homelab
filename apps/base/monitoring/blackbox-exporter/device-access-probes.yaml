@@ -1,0 +1,123 @@
+# Jellyfin device-access probes (see the jellyfin_* / watch_requires_access
+# modules in helmrelease.yaml). Each device gets its own Probe so its module
+# (User-Agent and expected status) is fixed per target. Alerting lives in
+# apps/base/monitoring/jellyfin-streaming/prometheusrule.yaml.
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: jellyfin-device-access-xbox
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: jellyfin-device-access
+  interval: 1m
+  # The modules allow 15s; Prometheus' default 10s scrape timeout would cut
+  # the probe short first.
+  scrapeTimeout: 20s
+  module: jellyfin_app_xbox
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      # Jellyfin Xbox app (EdgeHTML WebView UA) must get Jellyfin JSON from tv.*.
+      static:
+        - https://tv.saharserver.com/System/Info/Public
+      labels:
+        probe_group: device_access
+        device: xbox
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: jellyfin-device-access-androidtv
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: jellyfin-device-access
+  interval: 1m
+  # The modules allow 15s; Prometheus' default 10s scrape timeout would cut
+  # the probe short first.
+  scrapeTimeout: 20s
+  module: jellyfin_app_androidtv
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      # Jellyfin Android TV app (jellyfin-sdk-kotlin OkHttp UA) must get Jellyfin JSON from tv.*.
+      static:
+        - https://tv.saharserver.com/System/Info/Public
+      labels:
+        probe_group: device_access
+        device: androidtv
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: jellyfin-device-access-webos
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: jellyfin-device-access
+  interval: 1m
+  # The modules allow 15s; Prometheus' default 10s scrape timeout would cut
+  # the probe short first.
+  scrapeTimeout: 20s
+  module: jellyfin_app_webos
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      # Jellyfin LG webOS app (WebAppManager UA) must get Jellyfin JSON from tv.*.
+      static:
+        - https://tv.saharserver.com/System/Info/Public
+      labels:
+        probe_group: device_access
+        device: webos
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: jellyfin-device-access-desktop-blocked
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: jellyfin-device-access
+  interval: 1m
+  # The modules allow 15s; Prometheus' default 10s scrape timeout would cut
+  # the probe short first.
+  scrapeTimeout: 20s
+  module: jellyfin_tv_blocks_desktop
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      # Security check: desktop Chrome on Windows must get 403 from the tv.* WAF rule.
+      static:
+        - https://tv.saharserver.com/System/Info/Public
+      labels:
+        probe_group: device_access
+        device: desktop_blocked
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: jellyfin-device-access-watch-access
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: jellyfin-device-access
+  interval: 1m
+  # The modules allow 15s; Prometheus' default 10s scrape timeout would cut
+  # the probe short first.
+  scrapeTimeout: 20s
+  module: watch_requires_access
+  prober:
+    url: blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      # Security check: watch.* must 302 to the Cloudflare Access login.
+      static:
+        - https://watch.saharserver.com/
+      labels:
+        probe_group: device_access
+        device: watch_access
