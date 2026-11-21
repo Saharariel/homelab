@@ -14,8 +14,8 @@ spec:
     - name: jellyfin.device-access
       rules:
         - alert: JellyfinDeviceAccessBlocked
-          expr: probe_success{probe_group="device_access",device=~"xbox|androidtv|webos"} == 0
-          for: 5m
+          expr: max_over_time(probe_success{probe_group="device_access",device=~"xbox|androidtv|webos"}[45m]) == 0
+          for: 1m
           labels:
             severity: warning
             component: jellyfin
@@ -25,16 +25,16 @@ spec:
             description: >-
               A request with the Jellyfin {{ $labels.device }} app's User-Agent to
               {{ $labels.instance }} has not returned the Jellyfin server info (HTTP 200
-              with "ServerName") for 5 minutes; last status
-              {{ with printf "probe_http_status_code{job=\"jellyfin-device-access\",device=\"%s\"}" $labels.device | query }}{{ . | first | value | printf "%.0f" }}{{ else }}unknown{{ end }}.
+              with "ServerName") in the last two checks (probes run every 30 minutes); last status
+              {{ with printf "last_over_time(probe_http_status_code{job=\"jellyfin-device-access\",device=\"%s\"}[45m])" $labels.device | query }}{{ . | first | value | printf "%.0f" }}{{ else }}unknown{{ end }}.
               Users on that device type cannot sign in or play. Likely cause: a Cloudflare
               WAF/Access rule (403) or the tunnel (5xx/timeout) is stopping that device type
               from reaching Jellyfin. Compare with the other device probes: if only this
               device fails, check the Cloudflare WAF custom rules / firewall events for its
               User-Agent; if all fail, check cloudflared and Jellyfin.
         - alert: JellyfinTvSecurityRuleMissing
-          expr: probe_success{device="desktop_blocked"} == 0
-          for: 10m
+          expr: max_over_time(probe_success{device="desktop_blocked"}[45m]) == 0
+          for: 1m
           labels:
             severity: critical
             component: jellyfin
@@ -43,16 +43,16 @@ spec:
             summary: "tv.saharserver.com no longer blocks desktop browsers"
             description: >-
               A desktop Chrome-on-Windows request to {{ $labels.instance }} was not refused
-              with 403 for 10 minutes (last status
-              {{ with query "probe_http_status_code{job=\"jellyfin-device-access\",device=\"desktop_blocked\"}" }}{{ . | first | value | printf "%.0f" }}{{ else }}unknown{{ end }}).
+              with 403 in the last two checks (every 30 minutes) (last status
+              {{ with query "last_over_time(probe_http_status_code{job=\"jellyfin-device-access\",device=\"desktop_blocked\"}[45m])" }}{{ . | first | value | printf "%.0f" }}{{ else }}unknown{{ end }}).
               HTTP 200 means anyone with a browser can reach the Jellyfin login on the TV-only
               hostname without Cloudflare Access; a 5xx/0 means the edge, tunnel or backend is
               unavailable instead. Likely cause of HTTP 200: the Cloudflare WAF user-agent rule
               for tv.* was disabled, deleted or edited. Compare the TV app probes, then check
               the WAF custom rules and recent CloudflareRuleChanged alerts.
         - alert: WatchAccessProtectionMissing
-          expr: probe_success{probe_group="device_access",device="watch_access"} == 0
-          for: 10m
+          expr: max_over_time(probe_success{probe_group="device_access",device="watch_access"}[45m]) == 0
+          for: 1m
           labels:
             severity: critical
             component: cloudflare-access
@@ -61,8 +61,8 @@ spec:
             summary: "watch.saharserver.com is not protected by Cloudflare Access"
             description: >-
               An anonymous request to {{ $labels.instance }} did not get a 302 redirect to
-              *.cloudflareaccess.com for 10 minutes (last status
-              {{ with query "probe_http_status_code{job=\"jellyfin-device-access\",device=\"watch_access\"}" }}{{ . | first | value | printf "%.0f" }}{{ else }}unknown{{ end }}).
+              *.cloudflareaccess.com in the last two checks (every 30 minutes) (last status
+              {{ with query "last_over_time(probe_http_status_code{job=\"jellyfin-device-access\",device=\"watch_access\"}[45m])" }}{{ . | first | value | printf "%.0f" }}{{ else }}unknown{{ end }}).
               If the status is 200 the browser hostname is publicly exposed without the
               approved-email login (security exposure); a 5xx/0 means Cloudflare or the
               tunnel is failing instead. Check the Cloudflare Access application and policy

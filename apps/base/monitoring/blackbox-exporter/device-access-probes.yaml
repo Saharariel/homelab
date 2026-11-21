@@ -10,7 +10,7 @@ metadata:
     release: kube-prometheus-stack
 spec:
   jobName: jellyfin-device-access
-  interval: 1m
+  interval: 30m
   # The modules allow 15s; Prometheus' default 10s scrape timeout would cut
   # the probe short first.
   scrapeTimeout: 20s
@@ -34,7 +34,7 @@ metadata:
     release: kube-prometheus-stack
 spec:
   jobName: jellyfin-device-access
-  interval: 1m
+  interval: 30m
   # The modules allow 15s; Prometheus' default 10s scrape timeout would cut
   # the probe short first.
   scrapeTimeout: 20s
@@ -58,7 +58,7 @@ metadata:
     release: kube-prometheus-stack
 spec:
   jobName: jellyfin-device-access
-  interval: 1m
+  interval: 30m
   # The modules allow 15s; Prometheus' default 10s scrape timeout would cut
   # the probe short first.
   scrapeTimeout: 20s
@@ -82,7 +82,7 @@ metadata:
     release: kube-prometheus-stack
 spec:
   jobName: jellyfin-device-access
-  interval: 1m
+  interval: 30m
   # The modules allow 15s; Prometheus' default 10s scrape timeout would cut
   # the probe short first.
   scrapeTimeout: 20s
@@ -106,7 +106,7 @@ metadata:
     release: kube-prometheus-stack
 spec:
   jobName: jellyfin-device-access
-  interval: 1m
+  interval: 30m
   # The modules allow 15s; Prometheus' default 10s scrape timeout would cut
   # the probe short first.
   scrapeTimeout: 20s
