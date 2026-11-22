@@ -104,7 +104,8 @@ spec:
               streaming dashboard.
         - alert: JellyfinTranscodeWithoutHardwareAcceleration
           expr: serverhub_jellyfin_stream_transcode_hw{hw="none"} == 1
-          for: 2m
+          # 10m so the gap between episodes (a transcode restarting) never fires it.
+          for: 10m
           labels:
             severity: warning
             component: jellyfin
@@ -113,7 +114,7 @@ spec:
             summary: "Jellyfin is transcoding on the CPU for {{ $labels.user }}"
             description: >-
               {{ $labels.user }}'s {{ $labels.client }} stream on {{ $labels.device }} is being
-              transcoded without hardware acceleration, which loads worker-node-1's CPU and
+              video-transcoded on the CPU for 10 minutes, which loads worker-node-1's CPU and
               often cannot keep real time for 4K/HEVC. Likely causes: the GPU device is not
               available to the Jellyfin pod, hardware acceleration is disabled in Jellyfin's
               playback settings, or the codec/filter is unsupported by the GPU.
