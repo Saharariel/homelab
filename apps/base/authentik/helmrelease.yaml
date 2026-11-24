@@ -52,14 +52,6 @@ spec:
           # Data on the worker's local SSD (/var/lib/appconfig/authentik-postgresql).
           existingClaim: authentik-postgresql
 
-    redis:
-      enabled: true
-      master:
-        persistence:
-          enabled: true
-          # Fresh local SSD volume (redis is cache/broker only; sessions live in PG).
-          existingClaim: authentik-redis
-
   valuesFrom:
     - kind: Secret
       name: authentik-secret
