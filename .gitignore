@@ -10,3 +10,9 @@ docs/runbooks/
 
 /build
 /.ci-bin
+
+.lavish/
+backlog.md
+docs/diagrams/
+docs/homelab-architecture.md
+docs/homelab-inventory.md
